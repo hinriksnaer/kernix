@@ -5,6 +5,7 @@
 {
   programs.vscode = {
     enable = true;
+    mutableExtensionsDir = false;
 
     profiles.default = {
       enableUpdateCheck = false;
@@ -20,6 +21,9 @@
 
         # Vim
         vscodevim.vim
+
+        # Remote
+        ms-vscode-remote.remote-ssh
 
         # Theme
         teabyii.ayu
