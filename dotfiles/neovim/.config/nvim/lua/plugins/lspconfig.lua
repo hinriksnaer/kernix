@@ -181,19 +181,16 @@ return {
     --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
     --  - settings (table): Override the default settings passed when initializing the server.
     --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+    -- Servers managed outside Mason (available on $PATH via Nix or venv).
+    -- These are set up directly since mason-lspconfig only handles Mason-installed servers.
+    require('lspconfig').pyrefly.setup { capabilities = capabilities }
+
+    -- Servers managed by Mason (set up via mason-lspconfig handler below)
     local servers = {
       -- clangd = {},
       -- gopls = {},
-      pyrefly = {},
       -- rust_analyzer = {},
       -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-      --
-      -- Some languages (like typescript) have entire language plugins that can be useful:
-      --    https://github.com/pmizio/typescript-tools.nvim
-      --
-      -- But for many setups, the LSP (`ts_ls`) will work just fine
-      -- ts_ls = {},
-      --
 
       lua_ls = {
         -- cmd = { ... },
@@ -224,8 +221,8 @@ return {
     --
     -- You can add other tools here that you want Mason to install
     -- for you, so that they are available from within Neovim.
-    -- Tools for Mason to install. LSPs provided by Nix (pyright, clangd)
-    -- are excluded -- Mason only manages what Nix doesn't provide.
+    -- Tools for Mason to install. LSPs on $PATH (pyrefly, clangd) are set
+    -- up directly above -- Mason only manages what Nix/venv don't provide.
     local ensure_installed = {
       'stylua',   -- Lua formatter
       'codelldb', -- C/C++ debugger
