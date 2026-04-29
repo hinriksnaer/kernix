@@ -183,7 +183,8 @@ return {
     --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
     -- Servers managed outside Mason (available on $PATH via Nix or venv).
     -- These are set up directly since mason-lspconfig only handles Mason-installed servers.
-    require('lspconfig').pyrefly.setup { capabilities = capabilities }
+    vim.lsp.config('pyrefly', { capabilities = capabilities })
+    vim.lsp.enable('pyrefly')
 
     -- Servers managed by Mason (set up via mason-lspconfig handler below)
     local servers = {
