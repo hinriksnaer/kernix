@@ -10,7 +10,7 @@
     tree-sitter
     nodejs        # required by Copilot
     clang-tools   # clangd + clang-format
-    pyright       # Python LSP
+    pyrefly       # Python LSP
     python3Packages.debugpy  # Python DAP adapter
   ];
 
