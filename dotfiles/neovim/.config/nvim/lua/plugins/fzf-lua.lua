@@ -120,6 +120,13 @@ return {
         mode = 'n',
       },
       {
+        '<leader>fF',
+        function()
+          require('fzf-lua').files { cwd = vim.fn.expand '%:p:h' }
+        end,
+        desc = 'Files (relative to current)',
+      },
+      {
         '<leader>fb',
         '<cmd>FzfLua buffers<cr>',
         desc = 'Buffers',
