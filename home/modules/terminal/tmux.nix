@@ -31,6 +31,7 @@
     ];
 
     extraConfig = ''
+      set -g set-clipboard on
       set -g focus-events on
       set-option -sa terminal-overrides ",xterm*:Tc,tmux*:Tc"
 
