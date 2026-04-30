@@ -5,7 +5,6 @@
 {
   home.packages = with pkgs; [
     # Applications
-    firefox
     discord
     slack
     obsidian
