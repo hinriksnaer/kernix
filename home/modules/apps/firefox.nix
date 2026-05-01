@@ -61,6 +61,10 @@ in
         # about:* pages remain blocked -- that's hardcoded in Firefox.
         "extensions.webextensions.restrictedDomains" = "";
 
+        # Blank new tab & homepage so Vimium is active immediately.
+        "browser.startup.homepage" = "about:blank";
+        "browser.newtabpage.enabled" = false;
+
         # Disable clutter.
         "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
         "browser.newtabpage.activity-stream.feeds.topsites" = false;
