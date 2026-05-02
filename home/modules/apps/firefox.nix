@@ -50,6 +50,7 @@ in
     profiles.default = {
       isDefault = true;
 
+      extensions.force = true;
       extensions.packages = [
         vimium
         proton-pass
@@ -64,6 +65,11 @@ in
         # Blank new tab & homepage so Vimium is active immediately.
         "browser.startup.homepage" = "about:blank";
         "browser.newtabpage.enabled" = false;
+
+        # Disable built-in password manager (use Proton Pass instead).
+        "signon.rememberSignons" = false;
+        "signon.autofillForms" = false;
+        "signon.formlessCapture.enabled" = false;
 
         # Disable clutter.
         "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
