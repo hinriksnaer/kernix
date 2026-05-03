@@ -34,7 +34,7 @@
 # │  Alt + Shift + 1-9     move pane to window N                       │
 # │  Alt + Ctrl + Enter    break pane to new window                   │
 # │  Alt + Enter           new window                                  │
-# │  Alt + q               kill window                                 │
+# │  Alt + q               kill pane (view)                            │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Context (session) ───────────────────────────────────────────────┐
 # │  Alt + f               fzf session finder                          │
@@ -77,7 +77,6 @@
     terminal = "tmux-256color";
 
     plugins = with pkgs.tmuxPlugins; [
-      sensible
       vim-tmux-navigator
       yank
       {
@@ -98,10 +97,6 @@
       set -g set-clipboard on
       set -g focus-events on
       set-option -sa terminal-overrides ",xterm*:Tc,tmux*:Tc"
-
-      # Extended keys for modified arrow key sequences from modern terminals
-      set -s extended-keys on
-      set -as terminal-features 'xterm*:extkeys'
 
       # Pane/window base index
       set -g pane-base-index 1
@@ -196,8 +191,8 @@
       # New window: Alt + Enter
       bind -n M-Enter new-window -c "#{pane_current_path}"
 
-      # Kill window: Alt + q
-      bind -n M-q kill-window
+      # Kill pane: Alt + q (kills window if last pane)
+      bind -n M-q kill-pane
 
       # ── Context: session (special) ──
 
