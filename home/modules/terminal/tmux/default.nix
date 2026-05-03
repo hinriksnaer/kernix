@@ -1,14 +1,43 @@
 # Tmux configuration -- shared across all profiles.
 #
-# Navigation model:
-#   Alt + number     → switch window       (mirrors Super + number in Hyprland)
-#   Alt + h/l        → prev/next window    (horizontal, matches dotbar layout)
-#   Alt + j/k        → prev/next session   (vertical, sessions stack)
-#   Alt + Tab        → last session
-#   Alt + f          → fzf session finder (active sessions)
-#   Alt + Space       → prefix for infrequent commands
-#   prefix + Space   → sessionizer (fzf project picker)
-#   Ctrl + h/j/k/l   → vim-tmux-navigator (cross-layer, unchanged)
+# Unified navigation model (consistent with Hyprland):
+#
+#   Navigate:   Mod + hjkl           (focus)
+#   Swap:       Mod + Ctrl + hjkl    (exchange positions)
+#   Resize:     Mod + Shift + hjkl   (scale)
+#   Create:     Mod + arrows         (spawn in direction)
+#   Task:       Mod + [Ctrl +] 1-9   (indexed jump / move view to)
+#
+# Where Mod = Super (Hyprland) or Alt (tmux).
+#
+# ┌─ View level (pane -- directional) ──────────────────────────────────┐
+# │  Alt + hjkl            navigate panes                               │
+# │  Alt + Ctrl + hjkl     swap panes                                   │
+# │  Alt + Shift + hjkl    resize panes                                 │
+# │  Alt + arrows          create split in direction                    │
+# │  Alt + z               zoom pane (fullscreen)                       │
+# │  Ctrl + hjkl           vim-tmux-navigator (cross-layer with nvim)  │
+# └─────────────────────────────────────────────────────────────────────┘
+# ┌─ Task level (window -- indexed) ────────────────────────────────────┐
+# │  Alt + 1-9             switch to window N                           │
+# │  Alt + Ctrl + 1-9      move pane to window N                       │
+# │  Alt + Ctrl + Enter    break pane to new window                    │
+# │  Alt + Ctrl + arrows   reorder window left/right                   │
+# │  Alt + Enter           new window                                   │
+# │  Alt + q               kill window                                  │
+# └─────────────────────────────────────────────────────────────────────┘
+# ┌─ Context (session -- special) ──────────────────────────────────────┐
+# │  Alt + f               fzf session finder                           │
+# │  Alt + Tab             previous session                             │
+# └─────────────────────────────────────────────────────────────────────┘
+# ┌─ Prefix (Alt+Space, then key) ──────────────────────────────────────┐
+# │  Space                 sessionizer (fzf project picker)             │
+# │  ,                     rename window (tmux default)                 │
+# │  $                     rename session (tmux default)                │
+# │  d                     detach (tmux default)                        │
+# │  [                     copy mode (tmux default)                     │
+# │  v / C-v / y           begin / rectangle / yank (copy-mode-vi)     │
+# └─────────────────────────────────────────────────────────────────────┘
 {pkgs, ...}: {
   imports = [
     ./cli.nix
@@ -47,14 +76,43 @@
       set -g focus-events on
       set-option -sa terminal-overrides ",xterm*:Tc,tmux*:Tc"
 
-      # Pane base index
+      # Pane/window base index
       set -g pane-base-index 1
       set-window-option -g pane-base-index 1
       set-option -g renumber-windows on
 
-      # ── Alt layer (direct, no prefix) ──
+      # ── View level: pane (directional) ──
 
-      # Window switching: Alt + number
+      # Navigate panes: Alt + hjkl
+      bind -n M-h select-pane -L
+      bind -n M-j select-pane -D
+      bind -n M-k select-pane -U
+      bind -n M-l select-pane -R
+
+      # Swap panes: Alt + Ctrl + hjkl
+      bind -n M-C-h swap-pane -t '{left-of}'
+      bind -n M-C-j swap-pane -t '{down-of}'
+      bind -n M-C-k swap-pane -t '{up-of}'
+      bind -n M-C-l swap-pane -t '{right-of}'
+
+      # Resize panes: Alt + Shift + hjkl
+      bind -n M-H resize-pane -L 5
+      bind -n M-J resize-pane -D 5
+      bind -n M-K resize-pane -U 5
+      bind -n M-L resize-pane -R 5
+
+      # Create split in direction: Alt + arrows
+      bind -n M-Left split-window -hb -c "#{pane_current_path}"
+      bind -n M-Down split-window -v -c "#{pane_current_path}"
+      bind -n M-Up split-window -vb -c "#{pane_current_path}"
+      bind -n M-Right split-window -h -c "#{pane_current_path}"
+
+      # Zoom pane: Alt + z
+      bind -n M-z resize-pane -Z
+
+      # ── Task level: window (indexed) ──
+
+      # Navigate windows: Alt + 1-9
       bind -n M-1 select-window -t 1
       bind -n M-2 select-window -t 2
       bind -n M-3 select-window -t 3
@@ -65,32 +123,42 @@
       bind -n M-8 select-window -t 8
       bind -n M-9 select-window -t 9
 
-      # Window cycling: Alt + h/l (horizontal)
-      bind -n M-h previous-window
-      bind -n M-l next-window
+      # Move pane to window N: Alt + Ctrl + 1-9
+      bind -n M-C-1 join-pane -t :1
+      bind -n M-C-2 join-pane -t :2
+      bind -n M-C-3 join-pane -t :3
+      bind -n M-C-4 join-pane -t :4
+      bind -n M-C-5 join-pane -t :5
+      bind -n M-C-6 join-pane -t :6
+      bind -n M-C-7 join-pane -t :7
+      bind -n M-C-8 join-pane -t :8
+      bind -n M-C-9 join-pane -t :9
 
-      # Session cycling: Alt + j/k (vertical)
-      bind -n M-j switch-client -p
-      bind -n M-k switch-client -n
+      # Break pane to new window: Alt + Ctrl + Enter
+      bind -n M-C-Enter break-pane
+
+      # Reorder window: Alt + Ctrl + arrows
+      bind -n M-C-Left swap-window -t -1\; select-window -t -1
+      bind -n M-C-Right swap-window -t +1\; select-window -t +1
+
+      # New window: Alt + Enter
+      bind -n M-Enter new-window -c "#{pane_current_path}"
+
+      # Kill window: Alt + q
+      bind -n M-q kill-window
+
+      # ── Context: session (special) ──
+
+      # Session finder: Alt + f
+      bind -n M-f display-popup -E "tmux list-sessions -F '#{session_name}' | fzf --reverse --border --prompt='session: ' | xargs -r tmux switch-client -t"
 
       # Last session: Alt + Tab
       bind -n M-Tab switch-client -l
 
-      # Session finder: Alt + f (fzf switch between active sessions)
-      bind -n M-f display-popup -E "tmux list-sessions -F '#{session_name}' | fzf --reverse --border --prompt='session: ' | xargs -r tmux switch-client -t"
-
       # ── Prefix commands (Alt + Space, then key) ──
 
-      # Sessionizer: prefix + Space (open/create project session)
+      # Sessionizer: prefix + Space
       bind Space display-popup -E "kernix-sessionizer"
-
-      # Window management
-      bind c new-window -c "#{pane_current_path}"
-      bind q kill-window
-
-      # Splits in current path (available if needed)
-      bind '"' split-window -v -c "#{pane_current_path}"
-      bind % split-window -h -c "#{pane_current_path}"
 
       # vi-mode copy
       bind-key -T copy-mode-vi v send-keys -X begin-selection

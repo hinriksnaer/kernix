@@ -50,7 +50,7 @@ return {
       { '<leader>l', group = ' LSP' }, -- LSP diagnostics & info
       { '<leader>c', group = ' Code' }, -- LSP code actions
       { '<leader>b', group = '󰓩 Buffer' }, -- Buffer management
-      { '<leader>w', group = '󰖯 Window' }, -- Window management (via smart-splits Ctrl+hjkl, Alt+hjkl)
+      { '<leader>w', group = '󰖯 Window' }, -- Window management (smart-splits Ctrl+hjkl, Alt+hjkl reserved for tmux)
       { '<leader>q', group = ' Quickfix' }, -- Quickfix & location list
       { '<leader>s', group = '󰁯 Session' }, -- Session management
       { '<leader>h', group = '󰛢 Harpoon' }, -- Harpoon file marks

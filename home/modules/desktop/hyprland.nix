@@ -256,23 +256,23 @@ in {
         "$mainMod, k, movefocus, u"
         "$mainMod, j, movefocus, d"
 
-        # Focus (arrows)
-        "$mainMod, left, movefocus, l"
-        "$mainMod, right, movefocus, r"
-        "$mainMod, up, movefocus, u"
-        "$mainMod, down, movefocus, d"
+        # Swap windows: Super + Ctrl + hjkl (Ctrl = swap)
+        "$mainMod CTRL, h, swapwindow, l"
+        "$mainMod CTRL, l, swapwindow, r"
+        "$mainMod CTRL, k, swapwindow, u"
+        "$mainMod CTRL, j, swapwindow, d"
 
-        # Move windows
-        "$mainMod ALT, h, movewindow, l"
-        "$mainMod ALT, l, movewindow, r"
-        "$mainMod ALT, k, movewindow, u"
-        "$mainMod ALT, j, movewindow, d"
+        # Resize windows: Super + Shift + hjkl (Shift = resize)
+        "$mainMod SHIFT, h, resizeactive, -50 0"
+        "$mainMod SHIFT, l, resizeactive, 50 0"
+        "$mainMod SHIFT, k, resizeactive, 0 -50"
+        "$mainMod SHIFT, j, resizeactive, 0 50"
 
-        # Resize windows
-        "$mainMod CTRL, h, resizeactive, -50 0"
-        "$mainMod CTRL, l, resizeactive, 50 0"
-        "$mainMod CTRL, k, resizeactive, 0 -50"
-        "$mainMod CTRL, j, resizeactive, 0 50"
+        # Move windows: Super + arrows (arrows = structural move)
+        "$mainMod, left, movewindow, l"
+        "$mainMod, right, movewindow, r"
+        "$mainMod, up, movewindow, u"
+        "$mainMod, down, movewindow, d"
 
         # Workspaces
         "$mainMod, 1, workspace, 1"
@@ -286,32 +286,18 @@ in {
         "$mainMod, 9, workspace, 9"
         "$mainMod, 0, workspace, 10"
         "$mainMod, Tab, workspace, previous"
-        "$mainMod SHIFT, L, workspace, e+1"
-        "$mainMod SHIFT, H, workspace, e-1"
 
-        # Move to workspace
-        "$mainMod SHIFT, 1, movetoworkspace, 1"
-        "$mainMod SHIFT, 2, movetoworkspace, 2"
-        "$mainMod SHIFT, 3, movetoworkspace, 3"
-        "$mainMod SHIFT, 4, movetoworkspace, 4"
-        "$mainMod SHIFT, 5, movetoworkspace, 5"
-        "$mainMod SHIFT, 6, movetoworkspace, 6"
-        "$mainMod SHIFT, 7, movetoworkspace, 7"
-        "$mainMod SHIFT, 8, movetoworkspace, 8"
-        "$mainMod SHIFT, 9, movetoworkspace, 9"
-        "$mainMod SHIFT, 0, movetoworkspace, 10"
-
-        # Move silently
-        "$mainMod CTRL, 1, movetoworkspacesilent, 1"
-        "$mainMod CTRL, 2, movetoworkspacesilent, 2"
-        "$mainMod CTRL, 3, movetoworkspacesilent, 3"
-        "$mainMod CTRL, 4, movetoworkspacesilent, 4"
-        "$mainMod CTRL, 5, movetoworkspacesilent, 5"
-        "$mainMod CTRL, 6, movetoworkspacesilent, 6"
-        "$mainMod CTRL, 7, movetoworkspacesilent, 7"
-        "$mainMod CTRL, 8, movetoworkspacesilent, 8"
-        "$mainMod CTRL, 9, movetoworkspacesilent, 9"
-        "$mainMod CTRL, 0, movetoworkspacesilent, 10"
+        # Move view to task: Super + Ctrl + 1-9 (Ctrl = move view to task N)
+        "$mainMod CTRL, 1, movetoworkspace, 1"
+        "$mainMod CTRL, 2, movetoworkspace, 2"
+        "$mainMod CTRL, 3, movetoworkspace, 3"
+        "$mainMod CTRL, 4, movetoworkspace, 4"
+        "$mainMod CTRL, 5, movetoworkspace, 5"
+        "$mainMod CTRL, 6, movetoworkspace, 6"
+        "$mainMod CTRL, 7, movetoworkspace, 7"
+        "$mainMod CTRL, 8, movetoworkspace, 8"
+        "$mainMod CTRL, 9, movetoworkspace, 9"
+        "$mainMod CTRL, 0, movetoworkspace, 10"
 
         # Mouse
         "$mainMod, mouse_down, workspace, e+1"
