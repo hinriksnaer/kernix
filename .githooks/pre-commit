@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Pre-commit hook: ensure all Nix files are formatted (alejandra).
+# Install with: git config core.hooksPath .githooks
+
+if ! nix fmt . -- --check 2>/dev/null; then
+  echo ""
+  echo "Commit rejected: Nix files need formatting."
+  echo "Run 'nix fmt' to fix, then try again."
+  exit 1
+fi
