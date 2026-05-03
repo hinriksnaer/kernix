@@ -12,6 +12,7 @@
       google-fonts
       nerd-fonts.jetbrains-mono
       nerd-fonts.fira-code
+      nerd-fonts.caskaydia-mono
       nerd-fonts.symbols-only
     ];
 
