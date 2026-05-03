@@ -9,8 +9,8 @@
     ../../roles/apps.nix
   ];
 
-  hawker.username = config.hawker.hosts.laptop.username;
-  hawker.gpu = config.hawker.hosts.laptop.gpu;
+  kernix.username = config.kernix.hosts.laptop.username;
+  kernix.gpu = config.kernix.hosts.laptop.gpu;
 
-  networking.hostName = "hawker-laptop";
+  networking.hostName = "kernix-laptop";
 }

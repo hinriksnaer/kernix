@@ -1,4 +1,4 @@
-# Desktop profile -- user "hawker", terminal + desktop tools.
+# Desktop profile -- user "softmax", terminal + desktop tools.
 { settings, hostname, ... }:
 
 let

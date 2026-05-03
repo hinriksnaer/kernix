@@ -1,6 +1,6 @@
 # Yazi -- terminal file manager with preview support.
 # Fully managed by Home Manager's programs.yazi module.
-# theme.toml is NOT managed here -- hawker-theme-set writes it at runtime.
+# theme.toml is NOT managed here -- kernix-theme-set writes it at runtime.
 { pkgs, ... }:
 
 {
@@ -185,6 +185,6 @@
     imagemagick       # image preview
   ];
 
-  # Hawker theme-map.conf (not standard yazi config, used by hawker-theme-set)
+  # Kernix theme-map.conf (not standard yazi config, used by kernix-theme-set)
   xdg.configFile."yazi/theme-map.conf".source = ../theme/theme-map.conf;
 }

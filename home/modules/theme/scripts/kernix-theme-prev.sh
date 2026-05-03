@@ -1,14 +1,14 @@
 # Cycle to the previous theme in the list
-# Usage: hawker-theme-prev
+# Usage: kernix-theme-prev
 
-mapfile -t available_themes < <(hawker-theme-list)
+mapfile -t available_themes < <(kernix-theme-list)
 
 if [[ ${#available_themes[@]} -eq 0 ]]; then
     echo "Error: No themes found"
     exit 1
 fi
 
-current_theme="$(hawker-theme-current 2>/dev/null || true)"
+current_theme="$(kernix-theme-current 2>/dev/null || true)"
 
 # If can't determine current, use second theme (so prev will be first)
 if [[ -z "$current_theme" ]]; then
@@ -31,4 +31,4 @@ done
 # Get previous theme (wrap around)
 prev_index=$(( (current_index - 1 + ${#available_themes[@]}) % ${#available_themes[@]} ))
 
-hawker-theme-set "${available_themes[prev_index]}"
+kernix-theme-set "${available_themes[prev_index]}"

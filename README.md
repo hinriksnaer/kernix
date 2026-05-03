@@ -1,4 +1,4 @@
-# hawker
+# kernix
 
 NixOS configuration and CUDA development environment.
 
@@ -15,8 +15,8 @@ mkdir -p ~/.config/nix
 echo 'experimental-features = nix-command flakes' > ~/.config/nix/nix.conf
 
 # 2. Clone and configure
-git clone https://github.com/hinriksnaer/hawker.git ~/hawker
-cd ~/hawker
+git clone https://github.com/hinriksnaer/kernix.git ~/kernix
+cd ~/kernix
 # Edit settings.nix -- set username, git identity, projects
 
 # 3. Enter the dev shell
@@ -45,19 +45,19 @@ Full desktop environment with Hyprland, themed terminal tools, and 12 color them
 ```bash
 nixos-generate-config --root /mnt
 # Copy hardware-configuration.nix to hosts/desktop/
-nixos-install --flake github:hinriksnaer/hawker#desktop
+nixos-install --flake github:hinriksnaer/kernix#desktop
 # After reboot:
-git clone git@github.com:hinriksnaer/hawker.git ~/hawker
-cd ~/hawker && bash bootstrap.sh
+git clone git@github.com:hinriksnaer/kernix.git ~/kernix
+cd ~/kernix && bash bootstrap.sh
 ```
 
 ### Existing NixOS system
 
 ```bash
-git clone git@github.com:hinriksnaer/hawker.git ~/hawker
-nixos-generate-config --dir ~/hawker/hosts/desktop/
+git clone git@github.com:hinriksnaer/kernix.git ~/kernix
+nixos-generate-config --dir ~/kernix/hosts/desktop/
 # Edit settings.nix
-sudo nixos-rebuild switch --flake ~/hawker#desktop
+sudo nixos-rebuild switch --flake ~/kernix#desktop
 bash bootstrap.sh
 ```
 
@@ -79,7 +79,7 @@ settings.nix          all user config (single source of truth)
 flake.nix             2 machine configs + dev shell
 
 modules/              NixOS modules (flat, one per tool/service)
-  hawker-options.nix  typed option declarations
+  kernix-options.nix  typed option declarations
   gpu.nix             GPU driver dispatch (nvidia/intel/amd/none)
   fish.nix            fish shell + starship + fzf + zoxide
   ...
@@ -94,7 +94,7 @@ dev/                  development shell
   shell.nix           entry point (nix develop / direnv)
   base/               shared tooling + CUDA base layer
   projects/           per-project modules (pytorch, helion, vllm)
-  cli/                hawker-dev CLI (available inside the shell)
+  cli/                kernix-dev CLI (available inside the shell)
 
 hosts/                machine configs (desktop, laptop)
 dotfiles/             stow-managed configs + 12 themes

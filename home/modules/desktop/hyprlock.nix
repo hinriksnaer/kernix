@@ -1,5 +1,5 @@
 # Hyprlock screen locker.
-# Theme colors loaded at runtime via source (swapped by hawker-theme-set).
+# Theme colors loaded at runtime via source (swapped by kernix-theme-set).
 { config, ... }:
 
 {

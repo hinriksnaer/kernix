@@ -1,5 +1,5 @@
 # Hyprland window manager configuration.
-# Theme colors loaded at runtime via source (swapped by hawker-theme-set).
+# Theme colors loaded at runtime via source (swapped by kernix-theme-set).
 # Monitor config comes from config.monitors (set per-host in profiles).
 { config, lib, pkgs, settings, hostname, ... }:
 
@@ -50,7 +50,7 @@ in
     settings = {
       # ── Environment ──
       env = [
-        "HAWKER_PATH,$HOME/.local/share/hawker"
+        "KERNIX_PATH,$HOME/.local/share/kernix"
       ] ++ lib.optionals isDesktop [
         "SSH_AUTH_SOCK,$HOME/.ssh/proton-pass-agent.sock"
       ];
@@ -206,7 +206,7 @@ in
         "mako"
         "wl-paste --watch cliphist store"
         "swaybg -i $HOME/.config/hypr/wallpapers/current -m fill"
-        "sleep 2 && hawker-theme-refresh 2>/dev/null || true"
+        "sleep 2 && kernix-theme-refresh 2>/dev/null || true"
       ] ++ lib.optionals isDesktop [
         # Proton Pass SSH agent (desktop only)
         "bash -c 'nohup pass-cli ssh-agent start > /tmp/proton-pass-agent.log 2>&1 &'"
@@ -315,10 +315,10 @@ in
         "$mainMod SHIFT, S, exec, grim -g \"$(slurp)\" - | wl-copy"
 
         # Theme
-        "$mainMod, T, exec, hawker-rofi-theme-select"
-        "$mainMod SHIFT, T, exec, hawker-theme-next"
-        "$mainMod, W, exec, hawker-rofi-wallpaper-select"
-        "$mainMod SHIFT, W, exec, hawker-wallpaper-next"
+        "$mainMod, T, exec, kernix-rofi-theme-select"
+        "$mainMod SHIFT, T, exec, kernix-theme-next"
+        "$mainMod, W, exec, kernix-rofi-wallpaper-select"
+        "$mainMod SHIFT, W, exec, kernix-wallpaper-next"
 
         # Brightness
         ", XF86MonBrightnessUp, exec, brightness-control up"

@@ -1,6 +1,6 @@
-# Apply theme to yazi by mapping hawker theme name to a yazi flavor.
-# Called by hawker-theme-apply as a script hook.
-# Usage: hawker-theme-apply-yazi <theme-name> <theme-path>
+# Apply theme to yazi by mapping kernix theme name to a yazi flavor.
+# Called by kernix-theme-apply as a script hook.
+# Usage: kernix-theme-apply-yazi <theme-name> <theme-path>
 
 if [[ $# -lt 1 ]]; then
     exit 1
@@ -34,8 +34,8 @@ fi
 
 theme_file="$HOME/.config/yazi/theme.toml"
 printf '%s\n' \
-    '# Yazi Theme for Hawker' \
-    '# Managed by hawker-theme-apply - Do not edit manually' \
+    '# Yazi Theme for Kernix' \
+    '# Managed by kernix-theme-apply - Do not edit manually' \
     '' \
     '[flavor]' \
     "use = \"$yazi_flavor\"" \

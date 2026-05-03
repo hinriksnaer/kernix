@@ -2,5 +2,5 @@
 
 {
   networking.networkmanager.enable = true;
-  users.users.${config.hawker.username}.extraGroups = [ "networkmanager" ];
+  users.users.${config.kernix.username}.extraGroups = [ "networkmanager" ];
 }

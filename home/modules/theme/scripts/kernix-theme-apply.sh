@@ -1,9 +1,9 @@
 # Unified theme hook processor -- applies theme to all registered apps.
-# Reads hook definitions from ~/.config/hawker/theme-hooks.d/ and processes
+# Reads hook definitions from ~/.config/kernix/theme-hooks.d/ and processes
 # them in sorted order. Handles symlink, hyprland, config-rewrite, and script types.
-# Usage: hawker-theme-apply <theme-name>
+# Usage: kernix-theme-apply <theme-name>
 
-hooks_dir="$HOME/.config/hawker/theme-hooks.d"
+hooks_dir="$HOME/.config/kernix/theme-hooks.d"
 
 # Output helpers
 C_RESET='\033[0m'
@@ -16,15 +16,15 @@ warning() { echo -e "${C_YELLOW}⊘${C_RESET} $*"; }
 error()   { echo -e "${C_RED}✗${C_RESET} $*"; }
 
 if [[ $# -lt 1 ]]; then
-    echo "Usage: hawker-theme-apply <theme-name>"
+    echo "Usage: kernix-theme-apply <theme-name>"
     exit 1
 fi
 
 # Find themes directory
-if [[ -n "${HAWKER_PATH:-}" ]] && [[ -d "$HAWKER_PATH/themes" ]]; then
-    themes_dir="$HAWKER_PATH/themes"
+if [[ -n "${KERNIX_PATH:-}" ]] && [[ -d "$KERNIX_PATH/themes" ]]; then
+    themes_dir="$KERNIX_PATH/themes"
 else
-    themes_dir="$HOME/.local/share/hawker/themes"
+    themes_dir="$HOME/.local/share/kernix/themes"
 fi
 
 theme_name="${1,,}"             # lowercase
@@ -112,7 +112,7 @@ for hook_file in "$hooks_dir"/*; do
             active_theme_conf="$HOME/.config/hypr/active-theme.conf"
             printf '%s\n' \
                 '# Active Hyprland Theme (runtime-generated)' \
-                '# Managed by hawker-theme-apply' \
+                '# Managed by kernix-theme-apply' \
                 "# theme: $theme_name" \
                 '' \
                 > "$active_theme_conf"

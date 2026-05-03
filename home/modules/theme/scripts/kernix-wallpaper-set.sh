@@ -1,11 +1,11 @@
 # Set wallpaper from current theme (uses first wallpaper found)
-# Usage: hawker-wallpaper-set [theme-name]
+# Usage: kernix-wallpaper-set [theme-name]
 # If no theme-name provided, uses current theme
 # Uses swaybg
 
 # Find themes directory using active profile
-if [[ -n "${HAWKER_PATH:-}" ]] && [[ -d "$HAWKER_PATH/themes" ]]; then
-    themes_dir="$HAWKER_PATH/themes"
+if [[ -n "${KERNIX_PATH:-}" ]] && [[ -d "$KERNIX_PATH/themes" ]]; then
+    themes_dir="$KERNIX_PATH/themes"
 else
     echo "Error: Active profile not found"
     exit 1
@@ -18,7 +18,7 @@ if [[ $# -ge 1 ]]; then
     theme_name="${1,,}"
     theme_name="${theme_name// /-}"
 else
-    theme_name="$(hawker-theme-current 2>/dev/null || true)"
+    theme_name="$(kernix-theme-current 2>/dev/null || true)"
     if [[ -z "$theme_name" ]]; then
         echo "Error: No theme set and no theme name provided"
         exit 1

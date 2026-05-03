@@ -1,10 +1,10 @@
 # Cycle through wallpapers in the current theme
-# Usage: hawker-wallpaper-next
+# Usage: kernix-wallpaper-next
 # Uses swaybg
 
 # Find themes directory using active profile
-if [[ -n "${HAWKER_PATH:-}" ]] && [[ -d "$HAWKER_PATH/themes" ]]; then
-    themes_dir="$HAWKER_PATH/themes"
+if [[ -n "${KERNIX_PATH:-}" ]] && [[ -d "$KERNIX_PATH/themes" ]]; then
+    themes_dir="$KERNIX_PATH/themes"
 else
     notify-send "Error" "Active profile not found" -t 3000 -u critical 2>/dev/null || true
     exit 1
@@ -13,7 +13,7 @@ fi
 current_wallpaper_link="$HOME/.config/hypr/wallpapers/current"
 
 # Get current theme from API
-theme_name="$(hawker-theme-current 2>/dev/null || true)"
+theme_name="$(kernix-theme-current 2>/dev/null || true)"
 if [[ -z "$theme_name" ]]; then
     notify-send "Wallpaper Error" "No theme set" -t 3000 -u critical 2>/dev/null || true
     exit 1

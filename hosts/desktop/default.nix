@@ -11,8 +11,8 @@
     ../../modules/hardware/fancontrol.nix
   ];
 
-  hawker.username = config.hawker.hosts.desktop.username;
-  hawker.gpu = config.hawker.hosts.desktop.gpu;
+  kernix.username = config.kernix.hosts.desktop.username;
+  kernix.gpu = config.kernix.hosts.desktop.gpu;
 
-  networking.hostName = "hawker";
+  networking.hostName = "kernix-desktop";
 }

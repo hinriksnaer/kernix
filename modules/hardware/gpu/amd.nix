@@ -2,7 +2,7 @@
 # radeonsi VA-API, AMDVLK Vulkan.
 { config, lib, pkgs, ... }:
 
-lib.mkIf (config.hawker.gpu == "amd") {
+lib.mkIf (config.kernix.gpu == "amd") {
   services.xserver.videoDrivers = [ "amdgpu" ];
 
   boot.initrd.kernelModules = [ "amdgpu" ];

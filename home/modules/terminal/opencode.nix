@@ -7,7 +7,7 @@ let
   oc = settings.opencode;
   hasVertex = oc.vertexProject != "";
   defaultTheme = settings.defaultTheme;
-  hawkerPath = "${config.home.homeDirectory}/.local/share/hawker";
+  kernixPath = "${config.home.homeDirectory}/.local/share/kernix";
   ocDir = "${config.home.homeDirectory}/.config/opencode";
 in
 {
@@ -24,12 +24,12 @@ in
 
   # Symlink per-theme opencode.json files into ~/.config/opencode/themes/
   # and create initial tui.json with the default theme.
-  # Theme switching is handled by hawker-theme-apply (config-rewrite hook on tui.json).
+  # Theme switching is handled by kernix-theme-apply (config-rewrite hook on tui.json).
   home.activation.opencodeConfig = config.lib.dag.entryAfter [ "linkGeneration" ] ''
     mkdir -p "${ocDir}/themes"
 
     # Symlink each theme's opencode.json
-    for theme_dir in "${hawkerPath}/themes"/*/; do
+    for theme_dir in "${kernixPath}/themes"/*/; do
       theme=$(basename "$theme_dir")
       if [ -f "$theme_dir/opencode.json" ]; then
         ln -sf "$theme_dir/opencode.json" "${ocDir}/themes/$theme.json"

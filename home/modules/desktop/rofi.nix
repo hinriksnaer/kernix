@@ -1,5 +1,5 @@
 # Rofi application launcher (Wayland).
-# Theme loaded at runtime via @theme directive (swapped by hawker-theme-set).
+# Theme loaded at runtime via @theme directive (swapped by kernix-theme-set).
 { pkgs, config, ... }:
 
 {
@@ -23,7 +23,7 @@
       show-match = false;
     };
 
-    # Theme file swapped at runtime by hawker-theme-apply
+    # Theme file swapped at runtime by kernix-theme-apply
     theme = "${config.home.homeDirectory}/.config/rofi/theme.rasi";
   };
 

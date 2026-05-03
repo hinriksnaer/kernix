@@ -1,7 +1,7 @@
 # Get the currently active theme
-# Usage: hawker-theme-current
+# Usage: kernix-theme-current
 
-state_file="$HOME/.config/hawker/current-theme"
+state_file="$HOME/.config/kernix/current-theme"
 
 if [[ -f "$state_file" ]]; then
     theme_name="$(< "$state_file")"

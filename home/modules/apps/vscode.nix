@@ -1,5 +1,5 @@
 # Visual Studio Code with extensions and theme.
-# Extensions are managed declaratively -- install/update via hawker-switch.
+# Extensions are managed declaratively -- install/update via kernix rebuild.
 { pkgs, lib, ... }:
 
 let

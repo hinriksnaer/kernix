@@ -1,4 +1,4 @@
-# hawker-switch - manage NixOS configuration rebuilds
+# kernix - manage NixOS configuration rebuilds
 #
 # Subcommands:
 #   rebuild      Rebuild and switch (default)
@@ -15,11 +15,11 @@ HOST=$(hostname)
 
 # Map hostname -> flake configuration name
 case "${HOST}" in
-    hawker)        CONF="desktop" ;;
-    hawker-laptop) CONF="laptop"  ;;
+    kernix-desktop) CONF="desktop" ;;
+    kernix-laptop)  CONF="laptop"  ;;
     *)
         echo "Error: unknown host '${HOST}'" >&2
-        echo "Add a mapping in hawker-switch.sh" >&2
+        echo "Add a mapping in kernix.sh" >&2
         exit 1
         ;;
 esac
@@ -56,10 +56,10 @@ run_with_notify() {
 
         if [[ "$current_addr" != "$origin_addr" ]]; then
             if [[ $exit_code -ne 0 ]]; then
-                notify-send -u critical "hawker-switch" \
+                notify-send -u critical "kernix-switch" \
                     "${cmd_label} failed after ${duration_fmt}" -t 10000
             else
-                notify-send -u normal "hawker-switch" \
+                notify-send -u normal "kernix-switch" \
                     "${cmd_label} succeeded in ${duration_fmt}" -t 5000
             fi
         fi
@@ -99,7 +99,7 @@ case "$subcmd" in
         nix profile history --profile /nix/var/nix/profiles/system
         ;;
     -h|--help|help)
-        echo "Usage: hawker-switch [command] [options]"
+        echo "Usage: kernix-switch [command] [options]"
         echo ""
         echo "Commands:"
         echo "  rebuild      Rebuild and switch (default)"
@@ -113,7 +113,7 @@ case "$subcmd" in
         ;;
     *)
         echo "Error: unknown command '${subcmd}'" >&2
-        echo "Run 'hawker-switch help' for usage" >&2
+        echo "Run 'kernix-switch help' for usage" >&2
         exit 1
         ;;
 esac

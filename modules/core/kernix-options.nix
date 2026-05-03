@@ -1,12 +1,12 @@
 # Typed option declarations for all configuration.
 # Global values are set in settings.nix. Per-host values are set by each host
-# config reading from hawker.hosts.<name>. Type errors are caught at evaluation time.
+# config reading from kernix.hosts.<name>. Type errors are caught at evaluation time.
 { lib, ... }:
 
 with lib;
 
 let
-  # Monitor submodule (shared between hawker.hosts.<name>.monitors and HM config.monitors)
+  # Monitor submodule (shared between kernix.hosts.<name>.monitors and HM config.monitors)
   monitorSubmodule = types.submodule {
     options = {
       name = mkOption { type = types.str; default = ""; description = "Output name (e.g. HDMI-A-1). Empty for auto."; };
@@ -50,7 +50,7 @@ let
   };
 in
 {
-  options.hawker = {
+  options.kernix = {
     # ── Active host options (set by each host config) ──
     username = mkOption {
       type = types.str;

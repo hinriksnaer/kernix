@@ -6,7 +6,7 @@
 {
   programs.nh = {
     enable = true;
-    flake = "/home/${config.hawker.username}/hawker";
+    flake = "/home/${config.kernix.username}/kernix";
     clean = {
       enable = true;
       extraArgs = "--keep-since 7d --keep 5";

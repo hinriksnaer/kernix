@@ -1,9 +1,9 @@
 # Interactive CLI theme selector using fzf
 # Perfect for terminal-only environments
-# Usage: hawker-theme
+# Usage: kernix-theme
 
 # Get list of available themes
-mapfile -t theme_list < <(hawker-theme-list)
+mapfile -t theme_list < <(kernix-theme-list)
 
 if [[ ${#theme_list[@]} -eq 0 ]]; then
     echo "No themes found"
@@ -11,7 +11,7 @@ if [[ ${#theme_list[@]} -eq 0 ]]; then
 fi
 
 # Get current theme (may fail, that's ok)
-current_theme="$(hawker-theme-current 2>/dev/null || true)"
+current_theme="$(kernix-theme-current 2>/dev/null || true)"
 
 # Prepare theme list with current indicator
 display_list=()
@@ -38,7 +38,7 @@ if [[ -n "$selected" ]]; then
 
     echo ""
     echo "Applying theme: $theme_name"
-    hawker-theme-set "$theme_name"
+    kernix-theme-set "$theme_name"
 else
     echo "Theme selection cancelled"
 fi

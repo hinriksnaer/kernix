@@ -1,6 +1,6 @@
 # Apply theme to all running neovim instances via RPC.
-# Called by hawker-theme-apply as a script hook.
-# Usage: hawker-theme-apply-neovim <theme-name> <theme-path>
+# Called by kernix-theme-apply as a script hook.
+# Usage: kernix-theme-apply-neovim <theme-name> <theme-path>
 
 if [[ $# -lt 2 ]]; then
     exit 1

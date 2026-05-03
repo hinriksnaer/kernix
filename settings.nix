@@ -1,12 +1,12 @@
 # ── User settings ──
 # Single source of truth for all user-specific configuration.
-# Global options are type-checked against modules/hawker-options.nix.
-# Per-host settings live under hawker.hosts.<name> and are read
+# Global options are type-checked against modules/kernix-options.nix.
+# Per-host settings live under kernix.hosts.<name> and are read
 # directly by each host config or Home Manager profile.
 { ... }:
 
 {
-  hawker = {
+  kernix = {
     # ── Global (shared across all hosts) ──
     defaultTheme = "ayu-dark";
 
@@ -24,7 +24,7 @@
     # ── Per-host settings ──
     hosts = {
       desktop = {
-        username = "hawker";
+        username = "softmax";
         gpu = "nvidia";
         monitors = [
           { name = "HDMI-A-1"; resolution = "7680x2160@120"; scale = 1.5; primary = true; }

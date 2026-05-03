@@ -16,5 +16,5 @@
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
-  users.users.${config.hawker.username}.extraGroups = [ "audio" ];
+  users.users.${config.kernix.username}.extraGroups = [ "audio" ];
 }

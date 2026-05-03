@@ -12,5 +12,5 @@
 
   security.unprivilegedUsernsClone = true;
 
-  users.users.${config.hawker.username}.extraGroups = [ "podman" ];
+  users.users.${config.kernix.username}.extraGroups = [ "podman" ];
 }

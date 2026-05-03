@@ -1,7 +1,7 @@
 # Wallpaper selector with image previews using rofi grid layout
 
-THEMES_DIR="$HOME/.local/share/hawker/themes"
-CURRENT_THEME=$(hawker-theme-current 2>/dev/null | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+THEMES_DIR="$HOME/.local/share/kernix/themes"
+CURRENT_THEME=$(kernix-theme-current 2>/dev/null | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
 WALLPAPER_DIR="$THEMES_DIR/$CURRENT_THEME/backgrounds"
 CURRENT_WALLPAPER=$(readlink -f "$HOME/.config/hypr/wallpapers/current" 2>/dev/null)
 

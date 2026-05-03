@@ -5,7 +5,7 @@
 {
   # Custom packages added to pkgs namespace
   additions = final: _prev: {
-    hawker-cli = import ../cli { pkgs = final; };
+    kernix-cli = import ../cli { pkgs = final; };
   };
 
   # Make flake input packages available as pkgs.inputs'.<name>

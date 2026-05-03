@@ -1,5 +1,5 @@
 # Waybar status bar.
-# Theme CSS loaded at runtime via @import (swapped by hawker-theme-set).
+# Theme CSS loaded at runtime via @import (swapped by kernix-theme-set).
 { config, ... }:
 
 {
@@ -13,7 +13,7 @@
       spacing = 0;
       height = 26;
 
-      modules-left = [ "custom/hawker" "hyprland/workspaces" ];
+      modules-left = [ "custom/kernix" "hyprland/workspaces" ];
       modules-center = [ "clock" ];
       modules-right = [
         "group/hardware-cpu"
@@ -42,11 +42,11 @@
         };
       };
 
-      "custom/hawker" = {
+      "custom/kernix" = {
         format = "";
         on-click = "rofi -show drun";
         on-click-right = "kitty";
-        tooltip-format = "Hawker Menu\n\nSuper + Space";
+        tooltip-format = "Kernix Menu\n\nSuper + Space";
       };
 
       clock = {
@@ -189,7 +189,7 @@
       };
     };
 
-    # Theme CSS imported at runtime (symlinked by hawker-theme-apply)
+    # Theme CSS imported at runtime (symlinked by kernix-theme-apply)
     style = builtins.readFile ./config/style.css;
   };
 

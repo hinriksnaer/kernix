@@ -1,9 +1,9 @@
 {
   "name": "torrentz-hydra",
   "displayName": "Torrentz Hydra",
-  "description": "Dark theme with cyan/orange accents from the hawker theme system",
+  "description": "Dark theme with cyan/orange accents from the kernix theme system",
   "version": "1.0.0",
-  "publisher": "hawker",
+  "publisher": "kernix",
   "engines": { "vscode": "^1.60.0" },
   "categories": ["Themes"],
   "contributes": {

@@ -1,5 +1,5 @@
 # Kitty terminal emulator.
-# Theme colors loaded at runtime via include (swapped by hawker-theme-set).
+# Theme colors loaded at runtime via include (swapped by kernix-theme-set).
 { config, ... }:
 
 {
@@ -37,7 +37,7 @@
       "shift+insert" = "paste_from_clipboard";
     };
 
-    # Theme colors loaded at runtime (symlinked by hawker-theme-apply)
+    # Theme colors loaded at runtime (symlinked by kernix-theme-apply)
     extraConfig = ''
       include theme.conf
     '';

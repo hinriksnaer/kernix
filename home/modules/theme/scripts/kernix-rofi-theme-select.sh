@@ -1,7 +1,7 @@
 # Interactive theme selector using rofi dmenu
-# Usage: hawker-rofi-theme-select
+# Usage: kernix-rofi-theme-select
 
-themes_dir="$HOME/.local/share/hawker/themes"
+themes_dir="$HOME/.local/share/kernix/themes"
 
 if [[ ! -d "$themes_dir" ]]; then
     notify-send "Theme Selector" "Themes directory not found" -t 3000
@@ -9,10 +9,10 @@ if [[ ! -d "$themes_dir" ]]; then
 fi
 
 # Get list of available themes
-mapfile -t theme_list < <(hawker-theme-list)
+mapfile -t theme_list < <(kernix-theme-list)
 
 # Get current theme for highlighting
-current_theme="$(hawker-theme-current 2>/dev/null || true)"
+current_theme="$(kernix-theme-current 2>/dev/null || true)"
 current_theme="${current_theme,,}"
 current_theme="${current_theme// /-}"
 
@@ -46,4 +46,4 @@ theme_name="$(echo "$selected" | sed 's/^[● ] *//; s/ /-/g')"
 theme_name="${theme_name,,}"
 
 # Apply in background
-nohup hawker-theme-set "$theme_name" &>/dev/null &
+nohup kernix-theme-set "$theme_name" &>/dev/null &

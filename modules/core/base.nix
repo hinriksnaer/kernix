@@ -1,7 +1,7 @@
 { config, pkgs, lib, inputs, ... }:
 
 let
-  inherit (config.hawker) username;
+  inherit (config.kernix) username;
 in
 {
   # ── Nix settings ──
@@ -37,7 +37,7 @@ in
   environment.systemPackages = with pkgs; [
     curl wget which coreutils findutils gnused gnugrep gawk
     util-linux procps
-    pkgs.hawker-cli.hawker-switch
+    pkgs.kernix-cli.kernix
   ];
 
   system.stateVersion = "24.11";

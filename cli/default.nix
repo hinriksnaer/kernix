@@ -2,37 +2,37 @@
 # consistent shellcheck validation, set -euo pipefail, and runtimeInputs.
 #
 # hmProfile: the homeConfigurations key (e.g. "hgudmund@remote").
-#            Required for hawker-hm-switch. Pass null when not needed.
+#            Required for kernix-hm-switch. Pass null when not needed.
 { pkgs, hmProfile ? null }:
 
 {
   # NixOS hosts: rebuild with subcommands (rebuild/boot/test/update/cleanup/list-gens)
-  hawker-switch = pkgs.writeShellApplication {
-    name = "hawker-switch";
+  kernix = pkgs.writeShellApplication {
+    name = "kernix";
     runtimeInputs = with pkgs; [ coreutils hostname jq libnotify nh nix ];
-    text = builtins.readFile ./hawker-switch.sh;
+    text = builtins.readFile ./kernix.sh;
     excludeShellChecks = [ "SC2086" "SC2229" ];
   };
 
   # Non-NixOS hosts: git pull + home-manager switch
-  hawker-hm-switch = assert hmProfile != null;
+  kernix-hm-switch = assert hmProfile != null;
     pkgs.writeShellApplication {
-      name = "hawker-hm-switch";
+      name = "kernix-hm-switch";
       runtimeInputs = with pkgs; [ git ];
       text = ''
-        HAWKER_ROOT="''${HAWKER_ROOT:-$HOME/hawker}"
+        KERNIX_ROOT="''${KERNIX_ROOT:-$HOME/kernix}"
         echo ":: pulling latest config"
-        git -C "$HAWKER_ROOT" pull --ff-only
+        git -C "$KERNIX_ROOT" pull --ff-only
         echo ":: applying Home Manager (${hmProfile})"
-        home-manager switch --flake "$HAWKER_ROOT#${hmProfile}" "$@"
+        home-manager switch --flake "$KERNIX_ROOT#${hmProfile}" "$@"
         echo ":: done — run 'direnv reload' to pick up devshell changes"
       '';
     };
 
   # Devshell: project setup/build/status/update/clean
-  hawker-dev = pkgs.writeShellApplication {
-    name = "hawker-dev";
-    text = builtins.readFile ./hawker-dev.sh;
+  kernix-dev = pkgs.writeShellApplication {
+    name = "kernix-dev";
+    text = builtins.readFile ./kernix-dev.sh;
     excludeShellChecks = [ "SC1091" "SC2086" "SC2155" ];
   };
 }

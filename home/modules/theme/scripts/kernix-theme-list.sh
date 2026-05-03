@@ -1,14 +1,14 @@
 # List all available themes in the themes directory
-# Usage: hawker-theme-list
+# Usage: kernix-theme-list
 
 # Find themes directory
-if [[ -n "${HAWKER_PATH:-}" ]] && [[ -d "$HAWKER_PATH/themes" ]]; then
-    themes_dir="$HAWKER_PATH/themes"
-elif [[ -d "$HOME/.local/share/hawker/themes" ]]; then
-    themes_dir="$HOME/.local/share/hawker/themes"
+if [[ -n "${KERNIX_PATH:-}" ]] && [[ -d "$KERNIX_PATH/themes" ]]; then
+    themes_dir="$KERNIX_PATH/themes"
+elif [[ -d "$HOME/.local/share/kernix/themes" ]]; then
+    themes_dir="$HOME/.local/share/kernix/themes"
 else
     # Try to find relative to script location (for running from repo)
-    themes_dir="${HAWKER_PATH:-}/themes"
+    themes_dir="${KERNIX_PATH:-}/themes"
 fi
 
 # Check if themes directory exists

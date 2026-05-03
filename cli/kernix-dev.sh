@@ -1,4 +1,4 @@
-# hawker-dev -- CLI for managing the hawker development environment.
+# kernix-dev -- CLI for managing the kernix development environment.
 # Must be run inside the nix develop shell.
 #
 # Build logic lives in dev/projects/<name>/setup.sh -- this CLI
@@ -8,9 +8,9 @@ REPOS="$HOME/workspace/repos"
 VENV="$REPOS/.venv"
 
 # ── Guard: refuse to run outside the dev shell ──
-if [[ -z "${HAWKER_ENABLED_PROJECTS:-}" && -z "${CUDA_HOME:-}" ]]; then
-  echo "error: hawker-dev must be run inside the nix develop shell." >&2
-  echo "  run: nix develop ~/hawker" >&2
+if [[ -z "${KERNIX_ENABLED_PROJECTS:-}" && -z "${CUDA_HOME:-}" ]]; then
+  echo "error: kernix-dev must be run inside the nix develop shell." >&2
+  echo "  run: nix develop ~/kernix" >&2
   exit 1
 fi
 
@@ -23,7 +23,7 @@ get_repo()   { local v="${1^^}_REPO";   echo "${!v:-}"; }
 get_branch() { local v="${1^^}_BRANCH"; echo "${!v:-}"; }
 
 enabled_projects() {
-  echo "${HAWKER_ENABLED_PROJECTS:-}" | tr ' ' '\n' | grep -v '^$'
+  echo "${KERNIX_ENABLED_PROJECTS:-}" | tr ' ' '\n' | grep -v '^$'
 }
 
 resolve_projects() {
@@ -41,7 +41,7 @@ resolve_projects() {
     # Validate all requested projects were found
     for req in "$@"; do
       if ! echo "$ordered" | grep -qx "$req"; then
-        error "project '$req' is not enabled. Enabled: ${HAWKER_ENABLED_PROJECTS:-none}"
+        error "project '$req' is not enabled. Enabled: ${KERNIX_ENABLED_PROJECTS:-none}"
       fi
     done
     echo "$ordered" | grep -v '^$'
@@ -57,7 +57,7 @@ cmd_build() {
   projects=$(resolve_projects "$@")
 
   for project in $projects; do
-    local setup="$HAWKER_ROOT/dev/projects/${project}/setup.sh"
+    local setup="$KERNIX_ROOT/dev/projects/${project}/setup.sh"
 
     if [[ ! -f "$setup" ]]; then
       error "$project: no setup script found at $setup"
@@ -78,7 +78,7 @@ cmd_update() {
     branch=$(get_branch "$project")
 
     if [[ ! -d "$dir" ]]; then
-      warn "$project: not cloned, skipping (run 'hawker-dev build' first)"
+      warn "$project: not cloned, skipping (run 'kernix-dev build' first)"
       continue
     fi
 
@@ -121,7 +121,7 @@ cmd_status() {
   if [[ -d "$VENV" ]]; then
     info "venv: $VENV"
   else
-    info "venv: not created (run 'hawker-dev build')"
+    info "venv: not created (run 'kernix-dev build')"
   fi
 }
 
@@ -155,7 +155,7 @@ cmd_clean() {
 
 usage() {
   cat <<EOF
-Usage: hawker-dev <command> [projects...]
+Usage: kernix-dev <command> [projects...]
 
 Commands:
   build   Clone, build, and install projects from source (idempotent)
@@ -165,15 +165,15 @@ Commands:
 
 Projects are built in dependency order (pytorch first, then downstream).
 If no projects are specified, all enabled projects are built/updated/cleaned.
-Enabled projects: ${HAWKER_ENABLED_PROJECTS:-none}
+Enabled projects: ${KERNIX_ENABLED_PROJECTS:-none}
 
 Examples:
-  hawker-dev build                 # build all enabled projects from source
-  hawker-dev build pytorch         # build only pytorch
-  hawker-dev status                # show project state
-  hawker-dev update helion         # pull latest for helion
-  hawker-dev clean                 # remove everything (repos + markers + venv)
-  hawker-dev clean pytorch         # remove only pytorch repo + marker
+  kernix-dev build                 # build all enabled projects from source
+  kernix-dev build pytorch         # build only pytorch
+  kernix-dev status                # show project state
+  kernix-dev update helion         # pull latest for helion
+  kernix-dev clean                 # remove everything (repos + markers + venv)
+  kernix-dev clean pytorch         # remove only pytorch repo + marker
 EOF
 }
 
@@ -185,5 +185,5 @@ case "${1:-}" in
   clean)  shift; cmd_clean "$@" ;;
   help|--help|-h) usage ;;
   "") usage ;;
-  *) error "unknown command: $1 (try 'hawker-dev help')" ;;
+  *) error "unknown command: $1 (try 'kernix-dev help')" ;;
 esac

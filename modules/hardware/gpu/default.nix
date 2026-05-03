@@ -1,10 +1,10 @@
-# GPU driver configuration, dispatched by hawker.gpu option.
+# GPU driver configuration, dispatched by kernix.gpu option.
 # Vendor-specific config lives in nvidia.nix, intel.nix, amd.nix.
 # This file handles imports and common config shared across all GPUs.
 { config, lib, ... }:
 
 let
-  cfg = config.hawker;
+  cfg = config.kernix;
   hasNvidia = cfg.gpu == "nvidia";
   hasIntel  = cfg.gpu == "intel";
   hasAmd    = cfg.gpu == "amd";

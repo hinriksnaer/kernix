@@ -1,5 +1,5 @@
 # Mako notification daemon.
-# Theme colors loaded at runtime via include (swapped by hawker-theme-set).
+# Theme colors loaded at runtime via include (swapped by kernix-theme-set).
 { config, ... }:
 
 {
@@ -25,7 +25,7 @@
       max-icon-size = 48;
       group-by = "app-name";
 
-      # Theme colors (symlinked by hawker-theme-apply)
+      # Theme colors (symlinked by kernix-theme-apply)
       include = "~/.config/mako/theme.conf";
     };
   };

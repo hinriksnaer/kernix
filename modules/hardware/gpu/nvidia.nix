@@ -3,7 +3,7 @@
 # container toolkit, and session variables.
 { config, lib, pkgs, ... }:
 
-lib.mkIf (config.hawker.gpu == "nvidia") {
+lib.mkIf (config.kernix.gpu == "nvidia") {
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = false;

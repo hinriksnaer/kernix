@@ -4,5 +4,5 @@
 { config, ... }:
 
 {
-  users.users.${config.hawker.username}.extraGroups = [ "video" ];
+  users.users.${config.kernix.username}.extraGroups = [ "video" ];
 }

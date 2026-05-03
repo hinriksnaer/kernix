@@ -4,7 +4,7 @@
 # Imports base/ for shared tooling and CUDA, then merges per-project
 # modules from projects/ based on settings.nix.
 #
-# Usage: nix develop ~/workspace/hawker
+# Usage: nix develop ~/workspace/kernix
 #    or: cd into a project dir with .envrc → direnv auto-enters
 { pkgs, settings }:
 
@@ -21,7 +21,7 @@ let
   venv = "${repos}/.venv";
 
   # ── CLI (from overlay) ──
-  inherit (pkgs) hawker-cli;
+  inherit (pkgs) kernix-cli;
 
   # ── Base layers ──
   tooling  = import ./base/tooling.nix { inherit pkgs; };
@@ -48,24 +48,24 @@ let
   mergedEnv = lib.foldl' (a: b: a // b) {} (map (m: m.env) enabledModules);
 in
 pkgs.mkShell ({
-  name = "hawker-dev";
+  name = "kernix-dev";
 
-  packages = [ hawker-cli.hawker-dev ] ++ tooling.packages ++ cudaBase.packages ++ mergedPackages;
+  packages = [ kernix-cli.kernix-dev ] ++ tooling.packages ++ cudaBase.packages ++ mergedPackages;
 
   # CUDA binary cache
   NIX_CONFIG = "extra-substituters = https://cache.nixos-cuda.org\nextra-trusted-public-keys = cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M=";
 
-  HAWKER_ENABLED_PROJECTS = builtins.concatStringsSep " " enabledNames;
+  KERNIX_ENABLED_PROJECTS = builtins.concatStringsSep " " enabledNames;
 
   # ── Shell hook (runtime-dependent vars only) ──
   shellHook = ''
-    export HAWKER_ROOT="''${HAWKER_ROOT:-$HOME/hawker}"
+    export KERNIX_ROOT="''${KERNIX_ROOT:-$HOME/kernix}"
     export CCACHE_DIR="$HOME/.cache/ccache"
     ${lib.optionalString (cudaVisibleDevices != "") ''export CUDA_VISIBLE_DEVICES="${cudaVisibleDevices}"''}
 
     # Symlink host NVIDIA driver libs into a clean directory so we can add
     # them to LD_LIBRARY_PATH without exposing the host glibc.
-    _nv="$HOME/.cache/hawker/nvidia-driver-libs"
+    _nv="$HOME/.cache/kernix/nvidia-driver-libs"
     mkdir -p "$_nv"
     for _f in /usr/lib64/libcuda.so* /usr/lib64/libnvidia*.so* /usr/lib64/libnvcuvid*.so*; do
       [ -e "$_f" ] && ln -sf "$_f" "$_nv/" 2>/dev/null

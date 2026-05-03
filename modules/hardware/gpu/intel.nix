@@ -2,7 +2,7 @@
 # GuC firmware submission, iHD VA-API, oneVPL (QSV) runtime.
 { config, lib, pkgs, ... }:
 
-lib.mkIf (config.hawker.gpu == "intel") {
+lib.mkIf (config.kernix.gpu == "intel") {
   services.xserver.videoDrivers = [ "modesetting" ];
 
   boot.initrd.kernelModules = [ "i915" ];

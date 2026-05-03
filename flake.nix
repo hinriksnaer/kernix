@@ -1,5 +1,5 @@
 {
-  description = "hawker - NixOS configuration. Chuck the system anywhere.";
+  description = "kernix - NixOS configuration. Chuck the system anywhere.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -27,7 +27,7 @@
       ];
 
       # Per-host settings (read directly, not through module system)
-      settings = (import ./settings.nix { }).hawker;
+      settings = (import ./settings.nix { }).kernix;
 
       # Auto-discover .nix files from a directory
       discoverModules = dir:
@@ -77,7 +77,7 @@
 
       # ── Custom packages (nix build .#<name>) ──
       packages.${system} = {
-        inherit (pkgsUnfree.hawker-cli) hawker-switch hawker-dev;
+        inherit (pkgsUnfree.kernix-cli) kernix kernix-dev;
       };
 
       # ── Individually importable modules (auto-discovered) ──
