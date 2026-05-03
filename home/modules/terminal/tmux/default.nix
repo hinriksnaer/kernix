@@ -23,6 +23,7 @@
 # │  Alt + [ / ]           prev/next window                             │
 # │  prefix + 1-9          move pane to window N                       │
 # │  Alt + Ctrl + [ / ]    swap window position (reorder)              │
+# │  Alt + Shift + [ / ]   move pane to prev/next window              │
 # │  Alt + Ctrl + Enter    break pane to new window                    │
 # │  Alt + Enter           new window                                   │
 # │  Alt + q               kill window                                  │
@@ -136,6 +137,10 @@
       # Swap window position: Alt + Ctrl + [ / ] (Ctrl = swap)
       bind -n M-C-[ swap-window -t -1\; select-window -t -1
       bind -n M-C-] swap-window -t +1\; select-window -t +1
+
+      # Move pane to adjacent window: Alt + Shift + [ / ]
+      bind -n M-'{' join-pane -t :-1
+      bind -n M-'}' join-pane -t :+1
 
       # Move pane to window N: prefix + 1-9
       # (Ctrl+number can't be encoded by terminals, so this goes behind prefix)
