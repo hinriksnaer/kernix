@@ -31,7 +31,7 @@
 # │  Alt + 1-9             switch to window N                          │
 # │  Alt + Ctrl + [ / ]    swap window positions                       │
 # │  Alt + Shift + [ / ]   move pane to prev/next window              │
-# │  prefix + 1-9          move pane to window N                       │
+# │  Alt + Shift + 1-9     move pane to window N                       │
 # │  Alt + Ctrl + Enter    break pane to new window                   │
 # │  Alt + Enter           new window                                  │
 # │  Alt + q               kill window                                 │
@@ -41,7 +41,6 @@
 # │  Alt + Tab             previous session                            │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Prefix (Alt+Space) ──────────────────────────────────────────────┐
-# │  1-9                   move pane to window N (join-pane)           │
 # │  Space                 sessionizer (fzf project picker)            │
 # │  ,                     rename window          (tmux default)       │
 # │  $                     rename session          (tmux default)      │
@@ -170,17 +169,26 @@
       bind -n M-S-'[' join-pane -h -t :-1
       bind -n M-S-']' join-pane -h -t :+1
 
-      # Move pane to window N: prefix + 1-9
-      # (Ctrl+number can't be encoded by terminals, so this goes behind prefix)
-      bind 1 join-pane -h -t :1
-      bind 2 join-pane -h -t :2
-      bind 3 join-pane -h -t :3
-      bind 4 join-pane -h -t :4
-      bind 5 join-pane -h -t :5
-      bind 6 join-pane -h -t :6
-      bind 7 join-pane -h -t :7
-      bind 8 join-pane -h -t :8
-      bind 9 join-pane -h -t :9
+      # Move pane to window N: Alt + Shift + 1-9 (Shift = move view to task)
+      # Shift+number produces !@#$%^&*( -- bind both legacy and extended encodings
+      bind -n M-'!' join-pane -h -t :1
+      bind -n M-'@' join-pane -h -t :2
+      bind -n M-'#' join-pane -h -t :3
+      bind -n M-'$' join-pane -h -t :4
+      bind -n M-'%' join-pane -h -t :5
+      bind -n M-'^' join-pane -h -t :6
+      bind -n M-'&' join-pane -h -t :7
+      bind -n M-'*' join-pane -h -t :8
+      bind -n M-'(' join-pane -h -t :9
+      bind -n M-S-1 join-pane -h -t :1
+      bind -n M-S-2 join-pane -h -t :2
+      bind -n M-S-3 join-pane -h -t :3
+      bind -n M-S-4 join-pane -h -t :4
+      bind -n M-S-5 join-pane -h -t :5
+      bind -n M-S-6 join-pane -h -t :6
+      bind -n M-S-7 join-pane -h -t :7
+      bind -n M-S-8 join-pane -h -t :8
+      bind -n M-S-9 join-pane -h -t :9
 
       # Break pane to new window: Alt + Ctrl + Enter
       bind -n M-C-Enter break-pane
