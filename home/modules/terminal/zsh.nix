@@ -11,6 +11,7 @@
     enable = true;
     enableCompletion = true;
     autosuggestion.enable = true;
+    autosuggestion.strategy = ["history" "completion"];
     syntaxHighlighting.enable = true;
     historySubstringSearch.enable = true;
     plugins = [
