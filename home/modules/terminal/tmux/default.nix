@@ -70,7 +70,9 @@
     mouse = true;
     keyMode = "vi";
     baseIndex = 1;
-    escapeTime = 0;
+    # 25ms: allows tmux to combine ESC + key from home row mods
+    # (0ms is too aggressive -- HRM firmware needs ~10-25ms for multi-mod combos)
+    escapeTime = 25;
     historyLimit = 50000;
     terminal = "tmux-256color";
 
@@ -98,7 +100,7 @@
       set-option -sa terminal-overrides ",xterm*:Tc,tmux*:Tc"
 
       # Extended keys for modified arrow key sequences from modern terminals
-      set -s extended-keys always
+      set -s extended-keys on
       set -as terminal-features 'xterm*:extkeys'
 
       # Pane/window base index
