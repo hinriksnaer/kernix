@@ -45,7 +45,7 @@
 
       # Use base16 theme for fast-syntax-highlighting (inherits terminal ANSI colors)
       (lib.mkOrder 600 ''
-      fast-theme base16 >/dev/null 2>&1 || true
+        fast-theme base16 >/dev/null 2>&1 || true
       '')
     ];
 
