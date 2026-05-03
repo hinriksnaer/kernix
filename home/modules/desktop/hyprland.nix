@@ -287,6 +287,10 @@ in {
         "$mainMod, 0, workspace, 10"
         "$mainMod, Tab, workspace, previous"
 
+        # Cycle workspaces: Super + [ / ] (task-level directional)
+        "$mainMod, bracketleft, workspace, e-1"
+        "$mainMod, bracketright, workspace, e+1"
+
         # Move view to task: Super + Ctrl + 1-9 (Ctrl = move view to task N)
         "$mainMod CTRL, 1, movetoworkspace, 1"
         "$mainMod CTRL, 2, movetoworkspace, 2"
