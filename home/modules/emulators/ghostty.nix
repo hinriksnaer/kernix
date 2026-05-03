@@ -22,7 +22,7 @@ lib.mkIf (settings.terminal == "ghostty") {
     enable = true;
     enableZshIntegration = true;
     settings = {
-      font-family = "CaskaydiaMono Nerd Font";
+      font-family = "JetBrainsMono Nerd Font";
       font-size = 10;
       font-style = "SemiBold";
       font-thicken = true;

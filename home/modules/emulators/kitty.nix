@@ -21,7 +21,7 @@ lib.mkIf (settings.terminal == "kitty") {
   programs.kitty = {
     enable = true;
     font = {
-      name = "CaskaydiaMono Nerd Font";
+      name = "JetBrainsMono Nerd Font";
       size = 9.0;
     };
     settings = {

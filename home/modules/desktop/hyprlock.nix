@@ -35,7 +35,7 @@
           outer_color = "$outer_color";
           outline_thickness = 3;
 
-          font_family = "CaskaydiaMono Nerd Font";
+          font_family = "JetBrainsMono Nerd Font";
           font_color = "$font_color";
 
           placeholder_text = "Enter Password";
