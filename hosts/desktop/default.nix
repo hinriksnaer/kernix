@@ -1,8 +1,5 @@
-{ ... }:
+{ config, ... }:
 
-let
-  hostSettings = (import ../../settings.nix { }).hawker.hosts.desktop;
-in
 {
   imports = [
     ./hardware-configuration.nix
@@ -14,8 +11,8 @@ in
     ../../modules/hardware/fancontrol.nix
   ];
 
-  hawker.username = hostSettings.username;
-  hawker.gpu = hostSettings.gpu;
+  hawker.username = config.hawker.hosts.desktop.username;
+  hawker.gpu = config.hawker.hosts.desktop.gpu;
 
   networking.hostName = "hawker";
 }

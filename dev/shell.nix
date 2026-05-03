@@ -20,8 +20,8 @@ let
   repos = "$HOME/workspace/repos";
   venv = "${repos}/.venv";
 
-  # ── CLI ──
-  cli = import ../cli { inherit pkgs; };
+  # ── CLI (from overlay) ──
+  inherit (pkgs) hawker-cli;
 
   # ── Base layers ──
   tooling  = import ./base/tooling.nix { inherit pkgs; };
@@ -50,7 +50,7 @@ in
 pkgs.mkShell ({
   name = "hawker-dev";
 
-  packages = [ cli.hawker-dev ] ++ tooling.packages ++ cudaBase.packages ++ mergedPackages;
+  packages = [ hawker-cli.hawker-dev ] ++ tooling.packages ++ cudaBase.packages ++ mergedPackages;
 
   # CUDA binary cache
   NIX_CONFIG = "extra-substituters = https://cache.nixos-cuda.org\nextra-trusted-public-keys = cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M=";

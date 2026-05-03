@@ -13,7 +13,11 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      pkgsUnfree = import nixpkgs { inherit system; config.allowUnfree = true; };
+      pkgsUnfree = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = builtins.attrValues self.overlays;
+      };
       lib = nixpkgs.lib;
 
       # Common modules: user settings (imported by all machine configs)
@@ -64,10 +68,8 @@
       overlays = import ./overlays { inherit inputs; };
 
       # ── Custom packages (nix build .#<name>) ──
-      packages.${system} = let
-        cli = import ./cli { inherit pkgs; };
-      in {
-        inherit (cli) hawker-switch hawker-dev;
+      packages.${system} = {
+        inherit (pkgsUnfree.hawker-cli) hawker-switch hawker-dev;
       };
 
       # ── Individually importable modules (auto-discovered) ──

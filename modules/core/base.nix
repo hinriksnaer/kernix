@@ -2,7 +2,6 @@
 
 let
   inherit (config.hawker) username;
-  cli = import ../../cli { inherit pkgs; };
 in
 {
   # ── Nix settings ──
@@ -33,7 +32,7 @@ in
   environment.systemPackages = with pkgs; [
     curl wget which coreutils findutils gnused gnugrep gawk
     util-linux procps
-    cli.hawker-switch
+    pkgs.hawker-cli.hawker-switch
   ];
 
   system.stateVersion = "24.11";
