@@ -287,21 +287,30 @@ in {
         "$mainMod, 0, workspace, 10"
         "$mainMod, Tab, workspace, previous"
 
-        # Cycle workspaces: Super + [ / ] (task-level directional)
+        # Navigate workspaces: Super + [ / ]
         "$mainMod, bracketleft, workspace, e-1"
         "$mainMod, bracketright, workspace, e+1"
 
-        # Move view to task: Super + Ctrl + 1-9 (Ctrl = move view to task N)
-        "$mainMod CTRL, 1, movetoworkspace, 1"
-        "$mainMod CTRL, 2, movetoworkspace, 2"
-        "$mainMod CTRL, 3, movetoworkspace, 3"
-        "$mainMod CTRL, 4, movetoworkspace, 4"
-        "$mainMod CTRL, 5, movetoworkspace, 5"
-        "$mainMod CTRL, 6, movetoworkspace, 6"
-        "$mainMod CTRL, 7, movetoworkspace, 7"
-        "$mainMod CTRL, 8, movetoworkspace, 8"
-        "$mainMod CTRL, 9, movetoworkspace, 9"
-        "$mainMod CTRL, 0, movetoworkspace, 10"
+        # Swap workspaces: Super + Ctrl + [ / ] (Ctrl = swap, multi-monitor)
+        # swapactiveworkspaces requires monitor names; uncomment for multi-monitor:
+        # "$mainMod CTRL, bracketleft, swapactiveworkspaces, eDP-1 DP-1"
+        # "$mainMod CTRL, bracketright, swapactiveworkspaces, eDP-1 DP-1"
+
+        # Move view to adjacent task: Super + Shift + [ / ] (Shift = move view)
+        "$mainMod SHIFT, bracketleft, movetoworkspace, e-1"
+        "$mainMod SHIFT, bracketright, movetoworkspace, e+1"
+
+        # Move view to task N: Super + Shift + 1-9 (Shift = move view)
+        "$mainMod SHIFT, 1, movetoworkspace, 1"
+        "$mainMod SHIFT, 2, movetoworkspace, 2"
+        "$mainMod SHIFT, 3, movetoworkspace, 3"
+        "$mainMod SHIFT, 4, movetoworkspace, 4"
+        "$mainMod SHIFT, 5, movetoworkspace, 5"
+        "$mainMod SHIFT, 6, movetoworkspace, 6"
+        "$mainMod SHIFT, 7, movetoworkspace, 7"
+        "$mainMod SHIFT, 8, movetoworkspace, 8"
+        "$mainMod SHIFT, 9, movetoworkspace, 9"
+        "$mainMod SHIFT, 0, movetoworkspace, 10"
 
         # Mouse
         "$mainMod, mouse_down, workspace, e+1"

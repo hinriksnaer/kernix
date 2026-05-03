@@ -1,46 +1,53 @@
 # Tmux configuration -- shared across all profiles.
 #
-# Unified navigation model (consistent with Hyprland):
+# Unified navigation grammar (consistent with Hyprland + neovim):
 #
-#   Navigate:   Mod + hjkl           (focus)
-#   Swap:       Mod + Ctrl + hjkl    (exchange positions)
-#   Resize:     Mod + Shift + hjkl   (scale)
-#   Create:     Mod + arrows         (spawn in direction)
-#   Task:       Mod + [Ctrl +] 1-9   (indexed jump / move view to)
+#   Direction keys define the LEVEL:
+#     hjkl  = View   (panes, windows, splits)
+#     [/]   = Task   (windows, workspaces, buffers)
+#
+#   Modifiers define the ACTION (consistent across both levels):
+#     bare  = Navigate
+#     Ctrl  = Swap       (same-level exchange)
+#     Shift = Resize     (view) / Move view to task (task)
+#
+#   Additional:
+#     arrows = Create    (spawn split in direction)
+#     1-9    = Task      (indexed jump)
 #
 # Where Mod = Super (Hyprland) or Alt (tmux).
 #
-# ┌─ View level (pane -- directional) ──────────────────────────────────┐
-# │  Alt + hjkl            navigate panes                               │
-# │  Alt + Ctrl + hjkl     swap panes                                   │
-# │  Alt + Shift + hjkl    resize panes                                 │
-# │  Alt + arrows          create split in direction                    │
-# │  Alt + z               zoom pane (fullscreen)                       │
+# ┌─ View (hjkl) ──────────────────────────────────────────────────────┐
+# │  Alt + hjkl            navigate panes                              │
+# │  Alt + Ctrl + hjkl     swap panes                                  │
+# │  Alt + Shift + hjkl    resize panes                                │
+# │  Alt + arrows          create split in direction                   │
+# │  Alt + z               zoom pane (fullscreen)                      │
 # │  Ctrl + hjkl           vim-tmux-navigator (cross-layer with nvim)  │
-# └─────────────────────────────────────────────────────────────────────┘
-# ┌─ Task level (window -- indexed + directional) ──────────────────────┐
-# │  Alt + 1-9             switch to window N                           │
-# │  Alt + [ / ]           prev/next window                             │
-# │  prefix + 1-9          move pane to window N                       │
-# │  Alt + Ctrl + [ / ]    swap window position (reorder)              │
+# └────────────────────────────────────────────────────────────────────┘
+# ┌─ Task ([/] + 1-9) ────────────────────────────────────────────────┐
+# │  Alt + [ / ]           prev/next window                            │
+# │  Alt + 1-9             switch to window N                          │
+# │  Alt + Ctrl + [ / ]    swap window positions                       │
 # │  Alt + Shift + [ / ]   move pane to prev/next window              │
-# │  Alt + Ctrl + Enter    break pane to new window                    │
-# │  Alt + Enter           new window                                   │
-# │  Alt + q               kill window                                  │
-# └─────────────────────────────────────────────────────────────────────┘
-# ┌─ Context (session -- special) ──────────────────────────────────────┐
-# │  Alt + f               fzf session finder                           │
-# │  Alt + Tab             previous session                             │
-# └─────────────────────────────────────────────────────────────────────┘
-# ┌─ Prefix (Alt+Space, then key) ──────────────────────────────────────┐
+# │  prefix + 1-9          move pane to window N                       │
+# │  Alt + Ctrl + Enter    break pane to new window                   │
+# │  Alt + Enter           new window                                  │
+# │  Alt + q               kill window                                 │
+# └────────────────────────────────────────────────────────────────────┘
+# ┌─ Context (session) ───────────────────────────────────────────────┐
+# │  Alt + f               fzf session finder                          │
+# │  Alt + Tab             previous session                            │
+# └────────────────────────────────────────────────────────────────────┘
+# ┌─ Prefix (Alt+Space) ──────────────────────────────────────────────┐
 # │  1-9                   move pane to window N (join-pane)           │
-# │  Space                 sessionizer (fzf project picker)             │
-# │  ,                     rename window (tmux default)                 │
-# │  $                     rename session (tmux default)                │
-# │  d                     detach (tmux default)                        │
-# │  [                     copy mode (tmux default)                     │
-# │  v / C-v / y           begin / rectangle / yank (copy-mode-vi)     │
-# └─────────────────────────────────────────────────────────────────────┘
+# │  Space                 sessionizer (fzf project picker)            │
+# │  ,                     rename window          (tmux default)       │
+# │  $                     rename session          (tmux default)      │
+# │  d                     detach                  (tmux default)      │
+# │  [                     copy mode               (tmux default)      │
+# │  v / C-v / y           begin / rectangle / yank (copy-mode-vi)    │
+# └────────────────────────────────────────────────────────────────────┘
 {
   pkgs,
   config,
@@ -91,7 +98,7 @@
       set-option -sa terminal-overrides ",xterm*:Tc,tmux*:Tc"
 
       # Extended keys for modified arrow key sequences from modern terminals
-      set -s extended-keys on
+      set -s extended-keys always
       set -as terminal-features 'xterm*:extkeys'
 
       # Pane/window base index
@@ -99,7 +106,7 @@
       set-window-option -g pane-base-index 1
       set-option -g renumber-windows on
 
-      # ── View level: pane (directional) ──
+      # ── View level: pane (hjkl) ──
 
       # Navigate panes: Alt + hjkl
       bind -n M-h select-pane -L
@@ -128,7 +135,7 @@
       # Zoom pane: Alt + z
       bind -n M-z resize-pane -Z
 
-      # ── Task level: window (indexed) ──
+      # ── Task level: window ([/] + 1-9) ──
 
       # Navigate windows: Alt + 1-9
       bind -n M-1 select-window -t 1
@@ -150,6 +157,9 @@
       bind -n M-C-] swap-window -t +1\; select-window -t +1
 
       # Move pane to adjacent window: Alt + Shift + [ / ]
+      # Both legacy (M-{) and extended (M-S-[) encodings for compatibility
+      bind -n M-'{' join-pane -t :-1
+      bind -n M-'}' join-pane -t :+1
       bind -n M-S-'[' join-pane -t :-1
       bind -n M-S-']' join-pane -t :+1
 
