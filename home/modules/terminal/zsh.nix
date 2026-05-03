@@ -9,6 +9,11 @@
 }: {
   programs.zsh = {
     enable = true;
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+    historySubstringSearch.enable = true;
+    defaultKeymap = "viins";
 
     # Nix profile paths for non-NixOS hosts
     envExtra = ''
@@ -21,9 +26,8 @@
     '';
 
     initContent = lib.mkMerge [
-      # Vi mode
+      # Reduce key timeout for snappy mode switching
       (lib.mkOrder 550 ''
-        bindkey -v
         export KEYTIMEOUT=1
       '')
 
