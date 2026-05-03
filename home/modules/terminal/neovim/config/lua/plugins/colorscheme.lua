@@ -55,16 +55,7 @@ return {
     priority = 1000,
   },
 
-  -- Ayu - Simple, bright and elegant theme
-  {
-    'Shatur/neovim-ayu',
-    priority = 1000,
-    config = function()
-      require('ayu').setup {
-        mirage = true, -- Set to true for mirage variant
-      }
-    end,
-  },
+  -- Ayu - declared in default-theme.lua (handles startup theme loading)
 
   -- Rose Pine - natural pine, faux fur and a bit of soho vibes
   {
