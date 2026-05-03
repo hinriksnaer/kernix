@@ -97,6 +97,12 @@ in {
     };
 
     # ── Global settings (shared across all hosts) ──
+    terminal = mkOption {
+      type = types.enum ["ghostty" "kitty"];
+      default = "ghostty";
+      description = "Terminal emulator. Configures desktop keybinds, theme hooks, and terminfo.";
+    };
+
     defaultTheme = mkOption {
       type = types.str;
       default = "ayu-dark";

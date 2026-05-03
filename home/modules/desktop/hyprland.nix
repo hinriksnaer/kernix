@@ -166,7 +166,7 @@ in {
         disable_autoreload = false;
         anr_missed_pings = 3;
         enable_swallow = true;
-        swallow_regex = "^(kitty)$";
+        swallow_regex = "^(${config.kernix.terminal.windowClass})$";
       };
 
       cursor =
@@ -199,8 +199,8 @@ in {
           pin = true;
         }
         {
-          name = "kitty-opacity";
-          "match:class" = "^(kitty)$";
+          name = "terminal-opacity";
+          "match:class" = "^(${config.kernix.terminal.windowClass})$";
           opacity = "0.95 0.85";
         }
         {
@@ -234,10 +234,10 @@ in {
         "CTRL ALT, BackSpace, exit,"
 
         # Applications
-        "$mainMod, Return, exec, kitty"
+        "$mainMod, Return, exec, ${config.kernix.terminal.command}"
         "$mainMod SHIFT, Return, togglespecialworkspace, emergency"
         "$mainMod, B, exec, firefox"
-        "$mainMod, E, exec, kitty -e yazi"
+        "$mainMod, E, exec, ${config.kernix.terminal.command} ${config.kernix.terminal.execFlag} yazi"
         "$mainMod, Space, exec, rofi -show drun"
         "$mainMod, Escape, exec, hyprlock"
 

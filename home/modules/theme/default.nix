@@ -82,10 +82,16 @@ in {
       target=~/.config/waybar/theme.css
       reload=pkill -SIGUSR2 -f waybar
     '';
-    "kernix/theme-hooks.d/21-kitty".text = ''
-      source=kitty.conf
-      target=~/.config/kitty/theme.conf
-      reload=pkill -SIGUSR1 -f kitty
+    "kernix/theme-hooks.d/21-terminal".text = let
+      t = config.kernix.terminal.themeHook;
+    in ''
+      source=${t.source}
+      target=${t.target}
+      ${
+        if t.reload != ""
+        then "reload=${t.reload}"
+        else ""
+      }
     '';
     "kernix/theme-hooks.d/22-rofi".text = ''
       source=rofi.rasi

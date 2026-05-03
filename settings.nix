@@ -4,6 +4,7 @@
 # Imported by flake.nix and assigned to config.kernix.*.
 {
   # ── Global (shared across all hosts) ──
+  terminal = "ghostty"; # ghostty | kitty
   defaultTheme = "ayu-dark";
 
   git = {

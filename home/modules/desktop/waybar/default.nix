@@ -54,7 +54,7 @@
       "custom/kernix" = {
         format = "";
         on-click = "rofi -show drun";
-        on-click-right = "kitty";
+        on-click-right = config.kernix.terminal.command;
         tooltip-format = "Kernix Menu\n\nSuper + Space";
       };
 
@@ -157,7 +157,7 @@
         interval = 2;
         format = "{usage}%";
         tooltip-format = "CPU Usage: {usage}%\nLoad: {load}";
-        on-click = "kitty btop";
+        on-click = "${config.kernix.terminal.command} ${config.kernix.terminal.execFlag} btop";
       };
       temperature = {
         interval = 2;
@@ -166,7 +166,7 @@
         format = "{temperatureC}°";
         format-critical = " {temperatureC}°";
         tooltip-format = "CPU Temp: {temperatureC}°C";
-        on-click = "kitty btop";
+        on-click = "${config.kernix.terminal.command} ${config.kernix.terminal.execFlag} btop";
       };
 
       # GPU hardware group
@@ -183,14 +183,14 @@
         interval = 2;
         format = "{}%";
         tooltip-format = "GPU Usage";
-        on-click = "kitty btop";
+        on-click = "${config.kernix.terminal.command} ${config.kernix.terminal.execFlag} btop";
       };
       "custom/gpu-temp" = {
         exec = "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits | head -n 1";
         interval = 2;
         format = "{}°";
         tooltip-format = "GPU Temperature";
-        on-click = "kitty btop";
+        on-click = "${config.kernix.terminal.command} ${config.kernix.terminal.execFlag} btop";
       };
 
       # RAM hardware group
@@ -206,7 +206,7 @@
         interval = 2;
         format = "{percentage}%";
         tooltip-format = "RAM: {used:0.1f}G / {total:0.1f}G ({percentage}%)";
-        on-click = "kitty btop";
+        on-click = "${config.kernix.terminal.command} ${config.kernix.terminal.execFlag} btop";
       };
 
       "custom/power" = {

@@ -4,7 +4,7 @@
   imports = [
     ../modules/desktop/monitors.nix
     ../modules/desktop/hyprland.nix
-    ../modules/desktop/kitty.nix
+    ../modules/emulators
     ../modules/desktop/mako.nix
     ../modules/desktop/waybar
     ../modules/desktop/rofi.nix

@@ -39,7 +39,7 @@
         ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
       '')
 
-      # Terminfo from HM profile (kitty terminfo for SSH sessions)
+      # Terminfo from HM profile (terminal emulator terminfo for SSH sessions)
       (lib.mkOrder 600 ''
         if [ -d "$HOME/.nix-profile/share/terminfo" ]; then
           export TERMINFO_DIRS="$HOME/.nix-profile/share/terminfo:''${TERMINFO_DIRS:-}"

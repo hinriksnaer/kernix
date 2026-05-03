@@ -1,6 +1,10 @@
 # CLI tools -- shared across all profiles.
 # HM handles shell integration (init, keybindings) automatically.
-{pkgs, ...}: {
+{
+  pkgs,
+  settings,
+  ...
+}: {
   programs.starship = {
     enable = true;
     settings = {
@@ -28,8 +32,14 @@
   programs.ripgrep.enable = true;
   programs.fd.enable = true;
 
-  # Kitty terminfo for SSH sessions from kitty terminal
-  home.packages = with pkgs; [kitty.terminfo];
+  # Terminal emulator terminfo for SSH sessions
+  home.packages = [
+    (
+      if settings.terminal == "ghostty"
+      then pkgs.ghostty.terminfo
+      else pkgs.kitty.terminfo
+    )
+  ];
 
   # Man pager via bat
   home.sessionVariables = {
