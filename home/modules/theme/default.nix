@@ -34,11 +34,9 @@ in
   home.sessionVariables.HAWKER_PATH = hawkerPath;
 
   # ── Theme data deployment ──
-  # Deploy dotfiles/themes/ to ~/.local/share/hawker/themes/
-  xdg.dataFile."hawker/themes" = {
-    source = ../../../themes;
-    recursive = true;
-  };
+  # Single directory symlink to the nix store. The theme engine only
+  # reads from this path, so immutable nix store is safe.
+  xdg.dataFile."hawker/themes".source = ../../../themes;
 
   # ── Hook registrations ──
   # All apps register here. The engine skips hooks at runtime when
