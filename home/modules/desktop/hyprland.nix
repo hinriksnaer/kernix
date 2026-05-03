@@ -32,9 +32,9 @@ in
     _JAVA_AWT_WM_NONREPARENTING = "1";
   };
 
-  # ── UWSM auto-start ──
+  # ── UWSM auto-start (TTY login only) ──
   programs.zsh.initContent = lib.mkOrder 100 ''
-    if uwsm check may-start 2>/dev/null; then
+    if [[ -z "$DISPLAY" && -z "$WAYLAND_DISPLAY" ]] && uwsm check may-start 2>/dev/null; then
         exec uwsm start hyprland-uwsm.desktop
     fi
   '';
