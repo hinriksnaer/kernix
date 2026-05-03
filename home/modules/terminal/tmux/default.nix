@@ -41,10 +41,21 @@
 # │  [                     copy mode (tmux default)                     │
 # │  v / C-v / y           begin / rectangle / yank (copy-mode-vi)     │
 # └─────────────────────────────────────────────────────────────────────┘
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   imports = [
     ./cli.nix
   ];
+
+  # Reload tmux config after Home Manager switch (if server is running)
+  home.activation.reloadTmux = config.lib.dag.entryAfter ["linkGeneration"] ''
+    if command -v tmux &>/dev/null && tmux list-sessions &>/dev/null 2>&1; then
+      tmux source-file "${config.home.homeDirectory}/.config/tmux/tmux.conf" 2>/dev/null || true
+    fi
+  '';
 
   programs.tmux = {
     enable = true;
