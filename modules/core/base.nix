@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 let
   inherit (config.hawker) username;
@@ -10,6 +10,11 @@ in
     auto-optimise-store = true;
     max-jobs = "auto";
   };
+
+  # Pin flake registry + nixPath to match this system's inputs.
+  # Ensures `nix run nixpkgs#foo` uses the same nixpkgs as the system.
+  nix.registry = lib.mapAttrs (_: flake: { inherit flake; }) inputs;
+  nix.nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
 
   nixpkgs.config.allowUnfree = true;
 

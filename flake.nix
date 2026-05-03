@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -49,12 +50,19 @@
             (builtins.readDir dir)
           );
 
+      # Stable channel for pinning reliability-sensitive packages
+      pkgs-stable = import inputs.nixpkgs-stable {
+        inherit system;
+        config.allowUnfree = true;
+      };
+
       # Home Manager NixOS integration -- auto-applies HM on nixos-rebuild switch.
       hmNixosModule = hostname: {
         imports = [ home-manager.nixosModules.home-manager ];
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "hm-backup";
+        home-manager.extraSpecialArgs = { inherit pkgs-stable; };
         home-manager.users.${settings.hosts.${hostname}.username} =
           import ./home { inherit hostname settings; };
       };
@@ -87,6 +95,7 @@
       nixosConfigurations = let
         mkHost = hostname: nixpkgs.lib.nixosSystem {
           inherit system;
+          specialArgs = { inherit inputs; };
           modules = commonModules ++ [
             ./hosts/${hostname}/default.nix
             (hmNixosModule hostname)

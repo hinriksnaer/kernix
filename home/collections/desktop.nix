@@ -4,6 +4,7 @@
 
 {
   imports = [
+    ../modules/desktop/monitors.nix
     ../modules/desktop/hyprland.nix
     ../modules/desktop/kitty.nix
     ../modules/desktop/mako.nix

@@ -12,6 +12,8 @@ in
     ../collections/gaming.nix
   ];
 
+  monitors = settings.hosts.${hostname}.monitors;
+
   home.username = username;
   home.homeDirectory = "/home/${username}";
   home.stateVersion = "24.11";

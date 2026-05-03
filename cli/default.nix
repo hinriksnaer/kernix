@@ -6,11 +6,12 @@
 { pkgs, hmProfile ? null }:
 
 {
-  # NixOS hosts: nixos-rebuild switch
+  # NixOS hosts: rebuild with subcommands (rebuild/boot/test/update/cleanup/list-gens)
   hawker-switch = pkgs.writeShellApplication {
     name = "hawker-switch";
-    runtimeInputs = with pkgs; [ coreutils hostname ];
+    runtimeInputs = with pkgs; [ coreutils hostname jq libnotify nh nix ];
     text = builtins.readFile ./hawker-switch.sh;
+    excludeShellChecks = [ "SC2086" "SC2229" ];
   };
 
   # Non-NixOS hosts: git pull + home-manager switch

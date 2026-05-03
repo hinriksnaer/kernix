@@ -1,12 +1,15 @@
 # Hyprland window manager configuration.
 # Theme colors loaded at runtime via source (swapped by hawker-theme-set).
-# Per-host settings (monitor, layout) come from the profile via _module.args.
+# Monitor config comes from config.monitors (set per-host in profiles).
 { config, lib, pkgs, settings, hostname, ... }:
 
 let
   hostSettings = settings.hosts.${hostname};
+  monitors = config.monitors;
+  hasMultipleMonitors = builtins.length monitors > 1;
+  primaryMonitor = lib.findFirst (m: m.primary) (builtins.head monitors) monitors;
+  isHiDPI = builtins.any (m: m.scale > 1.0) monitors;
   isDesktop = hostname == "desktop";
-  isLaptop = hostname == "laptop";
 in
 {
   # ── Wayland packages ──
@@ -52,10 +55,10 @@ in
         "SSH_AUTH_SOCK,$HOME/.ssh/proton-pass-agent.sock"
       ];
 
-      # ── Monitors ──
-      monitor = if isDesktop
-        then [ "HDMI-A-1, 7680x2160@120, auto, 1.5" ]
-        else [ ", preferred, auto, 1" ];
+      # ── Monitors (from config.monitors, set in profiles) ──
+      monitor = map (m:
+        "${m.name}, ${m.resolution}, ${m.position}, ${toString m.scale}"
+      ) monitors;
 
       # ── Input ──
       input = {
@@ -71,7 +74,7 @@ in
         gaps_in = 5;
         gaps_out = 10;
         border_size = 2;
-        layout = if isDesktop then "master" else "dwindle";
+        layout = if isHiDPI then "master" else "dwindle";
         "col.active_border" = "rgba(ff6a1fee)";
         "col.inactive_border" = "rgba(595959aa)";
       };
@@ -158,7 +161,9 @@ in
       cursor = {
         no_hardware_cursors = true;
         hide_on_key_press = true;
-      } // (if isDesktop then { default_monitor = "HDMI-A-1"; } else {});
+      } // lib.optionalAttrs (primaryMonitor.name != "") {
+        default_monitor = primaryMonitor.name;
+      };
 
       xwayland.force_zero_scaling = true;
 

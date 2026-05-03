@@ -26,11 +26,17 @@
       desktop = {
         username = "hawker";
         gpu = "nvidia";
+        monitors = [
+          { name = "HDMI-A-1"; resolution = "7680x2160@120"; scale = 1.5; primary = true; }
+        ];
       };
 
       laptop = {
         username = "hgudmund";
         gpu = "intel";
+        monitors = [
+          { name = ""; resolution = "preferred"; position = "auto"; scale = 1.0; primary = true; }
+        ];
       };
 
       remote = {
