@@ -1,9 +1,12 @@
 # Zsh -- fully managed by Home Manager.
 # Shell integrations for starship, fzf, zoxide, lsd are handled
 # automatically by their respective HM modules in cli-tools.nix.
-{ pkgs, lib, config, ... }:
-
 {
+  pkgs,
+  lib,
+  config,
+  ...
+}: {
   programs.zsh = {
     enable = true;
 

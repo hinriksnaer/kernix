@@ -1,10 +1,11 @@
 # Desktop profile -- user "softmax", terminal + desktop tools.
-{ settings, hostname, ... }:
-
-let
-  username = settings.hosts.${hostname}.username;
-in
 {
+  settings,
+  hostname,
+  ...
+}: let
+  username = settings.hosts.${hostname}.username;
+in {
   imports = [
     ../collections/terminal.nix
     ../collections/desktop.nix

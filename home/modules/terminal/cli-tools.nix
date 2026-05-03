@@ -1,8 +1,6 @@
 # CLI tools -- shared across all profiles.
 # HM handles shell integration (init, keybindings) automatically.
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   programs.starship = {
     enable = true;
     settings = {
@@ -15,7 +13,7 @@
   programs.fzf = {
     enable = true;
     defaultCommand = "fd --type f --hidden --follow --exclude .git";
-    defaultOptions = [ "--height 40%" "--layout=reverse" "--border" ];
+    defaultOptions = ["--height 40%" "--layout=reverse" "--border"];
   };
 
   programs.zoxide.enable = true;
@@ -31,7 +29,7 @@
   programs.fd.enable = true;
 
   # Kitty terminfo for SSH sessions from kitty terminal
-  home.packages = with pkgs; [ kitty.terminfo ];
+  home.packages = with pkgs; [kitty.terminfo];
 
   # Man pager via bat
   home.sessionVariables = {

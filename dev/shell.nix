@@ -6,9 +6,10 @@
 #
 # Usage: nix develop ~/workspace/kernix
 #    or: cd into a project dir with .envrc → direnv auto-enters
-{ pkgs, settings }:
-
-let
+{
+  pkgs,
+  settings,
+}: let
   lib = pkgs.lib;
 
   # Project settings
@@ -24,22 +25,34 @@ let
   inherit (pkgs) kernix-cli;
 
   # ── Base layers ──
-  tooling  = import ./base/tooling.nix { inherit pkgs; };
-  cudaBase = import ./base/cuda.nix    { inherit pkgs; };
+  tooling = import ./base/tooling.nix {inherit pkgs;};
+  cudaBase = import ./base/cuda.nix {inherit pkgs;};
 
   # ── Per-project modules (imported only when enabled) ──
   # Build order matters: pytorch first (provides torch), then downstream.
-  projectOrder = [ "pytorch" "helion" "vllm" ];
+  projectOrder = ["pytorch" "helion" "vllm"];
 
   projectModules = {
-    pytorch = import ./projects/pytorch { inherit pkgs; config = projectSettings.pytorch or {}; };
-    helion  = import ./projects/helion  { inherit pkgs; config = projectSettings.helion or {}; };
-    vllm    = import ./projects/vllm    { inherit pkgs; config = projectSettings.vllm or {}; };
+    pytorch = import ./projects/pytorch {
+      inherit pkgs;
+      config = projectSettings.pytorch or {};
+    };
+    helion = import ./projects/helion {
+      inherit pkgs;
+      config = projectSettings.helion or {};
+    };
+    vllm = import ./projects/vllm {
+      inherit pkgs;
+      config = projectSettings.vllm or {};
+    };
   };
 
-  enabledNames = builtins.filter (name:
-    (projectSettings.${name} or {}).enable or false
-  ) projectOrder;
+  enabledNames =
+    builtins.filter (
+      name:
+        (projectSettings.${name} or {}).enable or false
+    )
+    projectOrder;
 
   enabledModules = map (name: projectModules.${name}) enabledNames;
 
@@ -47,34 +60,35 @@ let
   mergedPackages = lib.concatMap (m: m.packages) enabledModules;
   mergedEnv = lib.foldl' (a: b: a // b) {} (map (m: m.env) enabledModules);
 in
-pkgs.mkShell ({
-  name = "kernix-dev";
+  pkgs.mkShell ({
+      name = "kernix-dev";
 
-  packages = [ kernix-cli.kernix-dev ] ++ tooling.packages ++ cudaBase.packages ++ mergedPackages;
+      packages = [kernix-cli.kernix-dev] ++ tooling.packages ++ cudaBase.packages ++ mergedPackages;
 
-  # CUDA binary cache
-  NIX_CONFIG = "extra-substituters = https://cache.nixos-cuda.org\nextra-trusted-public-keys = cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M=";
+      # CUDA binary cache
+      NIX_CONFIG = "extra-substituters = https://cache.nixos-cuda.org\nextra-trusted-public-keys = cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M=";
 
-  KERNIX_ENABLED_PROJECTS = builtins.concatStringsSep " " enabledNames;
+      KERNIX_ENABLED_PROJECTS = builtins.concatStringsSep " " enabledNames;
 
-  # ── Shell hook (runtime-dependent vars only) ──
-  shellHook = ''
-    export KERNIX_ROOT="''${KERNIX_ROOT:-$HOME/kernix}"
-    export CCACHE_DIR="$HOME/.cache/ccache"
-    ${lib.optionalString (cudaVisibleDevices != "") ''export CUDA_VISIBLE_DEVICES="${cudaVisibleDevices}"''}
+      # ── Shell hook (runtime-dependent vars only) ──
+      shellHook = ''
+        export KERNIX_ROOT="''${KERNIX_ROOT:-$HOME/kernix}"
+        export CCACHE_DIR="$HOME/.cache/ccache"
+        ${lib.optionalString (cudaVisibleDevices != "") ''export CUDA_VISIBLE_DEVICES="${cudaVisibleDevices}"''}
 
-    # Symlink host NVIDIA driver libs into a clean directory so we can add
-    # them to LD_LIBRARY_PATH without exposing the host glibc.
-    _nv="$HOME/.cache/kernix/nvidia-driver-libs"
-    mkdir -p "$_nv"
-    for _f in /usr/lib64/libcuda.so* /usr/lib64/libnvidia*.so* /usr/lib64/libnvcuvid*.so*; do
-      [ -e "$_f" ] && ln -sf "$_f" "$_nv/" 2>/dev/null
-    done
-    export LD_LIBRARY_PATH="${cudaBase.libPath}:$_nv''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+        # Symlink host NVIDIA driver libs into a clean directory so we can add
+        # them to LD_LIBRARY_PATH without exposing the host glibc.
+        _nv="$HOME/.cache/kernix/nvidia-driver-libs"
+        mkdir -p "$_nv"
+        for _f in /usr/lib64/libcuda.so* /usr/lib64/libnvidia*.so* /usr/lib64/libnvcuvid*.so*; do
+          [ -e "$_f" ] && ln -sf "$_f" "$_nv/" 2>/dev/null
+        done
+        export LD_LIBRARY_PATH="${cudaBase.libPath}:$_nv''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
-    # Activate shared venv if it exists
-    if [ -f "${venv}/bin/activate" ]; then
-      source "${venv}/bin/activate"
-    fi
-  '';
-} // cudaBase.env // mergedEnv)
+        # Activate shared venv if it exists
+        if [ -f "${venv}/bin/activate" ]; then
+          source "${venv}/bin/activate"
+        fi
+      '';
+    }
+    // cudaBase.env // mergedEnv)

@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ../modules/apps/podman.nix
     ../modules/apps/proton-pass.nix

@@ -1,8 +1,9 @@
 # vLLM project module.
 # Returns packages and env vars for building vLLM.
-{ pkgs, config }:
-
 {
+  pkgs,
+  config,
+}: {
   packages = [];
 
   env = {

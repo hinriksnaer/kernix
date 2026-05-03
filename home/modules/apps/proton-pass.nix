@@ -1,9 +1,11 @@
 # Proton Pass -- password manager and SSH agent.
 # System-level parts (gnome-keyring, PAM, systemd socket) stay in
 # modules/apps/proton-pass.nix.
-{ pkgs, config, ... }:
-
-let
+{
+  pkgs,
+  config,
+  ...
+}: let
   agentSocket = "/home/${config.home.username}/.ssh/proton-pass-agent.sock";
 
   # Wrap pass-cli to work around NixOS kernel keyring group permissions bug.
@@ -15,7 +17,7 @@ let
   # Upstream: https://github.com/NixOS/nixpkgs/issues/497155
   pass-cli-wrapped = pkgs.writeShellApplication {
     name = "pass-cli";
-    runtimeInputs = [ pkgs.keyutils pkgs.proton-pass-cli ];
+    runtimeInputs = [pkgs.keyutils pkgs.proton-pass-cli];
     text = ''
       keyctl new_session >/dev/null 2>&1 || true
       exec pass-cli "$@"
@@ -25,7 +27,7 @@ let
   # Helper to check and set up the Proton Pass SSH agent connection.
   pass-ssh-setup = pkgs.writeShellApplication {
     name = "pass-ssh-setup";
-    runtimeInputs = [ pkgs.openssh ];
+    runtimeInputs = [pkgs.openssh];
     text = ''
       SOCK="${agentSocket}"
 
@@ -47,12 +49,11 @@ let
       fi
     '';
   };
-in
-{
+in {
   home.packages = [
     pass-cli-wrapped
     pass-ssh-setup
-    pkgs.proton-pass     # Desktop app (unlocks shared vaults)
-    pkgs.keyutils        # keyctl for Linux kernel keyring
+    pkgs.proton-pass # Desktop app (unlocks shared vaults)
+    pkgs.keyutils # keyctl for Linux kernel keyring
   ];
 }

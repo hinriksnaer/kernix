@@ -1,9 +1,7 @@
 # Hyprland -- system-level only.
 # User configuration (keybinds, appearance, env vars, packages) is managed
 # by Home Manager (home/modules/desktop/hyprland.nix).
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   programs.hyprland = {
     enable = true;
     withUWSM = true;

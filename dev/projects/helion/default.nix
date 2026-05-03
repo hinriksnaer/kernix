@@ -1,19 +1,24 @@
 # Helion project module.
 # Returns packages and env vars for the Helion compiler.
-{ pkgs, config }:
-
-let
-  backends = config.backends or [ "cuda" ];
+{
+  pkgs,
+  config,
+}: let
+  backends = config.backends or ["cuda"];
   hasCute = builtins.elem "cute" backends;
   pipExtras = let
     extras = pkgs.lib.optional hasCute "cute-cu12";
     joined = builtins.concatStringsSep "," extras;
-  in if joined != "" then "[${joined}]" else "";
-in
-{
-  packages = with pkgs; [
-    clang_20
-  ] ++ pkgs.lib.optional hasCute pkgs.cudaPackages.cutlass;
+  in
+    if joined != ""
+    then "[${joined}]"
+    else "";
+in {
+  packages = with pkgs;
+    [
+      clang_20
+    ]
+    ++ pkgs.lib.optional hasCute pkgs.cudaPackages.cutlass;
 
   env = {
     HELION_REPO = config.repo or "https://github.com/pytorch/helion.git";

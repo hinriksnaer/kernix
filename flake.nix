@@ -10,119 +10,135 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... } @inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      pkgsUnfree = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = builtins.attrValues self.overlays;
-      };
-      lib = nixpkgs.lib;
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    ...
+  } @ inputs: let
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
+    pkgsUnfree = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+      overlays = builtins.attrValues self.overlays;
+    };
+    lib = nixpkgs.lib;
 
-      # Common modules: user settings (imported by all machine configs)
-      commonModules = [
-        ./settings.nix
-      ];
+    # Common modules: user settings (imported by all machine configs)
+    commonModules = [
+      ./settings.nix
+    ];
 
-      # Per-host settings (read directly, not through module system)
-      settings = (import ./settings.nix { }).kernix;
+    # Per-host settings (read directly, not through module system)
+    settings = (import ./settings.nix {}).kernix;
 
-      # Auto-discover .nix files from a directory
-      discoverModules = dir:
-        lib.mapAttrs'
-          (name: _: lib.nameValuePair
-            (lib.removeSuffix ".nix" name)
-            (import (dir + "/${name}"))
-          )
-          (lib.filterAttrs
-            (name: type: type == "regular" && lib.hasSuffix ".nix" name)
-            (builtins.readDir dir)
-          );
+    # Auto-discover .nix files from a directory
+    discoverModules = dir:
+      lib.mapAttrs'
+      (
+        name: _:
+          lib.nameValuePair
+          (lib.removeSuffix ".nix" name)
+          (import (dir + "/${name}"))
+      )
+      (
+        lib.filterAttrs
+        (name: type: type == "regular" && lib.hasSuffix ".nix" name)
+        (builtins.readDir dir)
+      );
 
-      # Auto-discover directories with default.nix
-      discoverDirs = dir:
-        lib.mapAttrs'
-          (name: _: lib.nameValuePair name (import (dir + "/${name}")))
-          (lib.filterAttrs
-            (name: type: type == "directory" && builtins.pathExists (dir + "/${name}/default.nix"))
-            (builtins.readDir dir)
-          );
+    # Auto-discover directories with default.nix
+    discoverDirs = dir:
+      lib.mapAttrs'
+      (name: _: lib.nameValuePair name (import (dir + "/${name}")))
+      (
+        lib.filterAttrs
+        (name: type: type == "directory" && builtins.pathExists (dir + "/${name}/default.nix"))
+        (builtins.readDir dir)
+      );
 
-      # Stable channel for pinning reliability-sensitive packages
-      pkgs-stable = import inputs.nixpkgs-stable {
-        inherit system;
-        config.allowUnfree = true;
-      };
+    # Stable channel for pinning reliability-sensitive packages
+    pkgs-stable = import inputs.nixpkgs-stable {
+      inherit system;
+      config.allowUnfree = true;
+    };
 
-      # Home Manager NixOS integration -- auto-applies HM on nixos-rebuild switch.
-      hmNixosModule = hostname: {
-        imports = [ home-manager.nixosModules.home-manager ];
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-        home-manager.backupFileExtension = "hm-backup";
-        home-manager.extraSpecialArgs = { inherit pkgs-stable; };
-        home-manager.users.${settings.hosts.${hostname}.username} =
-          import ./home { inherit hostname settings; };
-      };
+    # Home Manager NixOS integration -- auto-applies HM on nixos-rebuild switch.
+    hmNixosModule = hostname: {
+      imports = [home-manager.nixosModules.home-manager];
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+      home-manager.backupFileExtension = "hm-backup";
+      home-manager.extraSpecialArgs = {inherit pkgs-stable;};
+      home-manager.users.${settings.hosts.${hostname}.username} =
+        import ./home {inherit hostname settings;};
+    };
+  in {
+    # ── Formatter (nix fmt) ──
+    formatter.${system} = pkgs.alejandra;
 
-    in {
+    # ── Overlays ──
+    overlays = import ./overlays {inherit inputs;};
 
-      # ── Formatter (nix fmt) ──
-      formatter.${system} = pkgs.alejandra;
+    # ── Custom packages (nix build .#<name>) ──
+    packages.${system} = {
+      inherit (pkgsUnfree.kernix-cli) kernix kernix-dev;
+    };
 
-      # ── Overlays ──
-      overlays = import ./overlays { inherit inputs; };
+    # ── Individually importable modules (auto-discovered) ──
+    nixosModules = let
+      discoverAll = dir: (discoverModules dir) // (discoverDirs dir);
+    in
+      (discoverAll ./modules/core)
+      // (discoverAll ./modules/desktop)
+      // (discoverAll ./modules/hardware)
+      // (discoverAll ./modules/apps)
+      // (discoverAll ./modules/gaming)
+      // (discoverModules ./roles);
 
-      # ── Custom packages (nix build .#<name>) ──
-      packages.${system} = {
-        inherit (pkgsUnfree.kernix-cli) kernix kernix-dev;
-      };
-
-      # ── Individually importable modules (auto-discovered) ──
-      nixosModules = let
-        discoverAll = dir: (discoverModules dir) // (discoverDirs dir);
-      in
-        (discoverAll ./modules/core) //
-        (discoverAll ./modules/desktop) //
-        (discoverAll ./modules/hardware) //
-        (discoverAll ./modules/apps) //
-        (discoverAll ./modules/gaming) //
-        (discoverModules ./roles);
-
-      # ── Machine configurations ──
-      nixosConfigurations = let
-        mkHost = hostname: nixpkgs.lib.nixosSystem {
+    # ── Machine configurations ──
+    nixosConfigurations = let
+      mkHost = hostname:
+        nixpkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit inputs; };
-          modules = commonModules ++ [
-            ./hosts/${hostname}/default.nix
-            (hmNixosModule hostname)
-            { nixpkgs.overlays = builtins.attrValues self.overlays; }
-          ];
+          specialArgs = {inherit inputs;};
+          modules =
+            commonModules
+            ++ [
+              ./hosts/${hostname}/default.nix
+              (hmNixosModule hostname)
+              {nixpkgs.overlays = builtins.attrValues self.overlays;}
+            ];
         };
-      in {
-        desktop = mkHost "desktop";
-        laptop = mkHost "laptop";
-      };
+    in {
+      desktop = mkHost "desktop";
+      laptop = mkHost "laptop";
+    };
 
-      # ── Home Manager (standalone, user@host convention) ──
-      homeConfigurations = lib.mapAttrs'
-        (hostName: hostCfg: lib.nameValuePair
+    # ── Home Manager (standalone, user@host convention) ──
+    homeConfigurations =
+      lib.mapAttrs'
+      (
+        hostName: hostCfg:
+          lib.nameValuePair
           "${hostCfg.username}@${hostName}"
           (home-manager.lib.homeManagerConfiguration {
             pkgs = pkgsUnfree;
             modules = [
-              (import ./home { hostname = hostName; inherit settings; })
+              (import ./home {
+                hostname = hostName;
+                inherit settings;
+              })
             ];
           })
-        ) settings.hosts;
+      )
+      settings.hosts;
 
-      # ── Development shells ──
-      devShells.${system}.default = import ./dev/shell.nix {
-        pkgs = pkgsUnfree;
-        inherit settings;
-      };
+    # ── Development shells ──
+    devShells.${system}.default = import ./dev/shell.nix {
+      pkgs = pkgsUnfree;
+      inherit settings;
     };
+  };
 }

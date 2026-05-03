@@ -1,6 +1,4 @@
-{ config, ... }:
-
-{
+{config, ...}: {
   imports = [
     ./hardware-configuration.nix
     ../../roles/core.nix

@@ -3,22 +3,23 @@
 #
 # hmProfile: the homeConfigurations key (e.g. "hgudmund@remote").
 #            Required for kernix-hm-switch. Pass null when not needed.
-{ pkgs, hmProfile ? null }:
-
 {
+  pkgs,
+  hmProfile ? null,
+}: {
   # NixOS hosts: rebuild with subcommands (rebuild/boot/test/update/cleanup/list-gens)
   kernix = pkgs.writeShellApplication {
     name = "kernix";
-    runtimeInputs = with pkgs; [ coreutils hostname jq libnotify nh nix ];
+    runtimeInputs = with pkgs; [coreutils hostname jq libnotify nh nix];
     text = builtins.readFile ./kernix.sh;
-    excludeShellChecks = [ "SC2086" "SC2229" ];
+    excludeShellChecks = ["SC2086" "SC2229"];
   };
 
   # Non-NixOS hosts: git pull + home-manager switch
   kernix-hm-switch = assert hmProfile != null;
     pkgs.writeShellApplication {
       name = "kernix-hm-switch";
-      runtimeInputs = with pkgs; [ git ];
+      runtimeInputs = with pkgs; [git];
       text = ''
         KERNIX_ROOT="''${KERNIX_ROOT:-$HOME/kernix}"
         echo ":: pulling latest config"
@@ -33,6 +34,6 @@
   kernix-dev = pkgs.writeShellApplication {
     name = "kernix-dev";
     text = builtins.readFile ./kernix-dev.sh;
-    excludeShellChecks = [ "SC1091" "SC2086" "SC2155" ];
+    excludeShellChecks = ["SC1091" "SC2086" "SC2155"];
   };
 }

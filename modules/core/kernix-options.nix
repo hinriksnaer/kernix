@@ -1,21 +1,46 @@
 # Typed option declarations for all configuration.
 # Global values are set in settings.nix. Per-host values are set by each host
 # config reading from kernix.hosts.<name>. Type errors are caught at evaluation time.
-{ lib, ... }:
-
-with lib;
-
-let
+{lib, ...}:
+with lib; let
   # Monitor submodule (shared between kernix.hosts.<name>.monitors and HM config.monitors)
   monitorSubmodule = types.submodule {
     options = {
-      name = mkOption { type = types.str; default = ""; description = "Output name (e.g. HDMI-A-1). Empty for auto."; };
-      resolution = mkOption { type = types.str; default = "preferred"; description = "Resolution (e.g. 7680x2160@120)."; };
-      position = mkOption { type = types.str; default = "auto"; description = "Position (e.g. 0x0, auto)."; };
-      scale = mkOption { type = types.float; default = 1.0; description = "Scale factor."; };
-      primary = mkOption { type = types.bool; default = false; description = "Primary monitor."; };
-      enabled = mkOption { type = types.bool; default = true; description = "Whether enabled."; };
-      workspace = mkOption { type = types.nullOr types.str; default = null; description = "Default workspace."; };
+      name = mkOption {
+        type = types.str;
+        default = "";
+        description = "Output name (e.g. HDMI-A-1). Empty for auto.";
+      };
+      resolution = mkOption {
+        type = types.str;
+        default = "preferred";
+        description = "Resolution (e.g. 7680x2160@120).";
+      };
+      position = mkOption {
+        type = types.str;
+        default = "auto";
+        description = "Position (e.g. 0x0, auto).";
+      };
+      scale = mkOption {
+        type = types.float;
+        default = 1.0;
+        description = "Scale factor.";
+      };
+      primary = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Primary monitor.";
+      };
+      enabled = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether enabled.";
+      };
+      workspace = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Default workspace.";
+      };
     };
   };
 
@@ -27,13 +52,21 @@ let
         description = "System username for this host.";
       };
       gpu = mkOption {
-        type = types.enum [ "nvidia" "intel" "amd" "none" ];
+        type = types.enum ["nvidia" "intel" "amd" "none"];
         default = "none";
         description = "GPU driver to use on this host.";
       };
       monitors = mkOption {
         type = types.listOf monitorSubmodule;
-        default = [{ name = ""; resolution = "preferred"; position = "auto"; scale = 1.0; primary = true; }];
+        default = [
+          {
+            name = "";
+            resolution = "preferred";
+            position = "auto";
+            scale = 1.0;
+            primary = true;
+          }
+        ];
         description = "Monitor configurations for this host.";
       };
       cudaVisibleDevices = mkOption {
@@ -48,8 +81,7 @@ let
       };
     };
   };
-in
-{
+in {
   options.kernix = {
     # ── Active host options (set by each host config) ──
     username = mkOption {
@@ -58,7 +90,7 @@ in
     };
 
     gpu = mkOption {
-      type = types.enum [ "nvidia" "intel" "amd" "none" ];
+      type = types.enum ["nvidia" "intel" "amd" "none"];
       default = "none";
       description = "GPU driver to use. Configures drivers, kernel modules, and VAAPI.";
       example = "nvidia";

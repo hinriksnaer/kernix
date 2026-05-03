@@ -1,9 +1,7 @@
 # Podman -- system-level only.
 # User tools (podman-compose) are managed by Home Manager
 # (home/modules/apps/apps.nix).
-{ config, ... }:
-
-{
+{config, ...}: {
   virtualisation.podman = {
     enable = true;
     dockerCompat = true;
@@ -12,5 +10,5 @@
 
   security.unprivilegedUsernsClone = true;
 
-  users.users.${config.kernix.username}.extraGroups = [ "podman" ];
+  users.users.${config.kernix.username}.extraGroups = ["podman"];
 }

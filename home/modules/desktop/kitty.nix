@@ -1,8 +1,6 @@
 # Kitty terminal emulator.
 # Theme colors loaded at runtime via include (swapped by kernix-theme-set).
-{ config, ... }:
-
-{
+{config, ...}: {
   programs.kitty = {
     enable = true;
 
@@ -44,7 +42,7 @@
   };
 
   # Create empty stub so kitty doesn't error before first theme switch
-  home.activation.kittyThemeStub = config.lib.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.kittyThemeStub = config.lib.dag.entryAfter ["linkGeneration"] ''
     [ -e "$HOME/.config/kitty/theme.conf" ] || touch "$HOME/.config/kitty/theme.conf"
   '';
 }

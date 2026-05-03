@@ -1,13 +1,16 @@
 # PyTorch project module.
 # Returns packages and env vars needed to build PyTorch from source.
-{ pkgs, config }:
-
-let
+{
+  pkgs,
+  config,
+}: let
   cudaArch = config.cudaArch or "9.0";
   maxJobs = toString (config.maxJobs or 32);
-  buildTests = if (config.buildTests or false) then "1" else "0";
-in
-{
+  buildTests =
+    if (config.buildTests or false)
+    then "1"
+    else "0";
+in {
   packages = with pkgs; [
     gfortran
     openblas

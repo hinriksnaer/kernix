@@ -1,9 +1,7 @@
 # Audio -- system-level only.
 # User tools (pavucontrol, pamixer, volume-control) are managed
 # by Home Manager (home/modules/desktop/audio.nix).
-{ config, ... }:
-
-{
+{config, ...}: {
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -16,5 +14,5 @@
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
-  users.users.${config.kernix.username}.extraGroups = [ "audio" ];
+  users.users.${config.kernix.username}.extraGroups = ["audio"];
 }

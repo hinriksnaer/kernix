@@ -1,8 +1,6 @@
 # Git configuration -- shared across all profiles.
 # Reads user identity from settings.nix.
-{ settings, ... }:
-
-{
+{settings, ...}: {
   programs.git = {
     enable = true;
     signing.format = "openpgp";

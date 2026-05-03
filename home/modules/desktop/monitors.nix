@@ -1,10 +1,7 @@
 # Typed monitor configuration -- consumed by hyprland.nix and other WM modules.
 # Values flow from settings.nix → profiles → config.monitors.
-{ lib, ... }:
-
-with lib;
-
-{
+{lib, ...}:
+with lib; {
   options.monitors = mkOption {
     type = types.listOf (types.submodule {
       options = {
@@ -46,7 +43,13 @@ with lib;
       };
     });
     default = [
-      { name = ""; resolution = "preferred"; position = "auto"; scale = 1.0; primary = true; }
+      {
+        name = "";
+        resolution = "preferred";
+        position = "auto";
+        scale = 1.0;
+        primary = true;
+      }
     ];
     description = "Monitor configurations. Set per-host in profiles.";
   };

@@ -1,8 +1,10 @@
 # Rofi application launcher (Wayland).
 # Theme loaded at runtime via @theme directive (swapped by kernix-theme-set).
-{ pkgs, config, ... }:
-
 {
+  pkgs,
+  config,
+  ...
+}: {
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
@@ -28,7 +30,7 @@
   };
 
   # Create empty stub so rofi doesn't error before first theme switch
-  home.activation.rofiThemeStub = config.lib.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.rofiThemeStub = config.lib.dag.entryAfter ["linkGeneration"] ''
     [ -e "$HOME/.config/rofi/theme.rasi" ] || touch "$HOME/.config/rofi/theme.rasi"
   '';
 }

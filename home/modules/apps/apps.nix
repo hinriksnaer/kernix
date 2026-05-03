@@ -1,8 +1,6 @@
 # Desktop applications and utilities.
 # Single-package apps that don't need NixOS-level configuration.
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   home.packages = with pkgs; [
     # Applications
     discord

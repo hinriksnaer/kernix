@@ -1,9 +1,7 @@
 # Audio control tools.
 # System-level parts (PipeWire, rtkit, user groups) stay in
 # modules/hardware/audio/default.nix.
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   home.packages = with pkgs; [
     pavucontrol
     pamixer
@@ -11,7 +9,7 @@
     alsa-utils
     (writeShellApplication {
       name = "volume-control";
-      runtimeInputs = [ wireplumber libnotify ];
+      runtimeInputs = [wireplumber libnotify];
       text = builtins.readFile ./scripts/volume-control.sh;
     })
   ];

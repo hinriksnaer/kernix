@@ -1,20 +1,17 @@
 # CUDA-specific packages and environment variables.
 # Provides the GPU toolchain base for all CUDA project modules.
-{ pkgs }:
-
-let
+{pkgs}: let
   inherit (pkgs) cudaPackages;
   cudaToolkit = cudaPackages.cudatoolkit;
   cudnn = cudaPackages.cudnn;
   cudaGcc = cudaPackages.backendStdenv.cc;
-in
-{
+in {
   packages = [
     cudaToolkit
     cudnn
     cudnn.include
     cudnn.lib
-    cudaGcc       # GCC 14 (CUDA 12.9 requires <=14)
+    cudaGcc # GCC 14 (CUDA 12.9 requires <=14)
   ];
 
   env = {

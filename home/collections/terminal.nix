@@ -1,8 +1,6 @@
 # Terminal collection -- all terminal tool configs.
 # Import this in a profile to get the full terminal setup.
-{ ... }:
-
-{
+{...}: {
   imports = [
     ../modules/terminal/git.nix
     ../modules/terminal/tmux.nix

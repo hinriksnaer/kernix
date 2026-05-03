@@ -1,10 +1,11 @@
 # Container profile -- user "dev", terminal tools.
-{ settings, hostname, ... }:
-
-let
-  username = settings.hosts.${hostname}.username;
-in
 {
+  settings,
+  hostname,
+  ...
+}: let
+  username = settings.hosts.${hostname}.username;
+in {
   imports = [
     ../collections/terminal.nix
     # ../collections/desktop.nix     # not needed in container

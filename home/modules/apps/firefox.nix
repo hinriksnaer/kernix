@@ -1,13 +1,21 @@
 # Firefox with Vimium (vim bindings) and Proton Pass.
 # Extensions are fetched from addons.mozilla.org and installed declaratively.
-{ pkgs, config, ... }:
-
-let
+{
+  pkgs,
+  config,
+  ...
+}: let
   # Minimal builder for Firefox XPI addons (avoids NUR dependency).
-  buildFirefoxXpiAddon = { pname, version, addonId, url, hash }:
+  buildFirefoxXpiAddon = {
+    pname,
+    version,
+    addonId,
+    url,
+    hash,
+  }:
     pkgs.stdenv.mkDerivation {
       inherit pname version;
-      src = pkgs.fetchurl { inherit url hash; };
+      src = pkgs.fetchurl {inherit url hash;};
       preferLocalBuild = true;
       allowSubstitutes = true;
       buildCommand = ''
@@ -15,7 +23,7 @@ let
         mkdir -p "$dst"
         install -v -m644 "$src" "$dst/${addonId}.xpi"
       '';
-      passthru = { inherit addonId; };
+      passthru = {inherit addonId;};
     };
 
   vimium = buildFirefoxXpiAddon {
@@ -41,8 +49,7 @@ let
     url = "https://addons.mozilla.org/firefox/downloads/file/3972754/ayu_dark_theme-1.0.xpi";
     hash = "sha256-3Wz8TY2pd/K6HEP1T3f5iszCZRB15G69Gxotm5hPVQA=";
   };
-in
-{
+in {
   programs.firefox = {
     enable = true;
     configPath = "${config.xdg.configHome}/mozilla/firefox";

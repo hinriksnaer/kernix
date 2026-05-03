@@ -1,19 +1,22 @@
-{ config, pkgs, lib, inputs, ... }:
-
-let
-  inherit (config.kernix) username;
-in
 {
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}: let
+  inherit (config.kernix) username;
+in {
   # ── Nix settings ──
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = ["nix-command" "flakes"];
     auto-optimise-store = true;
     max-jobs = "auto";
   };
 
   # Pin flake registry + nixPath to match this system's inputs.
   # Ensures `nix run nixpkgs#foo` uses the same nixpkgs as the system.
-  nix.registry = lib.mapAttrs (_: flake: { inherit flake; }) inputs;
+  nix.registry = lib.mapAttrs (_: flake: {inherit flake;}) inputs;
   nix.nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
 
   nixpkgs.config.allowUnfree = true;
@@ -27,7 +30,7 @@ in
   # (e.g. podman adds "docker", audio adds "audio").
   users.users.${username} = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = ["wheel"];
     shell = pkgs.zsh;
   };
 
@@ -35,8 +38,16 @@ in
 
   # ── Core system packages ──
   environment.systemPackages = with pkgs; [
-    curl wget which coreutils findutils gnused gnugrep gawk
-    util-linux procps
+    curl
+    wget
+    which
+    coreutils
+    findutils
+    gnused
+    gnugrep
+    gawk
+    util-linux
+    procps
     pkgs.kernix-cli.kernix
   ];
 

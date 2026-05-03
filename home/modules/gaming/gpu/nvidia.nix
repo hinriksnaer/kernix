@@ -1,12 +1,14 @@
 # NVIDIA gaming session variables -- G-Sync and VRR.
 # System-level parts (driver, kernel modules, container toolkit) stay in
 # modules/hardware/gpu/nvidia.nix.
-{ lib, settings, hostname, ... }:
-
-let
-  hasNvidia = (settings.hosts.${hostname}.gpu or "none") == "nvidia";
-in
 {
+  lib,
+  settings,
+  hostname,
+  ...
+}: let
+  hasNvidia = (settings.hosts.${hostname}.gpu or "none") == "nvidia";
+in {
   home.sessionVariables = lib.optionalAttrs hasNvidia {
     __GL_GSYNC_ALLOWED = "1";
     __GL_VRR_ALLOWED = "1";

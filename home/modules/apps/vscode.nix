@@ -1,8 +1,10 @@
 # Visual Studio Code with extensions and theme.
 # Extensions are managed declaratively -- install/update via kernix rebuild.
-{ pkgs, lib, ... }:
-
-let
+{
+  pkgs,
+  lib,
+  ...
+}: let
   # Extensions shared between local and remote SSH sessions.
   sharedExtensions = with pkgs.vscode-extensions; [
     # AI
@@ -22,8 +24,7 @@ let
 
   # Derive "publisher.name" identifiers for remote.SSH.defaultExtensions.
   sharedExtensionIds = map (ext: "${ext.vscodeExtPublisher}.${ext.vscodeExtName}") sharedExtensions;
-in
-{
+in {
   programs.vscode = {
     enable = true;
     mutableExtensionsDir = false;
@@ -32,10 +33,12 @@ in
       enableUpdateCheck = false;
       enableExtensionUpdateCheck = false;
 
-      extensions = sharedExtensions ++ (with pkgs.vscode-extensions; [
-        # Remote
-        ms-vscode-remote.remote-ssh
-      ]);
+      extensions =
+        sharedExtensions
+        ++ (with pkgs.vscode-extensions; [
+          # Remote
+          ms-vscode-remote.remote-ssh
+        ]);
 
       userSettings = {
         "workbench.colorTheme" = "Ayu Dark";

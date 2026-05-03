@@ -2,9 +2,7 @@
 # Vendor-specific config lives in nvidia.nix (others added as needed).
 # System-level parts (hardware.graphics.enable32Bit) stay in
 # modules/gaming/gpu-extra.nix.
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   imports = [
     ./nvidia.nix
   ];

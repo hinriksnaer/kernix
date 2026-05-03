@@ -1,9 +1,7 @@
 # nh -- Nix Helper for cleaner rebuild UX.
 # Provides diff display, nix-output-monitor, and automatic GC.
 # Usage: nh os switch, nh os boot, nh os test, nh clean all
-{ config, ... }:
-
-{
+{config, ...}: {
   programs.nh = {
     enable = true;
     flake = "/home/${config.kernix.username}/kernix";

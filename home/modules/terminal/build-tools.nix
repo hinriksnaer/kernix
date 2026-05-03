@@ -1,7 +1,5 @@
 # Build tools -- compilers, linkers, and archive utilities.
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   home.packages = with pkgs; [
     gcc
     gnumake

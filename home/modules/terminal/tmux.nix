@@ -1,7 +1,5 @@
 # Tmux configuration -- shared across all profiles.
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   programs.tmux = {
     enable = true;
     prefix = "C-Space";

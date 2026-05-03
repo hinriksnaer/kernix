@@ -1,8 +1,6 @@
 # Hyprlock screen locker.
 # Theme colors loaded at runtime via source (swapped by kernix-theme-set).
-{ config, ... }:
-
-{
+{config, ...}: {
   programs.hyprlock = {
     enable = true;
 
@@ -11,11 +9,13 @@
     '';
 
     settings = {
-      background = [{
-        monitor = "";
-        color = "$color";
-        blur_passes = 3;
-      }];
+      background = [
+        {
+          monitor = "";
+          color = "$color";
+          blur_passes = 3;
+        }
+      ];
 
       general = {
         disable_loading_bar = true;
@@ -23,34 +23,36 @@
         grace = 0;
       };
 
-      input-field = [{
-        monitor = "";
-        size = "400, 60";
-        position = "0, 0";
-        halign = "center";
-        valign = "center";
+      input-field = [
+        {
+          monitor = "";
+          size = "400, 60";
+          position = "0, 0";
+          halign = "center";
+          valign = "center";
 
-        inner_color = "$inner_color";
-        outer_color = "$outer_color";
-        outline_thickness = 3;
+          inner_color = "$inner_color";
+          outer_color = "$outer_color";
+          outline_thickness = 3;
 
-        font_family = "CaskaydiaMono Nerd Font";
-        font_color = "$font_color";
+          font_family = "CaskaydiaMono Nerd Font";
+          font_color = "$font_color";
 
-        placeholder_text = "Enter Password";
-        check_color = "$check_color";
-        fail_text = "<i>$FAIL ($ATTEMPTS)</i>";
-        fail_color = "$fail_color";
+          placeholder_text = "Enter Password";
+          check_color = "$check_color";
+          fail_text = "<i>$FAIL ($ATTEMPTS)</i>";
+          fail_color = "$fail_color";
 
-        rounding = 0;
-        shadow_passes = 0;
-        fade_on_empty = false;
-      }];
+          rounding = 0;
+          shadow_passes = 0;
+          fade_on_empty = false;
+        }
+      ];
     };
   };
 
   # Create empty stub so hyprlock doesn't error before first theme switch
-  home.activation.hyprlockThemeStub = config.lib.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.hyprlockThemeStub = config.lib.dag.entryAfter ["linkGeneration"] ''
     mkdir -p "$HOME/.config/hypr"
     [ -e "$HOME/.config/hypr/hyprlock-theme.conf" ] || touch "$HOME/.config/hypr/hyprlock-theme.conf"
   '';

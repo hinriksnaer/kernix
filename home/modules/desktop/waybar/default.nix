@@ -1,8 +1,6 @@
 # Waybar status bar.
 # Theme CSS loaded at runtime via @import (swapped by kernix-theme-set).
-{ config, ... }:
-
-{
+{config, ...}: {
   programs.waybar = {
     enable = true;
 
@@ -13,8 +11,8 @@
       spacing = 0;
       height = 26;
 
-      modules-left = [ "custom/kernix" "hyprland/workspaces" ];
-      modules-center = [ "clock" ];
+      modules-left = ["custom/kernix" "hyprland/workspaces"];
+      modules-center = ["clock"];
       modules-right = [
         "group/hardware-cpu"
         "group/hardware-gpu"
@@ -33,12 +31,23 @@
         format = "{icon}";
         format-icons = {
           default = "";
-          "1" = "1"; "2" = "2"; "3" = "3"; "4" = "4"; "5" = "5";
-          "6" = "6"; "7" = "7"; "8" = "8"; "9" = "9";
+          "1" = "1";
+          "2" = "2";
+          "3" = "3";
+          "4" = "4";
+          "5" = "5";
+          "6" = "6";
+          "7" = "7";
+          "8" = "8";
+          "9" = "9";
           active = "󱓻";
         };
         persistent-workspaces = {
-          "1" = []; "2" = []; "3" = []; "4" = []; "5" = [];
+          "1" = [];
+          "2" = [];
+          "3" = [];
+          "4" = [];
+          "5" = [];
         };
       };
 
@@ -56,7 +65,7 @@
       };
 
       network = {
-        format-icons = [ "󰤯" "󰤟" "󰤢" "󰤥" "󰤨" ];
+        format-icons = ["󰤯" "󰤟" "󰤢" "󰤥" "󰤨"];
         format = "{icon}";
         format-wifi = "{icon}";
         format-ethernet = "󰀂";
@@ -75,14 +84,17 @@
         format-charging = "{capacity}% {icon}";
         format-plugged = "{capacity}% ";
         format-icons = {
-          charging = [ "󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅" ];
-          default = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
+          charging = ["󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅"];
+          default = ["󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
         };
         format-full = "󰂅";
         tooltip-format-discharging = "{power:>1.0f}W↓ {capacity}%";
         tooltip-format-charging = "{power:>1.0f}W↑ {capacity}%";
         interval = 5;
-        states = { warning = 20; critical = 10; };
+        states = {
+          warning = 20;
+          critical = 10;
+        };
       };
 
       bluetooth = {
@@ -95,7 +107,7 @@
 
       backlight = {
         format = "{icon}";
-        format-icons = [ "" "" "" "" "" "" "" "" "" ];
+        format-icons = ["" "" "" "" "" "" "" "" ""];
         tooltip-format = "Brightness {percent}%";
         scroll-step = 5;
         on-scroll-up = "brightness-control up";
@@ -109,7 +121,7 @@
         tooltip-format = "Playing at {volume}%";
         scroll-step = 5;
         format-muted = "";
-        format-icons.default = [ "" "" "" ];
+        format-icons.default = ["" "" ""];
       };
 
       "group/tray-expander" = {
@@ -119,19 +131,28 @@
           children-class = "tray-group-item";
           transition-left-to-right = false;
         };
-        modules = [ "custom/expand-icon" "tray" ];
+        modules = ["custom/expand-icon" "tray"];
       };
 
-      "custom/expand-icon" = { format = "󰕰"; tooltip = false; };
+      "custom/expand-icon" = {
+        format = "󰕰";
+        tooltip = false;
+      };
 
-      tray = { icon-size = 12; spacing = 17; };
+      tray = {
+        icon-size = 12;
+        spacing = 17;
+      };
 
       # CPU hardware group
       "group/hardware-cpu" = {
         orientation = "inherit";
-        modules = [ "custom/cpu-icon" "cpu" "temperature" ];
+        modules = ["custom/cpu-icon" "cpu" "temperature"];
       };
-      "custom/cpu-icon" = { format = "󰍛"; tooltip = false; };
+      "custom/cpu-icon" = {
+        format = "󰍛";
+        tooltip = false;
+      };
       cpu = {
         interval = 2;
         format = "{usage}%";
@@ -151,9 +172,12 @@
       # GPU hardware group
       "group/hardware-gpu" = {
         orientation = "inherit";
-        modules = [ "custom/gpu-icon" "custom/gpu-usage" "custom/gpu-temp" ];
+        modules = ["custom/gpu-icon" "custom/gpu-usage" "custom/gpu-temp"];
       };
-      "custom/gpu-icon" = { format = "󰢮"; tooltip = false; };
+      "custom/gpu-icon" = {
+        format = "󰢮";
+        tooltip = false;
+      };
       "custom/gpu-usage" = {
         exec = "nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits | head -n 1";
         interval = 2;
@@ -172,9 +196,12 @@
       # RAM hardware group
       "group/hardware-ram" = {
         orientation = "inherit";
-        modules = [ "custom/ram-icon" "memory" ];
+        modules = ["custom/ram-icon" "memory"];
       };
-      "custom/ram-icon" = { format = "󰘚"; tooltip = false; };
+      "custom/ram-icon" = {
+        format = "󰘚";
+        tooltip = false;
+      };
       memory = {
         interval = 2;
         format = "{percentage}%";
@@ -194,7 +221,7 @@
   };
 
   # Create empty stub so waybar doesn't error before first theme switch
-  home.activation.waybarThemeStub = config.lib.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.waybarThemeStub = config.lib.dag.entryAfter ["linkGeneration"] ''
     [ -e "$HOME/.config/waybar/theme.css" ] || touch "$HOME/.config/waybar/theme.css"
   '';
 }

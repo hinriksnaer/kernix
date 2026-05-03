@@ -1,8 +1,6 @@
 # Mako notification daemon.
 # Theme colors loaded at runtime via include (swapped by kernix-theme-set).
-{ config, ... }:
-
-{
+{config, ...}: {
   services.mako = {
     enable = true;
 
@@ -31,7 +29,7 @@
   };
 
   # Create empty stub so mako doesn't error before first theme switch
-  home.activation.makoThemeStub = config.lib.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.makoThemeStub = config.lib.dag.entryAfter ["linkGeneration"] ''
     [ -e "$HOME/.config/mako/theme.conf" ] || touch "$HOME/.config/mako/theme.conf"
   '';
 }

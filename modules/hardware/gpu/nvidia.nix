@@ -1,8 +1,12 @@
 # NVIDIA proprietary driver -- discrete GPU.
 # Kernel modules, modesetting, VAAPI (nvidia-vaapi-driver),
 # container toolkit, and session variables.
-{ config, lib, pkgs, ... }:
-
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 lib.mkIf (config.kernix.gpu == "nvidia") {
   hardware.nvidia = {
     modesetting.enable = true;
@@ -12,13 +16,13 @@ lib.mkIf (config.kernix.gpu == "nvidia") {
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver.videoDrivers = ["nvidia"];
 
-  boot.initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+  boot.initrd.kernelModules = ["nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm"];
 
   hardware.graphics = {
     enable = true;
-    extraPackages = with pkgs; [ nvidia-vaapi-driver ];
+    extraPackages = with pkgs; [nvidia-vaapi-driver];
   };
 
   environment.sessionVariables = {

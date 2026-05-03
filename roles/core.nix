@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ../modules/core/kernix-options.nix
     ../modules/core/base.nix

@@ -1,18 +1,22 @@
 # OpenCode -- AI coding assistant with Vertex AI support.
 # Installs the package, configures Vertex AI env vars from settings,
 # and sets up theme integration (symlinks theme files, creates initial tui.json).
-{ pkgs, lib, config, settings, ... }:
-
-let
+{
+  pkgs,
+  lib,
+  config,
+  settings,
+  ...
+}: let
   oc = settings.opencode;
   hasVertex = oc.vertexProject != "";
   defaultTheme = settings.defaultTheme;
   kernixPath = "${config.home.homeDirectory}/.local/share/kernix";
   ocDir = "${config.home.homeDirectory}/.config/opencode";
-in
-{
-  home.packages = [ pkgs.opencode ]
-    ++ lib.optionals hasVertex [ pkgs.google-cloud-sdk ];
+in {
+  home.packages =
+    [pkgs.opencode]
+    ++ lib.optionals hasVertex [pkgs.google-cloud-sdk];
 
   home.sessionVariables = lib.optionalAttrs hasVertex {
     CLAUDE_CODE_USE_VERTEX = "1";
@@ -25,7 +29,7 @@ in
   # Symlink per-theme opencode.json files into ~/.config/opencode/themes/
   # and create initial tui.json with the default theme.
   # Theme switching is handled by kernix-theme-apply (config-rewrite hook on tui.json).
-  home.activation.opencodeConfig = config.lib.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.opencodeConfig = config.lib.dag.entryAfter ["linkGeneration"] ''
     mkdir -p "${ocDir}/themes"
 
     # Symlink each theme's opencode.json

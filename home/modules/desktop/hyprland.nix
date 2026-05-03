@@ -1,17 +1,21 @@
 # Hyprland window manager configuration.
 # Theme colors loaded at runtime via source (swapped by kernix-theme-set).
 # Monitor config comes from config.monitors (set per-host in profiles).
-{ config, lib, pkgs, settings, hostname, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  settings,
+  hostname,
+  ...
+}: let
   hostSettings = settings.hosts.${hostname};
   monitors = config.monitors;
   hasMultipleMonitors = builtins.length monitors > 1;
   primaryMonitor = lib.findFirst (m: m.primary) (builtins.head monitors) monitors;
   isHiDPI = builtins.any (m: m.scale > 1.0) monitors;
   isDesktop = hostname == "desktop";
-in
-{
+in {
   # ── Wayland packages ──
   home.packages = with pkgs; [
     swaybg
@@ -44,21 +48,25 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
-    package = null;  # NixOS system module installs Hyprland
-    systemd.enable = false;  # UWSM or NixOS manages the session
+    package = null; # NixOS system module installs Hyprland
+    systemd.enable = false; # UWSM or NixOS manages the session
 
     settings = {
       # ── Environment ──
-      env = [
-        "KERNIX_PATH,$HOME/.local/share/kernix"
-      ] ++ lib.optionals isDesktop [
-        "SSH_AUTH_SOCK,$HOME/.ssh/proton-pass-agent.sock"
-      ];
+      env =
+        [
+          "KERNIX_PATH,$HOME/.local/share/kernix"
+        ]
+        ++ lib.optionals isDesktop [
+          "SSH_AUTH_SOCK,$HOME/.ssh/proton-pass-agent.sock"
+        ];
 
       # ── Monitors (from config.monitors, set in profiles) ──
-      monitor = map (m:
-        "${m.name}, ${m.resolution}, ${m.position}, ${toString m.scale}"
-      ) monitors;
+      monitor =
+        map (
+          m: "${m.name}, ${m.resolution}, ${m.position}, ${toString m.scale}"
+        )
+        monitors;
 
       # ── Input ──
       input = {
@@ -74,7 +82,10 @@ in
         gaps_in = 5;
         gaps_out = 10;
         border_size = 2;
-        layout = if isHiDPI then "master" else "dwindle";
+        layout =
+          if isHiDPI
+          then "master"
+          else "dwindle";
         "col.active_border" = "rgba(ff6a1fee)";
         "col.inactive_border" = "rgba(595959aa)";
       };
@@ -158,12 +169,14 @@ in
         swallow_regex = "^(kitty)$";
       };
 
-      cursor = {
-        no_hardware_cursors = true;
-        hide_on_key_press = true;
-      } // lib.optionalAttrs (primaryMonitor.name != "") {
-        default_monitor = primaryMonitor.name;
-      };
+      cursor =
+        {
+          no_hardware_cursors = true;
+          hide_on_key_press = true;
+        }
+        // lib.optionalAttrs (primaryMonitor.name != "") {
+          default_monitor = primaryMonitor.name;
+        };
 
       xwayland.force_zero_scaling = true;
 
@@ -195,22 +208,23 @@ in
           "match:class" = "^(discord|Slack)$";
           workspace = 3;
         }
-
       ];
 
       # ── Autostart ──
-      exec-once = [
-        "dbus-update-activation-environment --systemd --all"
-        "nm-applet"
-        "waybar"
-        "mako"
-        "wl-paste --watch cliphist store"
-        "swaybg -i $HOME/.config/hypr/wallpapers/current -m fill"
-        "sleep 2 && kernix-theme-refresh 2>/dev/null || true"
-      ] ++ lib.optionals isDesktop [
-        # Proton Pass SSH agent (desktop only)
-        "bash -c 'nohup pass-cli ssh-agent start > /tmp/proton-pass-agent.log 2>&1 &'"
-      ];
+      exec-once =
+        [
+          "dbus-update-activation-environment --systemd --all"
+          "nm-applet"
+          "waybar"
+          "mako"
+          "wl-paste --watch cliphist store"
+          "swaybg -i $HOME/.config/hypr/wallpapers/current -m fill"
+          "sleep 2 && kernix-theme-refresh 2>/dev/null || true"
+        ]
+        ++ lib.optionals isDesktop [
+          # Proton Pass SSH agent (desktop only)
+          "bash -c 'nohup pass-cli ssh-agent start > /tmp/proton-pass-agent.log 2>&1 &'"
+        ];
 
       # ── Keybinds ──
       "$mainMod" = "SUPER";
@@ -351,22 +365,22 @@ in
     enable = true;
     config = {
       hyprland = {
-        default = [ "hyprland" "gtk" ];
+        default = ["hyprland" "gtk"];
       };
       common = {
-        default = [ "gtk" ];
+        default = ["gtk"];
       };
     };
   };
 
   # Create empty stubs so Hyprland doesn't error before first theme switch
-  home.activation.hyprlandThemeStubs = config.lib.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.hyprlandThemeStubs = config.lib.dag.entryAfter ["linkGeneration"] ''
     mkdir -p "$HOME/.config/hypr/wallpapers"
     [ -e "$HOME/.config/hypr/active-theme.conf" ] || touch "$HOME/.config/hypr/active-theme.conf"
   '';
 
   # Reload Hyprland after HM deploys a new config
-  home.activation.hyprlandReload = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.hyprlandReload = lib.hm.dag.entryAfter ["linkGeneration"] ''
     if command -v hyprctl &>/dev/null && hyprctl monitors &>/dev/null 2>&1; then
       hyprctl reload &>/dev/null || true
     fi

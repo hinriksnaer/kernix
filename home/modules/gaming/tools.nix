@@ -1,9 +1,7 @@
 # Gaming overlays and Proton management.
 # System-level parts (programs.steam, gamescope, gamemode) stay in
 # modules/gaming/steam.nix.
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   home.packages = with pkgs; [
     mangohud
     protonup-qt

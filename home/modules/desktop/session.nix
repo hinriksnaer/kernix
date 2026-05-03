@@ -1,9 +1,7 @@
 # Desktop session -- user-level packages, cursor, dconf, and session variables.
 # System-level parts (polkit, PAM limits, programs.dconf.enable) stay in
 # modules/desktop/desktop-session.nix.
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   home.packages = with pkgs; [
     polkit_gnome
     adwaita-icon-theme

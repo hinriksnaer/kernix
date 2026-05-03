@@ -1,8 +1,6 @@
 # Desktop collection -- Hyprland desktop environment.
 # Import this in desktop/laptop profiles alongside terminal.nix.
-{ ... }:
-
-{
+{...}: {
   imports = [
     ../modules/desktop/monitors.nix
     ../modules/desktop/hyprland.nix

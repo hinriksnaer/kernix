@@ -3,9 +3,7 @@
 # Global options are type-checked against modules/kernix-options.nix.
 # Per-host settings live under kernix.hosts.<name> and are read
 # directly by each host config or Home Manager profile.
-{ ... }:
-
-{
+{...}: {
   kernix = {
     # ── Global (shared across all hosts) ──
     defaultTheme = "ayu-dark";
@@ -27,7 +25,12 @@
         username = "softmax";
         gpu = "nvidia";
         monitors = [
-          { name = "HDMI-A-1"; resolution = "7680x2160@120"; scale = 1.5; primary = true; }
+          {
+            name = "HDMI-A-1";
+            resolution = "7680x2160@120";
+            scale = 1.5;
+            primary = true;
+          }
         ];
       };
 
@@ -35,7 +38,13 @@
         username = "hgudmund";
         gpu = "intel";
         monitors = [
-          { name = ""; resolution = "preferred"; position = "auto"; scale = 1.0; primary = true; }
+          {
+            name = "";
+            resolution = "preferred";
+            position = "auto";
+            scale = 1.0;
+            primary = true;
+          }
         ];
       };
 
@@ -49,7 +58,7 @@
             repo = "https://github.com/pytorch/helion.git";
             branch = "main";
             torchIndex = "nightly/cu130";
-            backends = [ "cute" ];
+            backends = ["cute"];
           };
           pytorch = {
             enable = true;

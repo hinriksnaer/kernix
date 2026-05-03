@@ -1,64 +1,65 @@
-{ lib, pkgs, ... }:
-
-let
+{
+  lib,
+  pkgs,
+  ...
+}: let
   # Script that auto-detects k10temp and Octo hwmon paths at boot,
   # then writes /etc/fancontrol with the correct device references.
   fancontrolSetup = pkgs.writeShellScript "fancontrol-setup" ''
-    set -euo pipefail
+        set -euo pipefail
 
-    # Find k10temp (CPU temperature sensor)
-    K10TEMP_HWMON=""
-    for hwmon in /sys/class/hwmon/hwmon*; do
-      if [ -f "$hwmon/name" ] && [ "$(cat "$hwmon/name")" = "k10temp" ]; then
-        K10TEMP_HWMON=$(basename "$hwmon")
-        break
-      fi
-    done
+        # Find k10temp (CPU temperature sensor)
+        K10TEMP_HWMON=""
+        for hwmon in /sys/class/hwmon/hwmon*; do
+          if [ -f "$hwmon/name" ] && [ "$(cat "$hwmon/name")" = "k10temp" ]; then
+            K10TEMP_HWMON=$(basename "$hwmon")
+            break
+          fi
+        done
 
-    # Find Octo (fan controller)
-    OCTO_HWMON=""
-    for hwmon in /sys/class/hwmon/hwmon*; do
-      if [ -f "$hwmon/name" ] && [ "$(cat "$hwmon/name")" = "octo" ]; then
-        OCTO_HWMON=$(basename "$hwmon")
-        break
-      fi
-    done
+        # Find Octo (fan controller)
+        OCTO_HWMON=""
+        for hwmon in /sys/class/hwmon/hwmon*; do
+          if [ -f "$hwmon/name" ] && [ "$(cat "$hwmon/name")" = "octo" ]; then
+            OCTO_HWMON=$(basename "$hwmon")
+            break
+          fi
+        done
 
-    if [ -z "$K10TEMP_HWMON" ] || [ -z "$OCTO_HWMON" ]; then
-      echo "fancontrol-setup: k10temp or Octo not found, skipping"
-      exit 0
-    fi
+        if [ -z "$K10TEMP_HWMON" ] || [ -z "$OCTO_HWMON" ]; then
+          echo "fancontrol-setup: k10temp or Octo not found, skipping"
+          exit 0
+        fi
 
-    K10TEMP_DEVPATH=$(readlink -f "/sys/class/hwmon/$K10TEMP_HWMON" | sed 's|/sys/||' | sed "s|/hwmon/$K10TEMP_HWMON||")
-    OCTO_DEVPATH=$(readlink -f "/sys/class/hwmon/$OCTO_HWMON" | sed 's|/sys/||' | sed "s|/hwmon/$OCTO_HWMON||")
+        K10TEMP_DEVPATH=$(readlink -f "/sys/class/hwmon/$K10TEMP_HWMON" | sed 's|/sys/||' | sed "s|/hwmon/$K10TEMP_HWMON||")
+        OCTO_DEVPATH=$(readlink -f "/sys/class/hwmon/$OCTO_HWMON" | sed 's|/sys/||' | sed "s|/hwmon/$OCTO_HWMON||")
 
-    cat > /etc/fancontrol <<EOF
-INTERVAL=2
-DEVPATH=$K10TEMP_HWMON=$K10TEMP_DEVPATH $OCTO_HWMON=$OCTO_DEVPATH
-DEVNAME=$K10TEMP_HWMON=k10temp $OCTO_HWMON=octo
-FCTEMPS=$OCTO_HWMON/pwm1=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm2=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm3=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm4=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm5=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm6=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm7=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm8=$K10TEMP_HWMON/temp1_input
-FCFANS=$OCTO_HWMON/pwm1=$OCTO_HWMON/fan1_input $OCTO_HWMON/pwm2=$OCTO_HWMON/fan2_input $OCTO_HWMON/pwm3=$OCTO_HWMON/fan3_input $OCTO_HWMON/pwm4=$OCTO_HWMON/fan4_input $OCTO_HWMON/pwm5=$OCTO_HWMON/fan5_input $OCTO_HWMON/pwm6=$OCTO_HWMON/fan6_input $OCTO_HWMON/pwm7=$OCTO_HWMON/fan7_input $OCTO_HWMON/pwm8=$OCTO_HWMON/fan8_input
-MINTEMP=$OCTO_HWMON/pwm1=40 $OCTO_HWMON/pwm2=40 $OCTO_HWMON/pwm3=40 $OCTO_HWMON/pwm4=40 $OCTO_HWMON/pwm5=40 $OCTO_HWMON/pwm6=40 $OCTO_HWMON/pwm7=45 $OCTO_HWMON/pwm8=45
-MAXTEMP=$OCTO_HWMON/pwm1=80 $OCTO_HWMON/pwm2=80 $OCTO_HWMON/pwm3=80 $OCTO_HWMON/pwm4=80 $OCTO_HWMON/pwm5=80 $OCTO_HWMON/pwm6=80 $OCTO_HWMON/pwm7=78 $OCTO_HWMON/pwm8=78
-MINSTART=$OCTO_HWMON/pwm1=38 $OCTO_HWMON/pwm2=38 $OCTO_HWMON/pwm3=38 $OCTO_HWMON/pwm4=38 $OCTO_HWMON/pwm5=38 $OCTO_HWMON/pwm6=38 $OCTO_HWMON/pwm7=38 $OCTO_HWMON/pwm8=38
-MINSTOP=$OCTO_HWMON/pwm1=38 $OCTO_HWMON/pwm2=38 $OCTO_HWMON/pwm3=38 $OCTO_HWMON/pwm4=38 $OCTO_HWMON/pwm5=38 $OCTO_HWMON/pwm6=38 $OCTO_HWMON/pwm7=38 $OCTO_HWMON/pwm8=38
-MINPWM=$OCTO_HWMON/pwm1=38 $OCTO_HWMON/pwm2=38 $OCTO_HWMON/pwm3=38 $OCTO_HWMON/pwm4=38 $OCTO_HWMON/pwm5=38 $OCTO_HWMON/pwm6=38 $OCTO_HWMON/pwm7=38 $OCTO_HWMON/pwm8=38
-MAXPWM=$OCTO_HWMON/pwm1=255 $OCTO_HWMON/pwm2=255 $OCTO_HWMON/pwm3=255 $OCTO_HWMON/pwm4=255 $OCTO_HWMON/pwm5=255 $OCTO_HWMON/pwm6=255 $OCTO_HWMON/pwm7=255 $OCTO_HWMON/pwm8=255
-EOF
+        cat > /etc/fancontrol <<EOF
+    INTERVAL=2
+    DEVPATH=$K10TEMP_HWMON=$K10TEMP_DEVPATH $OCTO_HWMON=$OCTO_DEVPATH
+    DEVNAME=$K10TEMP_HWMON=k10temp $OCTO_HWMON=octo
+    FCTEMPS=$OCTO_HWMON/pwm1=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm2=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm3=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm4=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm5=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm6=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm7=$K10TEMP_HWMON/temp1_input $OCTO_HWMON/pwm8=$K10TEMP_HWMON/temp1_input
+    FCFANS=$OCTO_HWMON/pwm1=$OCTO_HWMON/fan1_input $OCTO_HWMON/pwm2=$OCTO_HWMON/fan2_input $OCTO_HWMON/pwm3=$OCTO_HWMON/fan3_input $OCTO_HWMON/pwm4=$OCTO_HWMON/fan4_input $OCTO_HWMON/pwm5=$OCTO_HWMON/fan5_input $OCTO_HWMON/pwm6=$OCTO_HWMON/fan6_input $OCTO_HWMON/pwm7=$OCTO_HWMON/fan7_input $OCTO_HWMON/pwm8=$OCTO_HWMON/fan8_input
+    MINTEMP=$OCTO_HWMON/pwm1=40 $OCTO_HWMON/pwm2=40 $OCTO_HWMON/pwm3=40 $OCTO_HWMON/pwm4=40 $OCTO_HWMON/pwm5=40 $OCTO_HWMON/pwm6=40 $OCTO_HWMON/pwm7=45 $OCTO_HWMON/pwm8=45
+    MAXTEMP=$OCTO_HWMON/pwm1=80 $OCTO_HWMON/pwm2=80 $OCTO_HWMON/pwm3=80 $OCTO_HWMON/pwm4=80 $OCTO_HWMON/pwm5=80 $OCTO_HWMON/pwm6=80 $OCTO_HWMON/pwm7=78 $OCTO_HWMON/pwm8=78
+    MINSTART=$OCTO_HWMON/pwm1=38 $OCTO_HWMON/pwm2=38 $OCTO_HWMON/pwm3=38 $OCTO_HWMON/pwm4=38 $OCTO_HWMON/pwm5=38 $OCTO_HWMON/pwm6=38 $OCTO_HWMON/pwm7=38 $OCTO_HWMON/pwm8=38
+    MINSTOP=$OCTO_HWMON/pwm1=38 $OCTO_HWMON/pwm2=38 $OCTO_HWMON/pwm3=38 $OCTO_HWMON/pwm4=38 $OCTO_HWMON/pwm5=38 $OCTO_HWMON/pwm6=38 $OCTO_HWMON/pwm7=38 $OCTO_HWMON/pwm8=38
+    MINPWM=$OCTO_HWMON/pwm1=38 $OCTO_HWMON/pwm2=38 $OCTO_HWMON/pwm3=38 $OCTO_HWMON/pwm4=38 $OCTO_HWMON/pwm5=38 $OCTO_HWMON/pwm6=38 $OCTO_HWMON/pwm7=38 $OCTO_HWMON/pwm8=38
+    MAXPWM=$OCTO_HWMON/pwm1=255 $OCTO_HWMON/pwm2=255 $OCTO_HWMON/pwm3=255 $OCTO_HWMON/pwm4=255 $OCTO_HWMON/pwm5=255 $OCTO_HWMON/pwm6=255 $OCTO_HWMON/pwm7=255 $OCTO_HWMON/pwm8=255
+    EOF
 
-    echo "fancontrol-setup: wrote /etc/fancontrol (k10temp=$K10TEMP_HWMON, octo=$OCTO_HWMON)"
+        echo "fancontrol-setup: wrote /etc/fancontrol (k10temp=$K10TEMP_HWMON, octo=$OCTO_HWMON)"
   '';
-in
-{
+in {
   # Aquacomputer Octo kernel driver
-  boot.kernelModules = [ "aquacomputer_d5next" ];
+  boot.kernelModules = ["aquacomputer_d5next"];
 
   # Auto-detect hwmon paths and write /etc/fancontrol before fancontrol starts
   systemd.services.fancontrol-setup = {
     description = "Auto-detect Octo hwmon paths and generate /etc/fancontrol";
-    wantedBy = [ "multi-user.target" ];
-    before = [ "fancontrol.service" ];
-    after = [ "systemd-modules-load.service" ];
+    wantedBy = ["multi-user.target"];
+    before = ["fancontrol.service"];
+    after = ["systemd-modules-load.service"];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
@@ -72,9 +73,9 @@ in
   #   CPU fans  (7-8): 45C -> 15% | 61.5C -> 54% | 78C -> 100%
   systemd.services.fancontrol = {
     description = "Fan control with temperature-based curves";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "fancontrol-setup.service" ];
-    requires = [ "fancontrol-setup.service" ];
+    wantedBy = ["multi-user.target"];
+    after = ["fancontrol-setup.service"];
+    requires = ["fancontrol-setup.service"];
     serviceConfig = {
       Restart = "on-failure";
       ExecStart = "${lib.getExe' pkgs.lm_sensors "fancontrol"} /etc/fancontrol";
