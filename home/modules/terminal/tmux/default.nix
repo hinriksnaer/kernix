@@ -98,6 +98,11 @@
       set -g focus-events on
       set-option -sa terminal-overrides ",xterm*:Tc,tmux*:Tc"
 
+      # Pane borders
+      set -g pane-border-lines heavy
+      set -g pane-border-style "fg=colour8"
+      set -g pane-active-border-style "fg=colour14"
+
       # Pane/window base index
       set -g pane-base-index 1
       set-window-option -g pane-base-index 1
