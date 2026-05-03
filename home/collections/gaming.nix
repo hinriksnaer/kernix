@@ -5,6 +5,6 @@
 {
   imports = [
     ../modules/gaming/tools.nix
-    ../modules/gaming/gpu.nix
+    ../modules/gaming/gpu
   ];
 }
