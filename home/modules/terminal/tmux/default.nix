@@ -59,8 +59,9 @@
 
   # Reload tmux config after Home Manager switch (if server is running)
   home.activation.reloadTmux = config.lib.dag.entryAfter ["linkGeneration"] ''
-    if command -v tmux &>/dev/null && tmux list-sessions &>/dev/null 2>&1; then
-      tmux source-file "${config.home.homeDirectory}/.config/tmux/tmux.conf" 2>/dev/null || true
+    TMUX_CONF="${config.home.homeDirectory}/.config/tmux/tmux.conf"
+    if [ -f "$TMUX_CONF" ] && command -v tmux >/dev/null 2>&1; then
+      tmux list-sessions >/dev/null 2>&1 && tmux source-file "$TMUX_CONF" >/dev/null 2>&1 || true
     fi
   '';
 
