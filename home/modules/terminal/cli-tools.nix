@@ -11,6 +11,11 @@
       # Clean prompt -- hide verbose SSH hostname
       hostname.disabled = true;
       username.disabled = true;
+      character = {
+        success_symbol = "[❯](bold #aad94c)";
+        error_symbol = "[❯](bold red)";
+        vimcmd_symbol = "[❮](bold #f07178)";
+      };
     };
   };
 
