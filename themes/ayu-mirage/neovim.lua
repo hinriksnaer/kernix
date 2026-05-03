@@ -1,4 +1,4 @@
--- Hawker theme: ayu-mirage
+-- Kernix theme: ayu-mirage
 return {
   {
     "Shatur/neovim-ayu",

@@ -1,4 +1,4 @@
--- Hawker theme: ristretto
+-- Kernix theme: ristretto
 return {
   {
     "loctvl842/monokai-pro.nvim",

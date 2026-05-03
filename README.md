@@ -96,8 +96,11 @@ home/                      Home Manager configuration
       neovim/              default.nix + config/ (Lua config)
       zsh.nix, git.nix, tmux.nix, cli-tools.nix, ...
     desktop/
-      hyprland.nix, monitors.nix, kitty.nix, rofi.nix, ...
+      hyprland.nix, monitors.nix, rofi.nix, ...
       waybar/              default.nix + config/style.css
+    emulators/
+      default.nix          terminal emulator options (ghostty/kitty via settings.terminal)
+      ghostty.nix, kitty.nix
     theme/
       default.nix          theme engine + hook registrations
       desktop.nix          wallpaper/rofi theme scripts

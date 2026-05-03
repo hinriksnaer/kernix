@@ -1,4 +1,4 @@
--- Hawker theme: nord
+-- Kernix theme: nord
 return {
   {
     "EdenEast/nightfox.nvim",

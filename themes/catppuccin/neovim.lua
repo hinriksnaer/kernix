@@ -1,4 +1,4 @@
--- Hawker theme: catppuccin
+-- Kernix theme: catppuccin
 return {
   {
     "catppuccin/nvim",

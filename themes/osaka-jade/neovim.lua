@@ -1,4 +1,4 @@
--- Hawker theme: osaka-jade
+-- Kernix theme: osaka-jade
 -- Jade-inspired color palette
 return {
   {

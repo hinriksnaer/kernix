@@ -1,6 +1,5 @@
-# Brightness -- system-level only (video group membership).
+# Brightness -- system-level only.
 # User tools (brightnessctl, brightness-control) are managed
 # by Home Manager (home/modules/desktop/hardware-tools.nix).
-{config, ...}: {
-  users.users.${config.kernix.username}.extraGroups = ["video"];
-}
+# Note: "video" group is already added by modules/hardware/gpu/default.nix.
+{...}: {}

@@ -1,4 +1,4 @@
--- Hawker theme: ayu-dark
+-- Kernix theme: ayu-dark
 -- Patch colors.bg to match VSCode's teabyii.ayu editor background (#10141c).
 -- The plugin hardcodes #0B0E14 in colors.generate(), so we intercept it
 -- and override bg after generation — all highlight groups then use our value.

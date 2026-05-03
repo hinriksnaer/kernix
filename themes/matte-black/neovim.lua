@@ -1,4 +1,4 @@
--- Hawker theme: matte-black
+-- Kernix theme: matte-black
 return {
   {
     "tahayvr/matteblack.nvim",

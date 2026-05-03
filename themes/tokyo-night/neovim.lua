@@ -1,4 +1,4 @@
--- Hawker theme: tokyo-night
+-- Kernix theme: tokyo-night
 return {
   {
     "folke/tokyonight.nvim",

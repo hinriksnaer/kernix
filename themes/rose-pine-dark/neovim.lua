@@ -1,4 +1,4 @@
--- Hawker theme: rose-pine-dark
+-- Kernix theme: rose-pine-dark
 return {
   {
     "rose-pine/neovim",
