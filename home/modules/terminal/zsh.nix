@@ -12,13 +12,17 @@
     enableCompletion = true;
     autosuggestion.enable = true;
     autosuggestion.strategy = ["history" "completion"];
-    syntaxHighlighting.enable = true;
     historySubstringSearch.enable = true;
     plugins = [
       {
         name = "zsh-vi-mode";
         src = pkgs.zsh-vi-mode;
         file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
+      }
+      {
+        name = "fast-syntax-highlighting";
+        src = pkgs.zsh-fast-syntax-highlighting;
+        file = "share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh";
       }
     ];
 
@@ -39,8 +43,13 @@
         ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
       '')
 
-      # Terminfo from HM profile (terminal emulator terminfo for SSH sessions)
+      # Use base16 theme for fast-syntax-highlighting (inherits terminal ANSI colors)
       (lib.mkOrder 600 ''
+        fast-theme base16 >/dev/null 2>&1 || true
+      '')
+
+      # Terminfo from HM profile (terminal emulator terminfo for SSH sessions)
+      (lib.mkOrder 700 ''
         if [ -d "$HOME/.nix-profile/share/terminfo" ]; then
           export TERMINFO_DIRS="$HOME/.nix-profile/share/terminfo:''${TERMINFO_DIRS:-}"
         fi
