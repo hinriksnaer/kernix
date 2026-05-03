@@ -22,9 +22,8 @@
 # │  Alt + 1-9             switch to window N                           │
 # │  Alt + [ / ]           prev/next window                             │
 # │  Alt + Ctrl + 1-9      move pane to window N                       │
-# │  Alt + Ctrl + [ / ]    move pane to prev/next window               │
+# │  Alt + Ctrl + [ / ]    swap window position (reorder)              │
 # │  Alt + Ctrl + Enter    break pane to new window                    │
-# │  Alt + Ctrl + arrows   reorder window left/right                   │
 # │  Alt + Enter           new window                                   │
 # │  Alt + q               kill window                                  │
 # └─────────────────────────────────────────────────────────────────────┘
@@ -133,9 +132,9 @@
       bind -n M-[ previous-window
       bind -n M-] next-window
 
-      # Move pane to prev/next window: Alt + Ctrl + [ / ]
-      bind -n M-C-[ join-pane -t :-1
-      bind -n M-C-] join-pane -t :+1
+      # Swap window position: Alt + Ctrl + [ / ] (Ctrl = swap)
+      bind -n M-C-[ swap-window -t -1\; select-window -t -1
+      bind -n M-C-] swap-window -t +1\; select-window -t +1
 
       # Move pane to window N: Alt + Ctrl + 1-9
       bind -n M-C-1 join-pane -t :1
@@ -150,10 +149,6 @@
 
       # Break pane to new window: Alt + Ctrl + Enter
       bind -n M-C-Enter break-pane
-
-      # Reorder window: Alt + Ctrl + arrows
-      bind -n M-C-Left swap-window -t -1\; select-window -t -1
-      bind -n M-C-Right swap-window -t +1\; select-window -t +1
 
       # New window: Alt + Enter
       bind -n M-Enter new-window -c "#{pane_current_path}"
