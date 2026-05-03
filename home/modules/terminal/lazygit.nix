@@ -1,10 +1,24 @@
 # Lazygit -- terminal UI for git.
-{ pkgs, ... }:
+{ ... }:
 
 {
-  home.packages = [ pkgs.lazygit ];
+  programs.lazygit = {
+    enable = true;
 
-  xdg.configFile."lazygit/config.yml" = {
-    source = ../../../dotfiles/lazygit/.config/lazygit/config.yml;
+    settings.gui = {
+      nerdFontsVersion = "3";
+      theme = {
+        activeBorderColor = [ "#1BC5C9" "bold" ];
+        inactiveBorderColor = [ "#3D4555" ];
+        searchingActiveBorderColor = [ "#FF6A1F" "bold" ];
+        optionsTextColor = [ "#1BC5C9" ];
+        selectedLineBgColor = [ "#272A34" ];
+        selectedRangeBgColor = [ "#272A34" ];
+        cherryPickedCommitBgColor = [ "#FF6A1F" ];
+        cherryPickedCommitFgColor = [ "#0F1016" ];
+        unstagedChangesColor = [ "#FF6A1F" ];
+        defaultFgColor = [ "#E2E6F1" ];
+      };
+    };
   };
 }

@@ -1,7 +1,6 @@
 # Neovim -- package, LSP/tooling deps, and config.
-# Config files are copied from dotfiles/neovim/ into the Nix store
-# at build time, then symlinked into ~/.config/nvim/. The source
-# path is relative to this module file, so it works on any host.
+# Lua config lives in ./neovim/ alongside this module and is symlinked
+# into ~/.config/nvim/ at build time via the Nix store.
 { pkgs, ... }:
 
 {
@@ -19,9 +18,8 @@
     VISUAL = "nvim";
   };
 
-  # Deploy nvim config from dotfiles/ (relative Nix path → copied to store)
   xdg.configFile."nvim" = {
-    source = ../../../dotfiles/neovim/.config/nvim;
+    source = ./config;
     recursive = true;
   };
 }

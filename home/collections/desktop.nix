@@ -7,7 +7,7 @@
     ../modules/desktop/hyprland.nix
     ../modules/desktop/kitty.nix
     ../modules/desktop/mako.nix
-    ../modules/desktop/waybar.nix
+    ../modules/desktop/waybar
     ../modules/desktop/rofi.nix
     ../modules/desktop/hyprlock.nix
     ../modules/desktop/session.nix

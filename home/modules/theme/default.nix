@@ -36,7 +36,7 @@ in
   # ── Theme data deployment ──
   # Deploy dotfiles/themes/ to ~/.local/share/hawker/themes/
   xdg.dataFile."hawker/themes" = {
-    source = ../../../dotfiles/themes;
+    source = ../../../themes;
     recursive = true;
   };
 

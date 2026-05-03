@@ -190,7 +190,7 @@
     };
 
     # Theme CSS imported at runtime (symlinked by hawker-theme-apply)
-    style = builtins.readFile ../../../dotfiles/waybar/.config/waybar/style.css;
+    style = builtins.readFile ./config/style.css;
   };
 
   # Create empty stub so waybar doesn't error before first theme switch

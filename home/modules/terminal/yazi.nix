@@ -186,5 +186,5 @@
   ];
 
   # Hawker theme-map.conf (not standard yazi config, used by hawker-theme-set)
-  xdg.configFile."yazi/theme-map.conf".source = ../../../dotfiles/yazi/.config/yazi/theme-map.conf;
+  xdg.configFile."yazi/theme-map.conf".source = ../theme/theme-map.conf;
 }
