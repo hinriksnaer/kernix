@@ -1,6 +1,6 @@
 # Mako notification daemon.
 # Theme colors loaded at runtime via include (swapped by hawker-theme-set).
-{ ... }:
+{ config, ... }:
 
 {
   services.mako = {
@@ -25,8 +25,13 @@
       max-icon-size = 48;
       group-by = "app-name";
 
-      # Theme colors (symlinked by hawker-theme-set)
+      # Theme colors (symlinked by hawker-theme-apply)
       include = "~/.config/mako/theme.conf";
     };
   };
+
+  # Create empty stub so mako doesn't error before first theme switch
+  home.activation.makoThemeStub = config.lib.dag.entryAfter [ "linkGeneration" ] ''
+    [ -e "$HOME/.config/mako/theme.conf" ] || touch "$HOME/.config/mako/theme.conf"
+  '';
 }

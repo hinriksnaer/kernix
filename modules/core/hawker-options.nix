@@ -21,8 +21,8 @@ with lib;
 
     defaultTheme = mkOption {
       type = types.str;
-      default = "torrentz-hydra";
-      description = "Default desktop theme (from dotfiles/themes/).";
+      default = "ayu-dark";
+      description = "Default theme (from dotfiles/themes/). Consumed by Home Manager.";
     };
 
     git = {

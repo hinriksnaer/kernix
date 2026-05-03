@@ -85,7 +85,7 @@ modules/              NixOS modules (flat, one per tool/service)
   ...
 
 roles/                named module collections (assigned to hosts)
-  core.nix            base system, fish, cli-tools, git, themes
+  core.nix            base system, fish, cli-tools, git
   desktop.nix         hyprland, kitty, waybar, mako, rofi, fonts
   hardware.nix        GPU, bluetooth, networking, audio
   apps.nix            firefox, discord, obsidian, steam, podman

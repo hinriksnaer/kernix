@@ -1,6 +1,6 @@
 # Kitty terminal emulator.
 # Theme colors loaded at runtime via include (swapped by hawker-theme-set).
-{ ... }:
+{ config, ... }:
 
 {
   programs.kitty = {
@@ -37,9 +37,14 @@
       "shift+insert" = "paste_from_clipboard";
     };
 
-    # Theme colors loaded at runtime (symlinked by hawker-theme-set)
+    # Theme colors loaded at runtime (symlinked by hawker-theme-apply)
     extraConfig = ''
       include theme.conf
     '';
   };
+
+  # Create empty stub so kitty doesn't error before first theme switch
+  home.activation.kittyThemeStub = config.lib.dag.entryAfter [ "linkGeneration" ] ''
+    [ -e "$HOME/.config/kitty/theme.conf" ] || touch "$HOME/.config/kitty/theme.conf"
+  '';
 }

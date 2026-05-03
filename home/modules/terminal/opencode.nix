@@ -24,7 +24,7 @@ in
 
   # Symlink per-theme opencode.json files into ~/.config/opencode/themes/
   # and create initial tui.json with the default theme.
-  # Theme switching is handled by hawker-theme-set-terminal (sed on tui.json).
+  # Theme switching is handled by hawker-theme-apply (config-rewrite hook on tui.json).
   home.activation.opencodeConfig = config.lib.dag.entryAfter [ "linkGeneration" ] ''
     mkdir -p "${ocDir}/themes"
 

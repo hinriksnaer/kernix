@@ -1,6 +1,6 @@
 # Waybar status bar.
 # Theme CSS loaded at runtime via @import (swapped by hawker-theme-set).
-{ ... }:
+{ config, ... }:
 
 {
   programs.waybar = {
@@ -189,7 +189,12 @@
       };
     };
 
-    # Theme CSS imported at runtime (symlinked by hawker-theme-set)
+    # Theme CSS imported at runtime (symlinked by hawker-theme-apply)
     style = builtins.readFile ../../../dotfiles/waybar/.config/waybar/style.css;
   };
+
+  # Create empty stub so waybar doesn't error before first theme switch
+  home.activation.waybarThemeStub = config.lib.dag.entryAfter [ "linkGeneration" ] ''
+    [ -e "$HOME/.config/waybar/theme.css" ] || touch "$HOME/.config/waybar/theme.css"
+  '';
 }

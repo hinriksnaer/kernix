@@ -2,7 +2,7 @@
 -- On startup, reads ~/.config/hawker/current-theme and loads the
 -- corresponding neovim.lua from the themes directory via dofile().
 -- Falls back to ayu-mirage if no theme is set.
--- Runtime theme switching is handled by hawker-theme-set-terminal
+-- Runtime theme switching is handled by hawker-theme-apply-neovim
 -- via neovim's RPC (--server), so no file watcher is needed.
 
 local function load_hawker_theme()

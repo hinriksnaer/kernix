@@ -1,6 +1,6 @@
 # Hyprlock screen locker.
 # Theme colors loaded at runtime via source (swapped by hawker-theme-set).
-{ ... }:
+{ config, ... }:
 
 {
   programs.hyprlock = {
@@ -48,4 +48,10 @@
       }];
     };
   };
+
+  # Create empty stub so hyprlock doesn't error before first theme switch
+  home.activation.hyprlockThemeStub = config.lib.dag.entryAfter [ "linkGeneration" ] ''
+    mkdir -p "$HOME/.config/hypr"
+    [ -e "$HOME/.config/hypr/hyprlock-theme.conf" ] || touch "$HOME/.config/hypr/hyprlock-theme.conf"
+  '';
 }
