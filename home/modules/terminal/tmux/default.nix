@@ -156,16 +156,11 @@
       bind -n M-C-[ swap-window -t -1\; select-window -t -1
       bind -n M-C-] swap-window -t +1\; select-window -t +1
 
-      # Move pane to adjacent window: Alt + Shift + [ / ]
-      # Both legacy (M-{) and extended (M-S-[) encodings for compatibility
-      # -h = horizontal (side-by-side) join
+      # Move pane to adjacent window: Alt + Shift + [ / ] (side-by-side join)
       bind -n M-'{' join-pane -h -t :-1
       bind -n M-'}' join-pane -h -t :+1
-      bind -n M-S-'[' join-pane -h -t :-1
-      bind -n M-S-']' join-pane -h -t :+1
 
-      # Move pane to window N: Alt + Shift + 1-9 (Shift = move view to task)
-      # Shift+number produces !@#$%^&*( -- bind both legacy and extended encodings
+      # Move pane to window N: Alt + Shift + 1-9 (Shift+num = !@#$%^&*()
       bind -n M-'!' join-pane -h -t :1
       bind -n M-'@' join-pane -h -t :2
       bind -n M-'#' join-pane -h -t :3
@@ -175,15 +170,6 @@
       bind -n M-'&' join-pane -h -t :7
       bind -n M-'*' join-pane -h -t :8
       bind -n M-'(' join-pane -h -t :9
-      bind -n M-S-1 join-pane -h -t :1
-      bind -n M-S-2 join-pane -h -t :2
-      bind -n M-S-3 join-pane -h -t :3
-      bind -n M-S-4 join-pane -h -t :4
-      bind -n M-S-5 join-pane -h -t :5
-      bind -n M-S-6 join-pane -h -t :6
-      bind -n M-S-7 join-pane -h -t :7
-      bind -n M-S-8 join-pane -h -t :8
-      bind -n M-S-9 join-pane -h -t :9
 
       # Break pane to new window: Alt + Ctrl + Enter
       bind -n M-C-Enter break-pane
