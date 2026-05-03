@@ -5,6 +5,7 @@
 #   Alt + h/l        → prev/next window    (horizontal, matches dotbar layout)
 #   Alt + j/k        → prev/next session   (vertical, sessions stack)
 #   Alt + Tab        → last session
+#   Alt + f          → fzf session finder (active sessions)
 #   Alt + Space       → prefix for infrequent commands
 #   prefix + Space   → sessionizer (fzf project picker)
 #   Ctrl + h/j/k/l   → vim-tmux-navigator (cross-layer, unchanged)
@@ -75,9 +76,12 @@
       # Last session: Alt + Tab
       bind -n M-Tab switch-client -l
 
+      # Session finder: Alt + f (fzf switch between active sessions)
+      bind -n M-f display-popup -E "tmux list-sessions -F '#{session_name}' | fzf --reverse --border --prompt='session: ' | xargs -r tmux switch-client -t"
+
       # ── Prefix commands (Alt + Space, then key) ──
 
-      # Sessionizer: prefix + Space
+      # Sessionizer: prefix + Space (open/create project session)
       bind Space display-popup -E "kernix-sessionizer"
 
       # Window management
