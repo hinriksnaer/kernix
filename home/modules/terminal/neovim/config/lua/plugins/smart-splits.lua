@@ -24,12 +24,6 @@ return {
     vim.keymap.set('n', '<C-k>', require('smart-splits').move_cursor_up, { desc = 'Move to upper window' })
     vim.keymap.set('n', '<C-l>', require('smart-splits').move_cursor_right, { desc = 'Move to right window' })
 
-    -- Smarter resizing (also respects tmux)
-    vim.keymap.set('n', '<A-h>', require('smart-splits').resize_left, { desc = 'Resize window left' })
-    vim.keymap.set('n', '<A-j>', require('smart-splits').resize_down, { desc = 'Resize window down' })
-    vim.keymap.set('n', '<A-k>', require('smart-splits').resize_up, { desc = 'Resize window up' })
-    vim.keymap.set('n', '<A-l>', require('smart-splits').resize_right, { desc = 'Resize window right' })
-
-    -- Note: Window management moved to Hydra (<leader>w)
+    -- Note: Alt+hjkl reserved for tmux navigation layer (see tmux/default.nix)
   end,
 }

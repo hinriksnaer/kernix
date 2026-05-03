@@ -27,10 +27,7 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
--- Better text movement
--- Move lines up/down in visual mode (Alt+h/l used by smart-splits for window resize)
-vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { desc = 'Move selection down' })
-vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv", { desc = 'Move selection up' })
+-- Note: Alt+hjkl reserved for tmux navigation layer (see tmux/default.nix)
 
 -- Better indenting - stay in visual mode
 vim.keymap.set('v', '<', '<gv', { desc = 'Indent left' })
@@ -39,8 +36,8 @@ vim.keymap.set('v', '>', '>gv', { desc = 'Indent right' })
 -- Better paste - don't yank replaced text
 vim.keymap.set('v', 'p', '"_dP', { desc = 'Paste without yanking' })
 
--- Window resizing is handled by smart-splits.nvim plugin
--- Use Alt+hjkl for resizing (arrow keys kept free for other uses)
+-- Window resizing available via smart-splits.nvim plugin if needed
+-- Alt+hjkl reserved for tmux navigation layer
 
 -- Better search - center screen on next/previous match
 vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Next search result (centered)' })
