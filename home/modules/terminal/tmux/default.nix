@@ -23,6 +23,7 @@
 # │  Alt + Shift + hjkl    resize panes                                │
 # │  Alt + arrows          create split in direction                   │
 # │  Alt + z               zoom pane (fullscreen)                      │
+# │  Alt + r               rotate layout (cycle)                      │
 # │  Ctrl + hjkl           vim-tmux-navigator (cross-layer with nvim)  │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Task ([/] + 1-9) ────────────────────────────────────────────────┐
@@ -136,6 +137,9 @@
 
       # Zoom pane: Alt + z
       bind -n M-z resize-pane -Z
+
+      # Rotate layout: Alt + r
+      bind -n M-r next-layout
 
       # ── Task level: window ([/] + 1-9) ──
 
