@@ -16,4 +16,7 @@
   };
 
   programs.home-manager.enable = true;
+
+  # Expose username to scripts/dotfiles at runtime
+  home.sessionVariables.HAWKER_USER = settings.hosts.${hostname}.username;
 }

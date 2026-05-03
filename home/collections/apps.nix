@@ -7,5 +7,6 @@
     ../modules/apps/apps.nix
     ../modules/apps/firefox.nix
     ../modules/apps/vscode.nix
+    ../modules/apps/proton-pass.nix
   ];
 }

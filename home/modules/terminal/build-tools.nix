@@ -1,7 +1,8 @@
+# Build tools -- compilers, linkers, and archive utilities.
 { pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
+  home.packages = with pkgs; [
     gcc
     gnumake
     cmake

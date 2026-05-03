@@ -11,6 +11,7 @@
     ../modules/terminal/fish.nix
     ../modules/terminal/direnv.nix
     ../modules/terminal/neovim.nix
+    ../modules/terminal/build-tools.nix
     ../modules/theme
     ../modules/terminal/opencode.nix
     ../modules/terminal/btop.nix

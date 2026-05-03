@@ -1,4 +1,7 @@
-{ pkgs, ... }:
+# Bluetooth -- system-level only.
+# User tools (bluetui) are managed by Home Manager
+# (home/modules/desktop/hardware-tools.nix).
+{ ... }:
 
 {
   hardware.bluetooth = {
@@ -7,8 +10,4 @@
   };
 
   services.blueman.enable = true;
-
-  environment.systemPackages = with pkgs; [
-    bluetui
-  ];
 }

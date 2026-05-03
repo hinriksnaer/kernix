@@ -1,7 +1,7 @@
 { ... }:
 {
   imports = [
-    ../modules/hardware/gpu-gaming.nix
-    ../modules/apps/steam.nix
+    ../modules/gaming/gpu-extra.nix
+    ../modules/gaming/steam.nix
   ];
 }

@@ -9,6 +9,7 @@ in
     ../collections/terminal.nix
     ../collections/desktop.nix
     ../collections/apps.nix
+    ../collections/gaming.nix
   ];
 
   home.username = username;

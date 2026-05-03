@@ -2,8 +2,7 @@
 {
   imports = [
     ../modules/core/hawker-options.nix
-    ../modules/core/base
-    ../modules/core/build-tools.nix
+    ../modules/core/base.nix
     ../modules/core/fish.nix
   ];
 }

@@ -1,7 +1,7 @@
 # Hyprland window manager configuration.
 # Theme colors loaded at runtime via source (swapped by hawker-theme-set).
 # Per-host settings (monitor, layout) come from the profile via _module.args.
-{ config, lib, settings, hostname, ... }:
+{ config, lib, pkgs, settings, hostname, ... }:
 
 let
   hostSettings = settings.hosts.${hostname};
@@ -9,6 +9,36 @@ let
   isLaptop = hostname == "laptop";
 in
 {
+  # ── Wayland packages ──
+  home.packages = with pkgs; [
+    swaybg
+    qt5.qtwayland
+    qt6.qtwayland
+    hyprland-qtutils
+    wlr-randr
+    wlogout
+  ];
+
+  # ── Wayland session variables ──
+  home.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    XDG_SESSION_TYPE = "wayland";
+    QT_QPA_PLATFORM = "wayland";
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+    QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+    MOZ_ENABLE_WAYLAND = "1";
+    CLUTTER_BACKEND = "wayland";
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
+    _JAVA_AWT_WM_NONREPARENTING = "1";
+  };
+
+  # ── UWSM auto-start (fish) ──
+  programs.fish.interactiveShellInit = ''
+    if uwsm check may-start
+        exec uwsm start hyprland-uwsm.desktop
+    end
+  '';
+
   wayland.windowManager.hyprland = {
     enable = true;
     package = null;  # NixOS system module installs Hyprland

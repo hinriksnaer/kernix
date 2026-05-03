@@ -50,10 +50,6 @@ EOF
   '';
 in
 {
-  environment.systemPackages = with pkgs; [
-    lm_sensors
-  ];
-
   # Aquacomputer Octo kernel driver
   boot.kernelModules = [ "aquacomputer_d5next" ];
 

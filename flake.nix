@@ -65,6 +65,7 @@
         (discoverAll ./modules/desktop) //
         (discoverAll ./modules/hardware) //
         (discoverAll ./modules/apps) //
+        (discoverAll ./modules/gaming) //
         (discoverModules ./roles);
 
       # ── Machine configurations ──

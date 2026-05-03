@@ -1,18 +1,16 @@
-{ pkgs, config, lib, ... }:
+# Podman -- system-level only.
+# User tools (podman-compose) are managed by Home Manager
+# (home/modules/apps/apps.nix).
+{ config, ... }:
 
 {
   virtualisation.podman = {
     enable = true;
-    dockerCompat = true;  # docker CLI alias
+    dockerCompat = true;
     defaultNetwork.settings.dns_enabled = true;
   };
 
-  # Rootless podman
   security.unprivilegedUsernsClone = true;
 
   users.users.${config.hawker.username}.extraGroups = [ "podman" ];
-
-  environment.systemPackages = with pkgs; [
-    podman-compose
-  ];
 }

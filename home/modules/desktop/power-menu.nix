@@ -2,11 +2,11 @@
 { pkgs, ... }:
 
 {
-  environment.systemPackages = [
+  home.packages = [
     (pkgs.writeShellApplication {
       name = "power-menu";
       runtimeInputs = with pkgs; [ rofi systemd ];
-      text = builtins.readFile ./power-menu.sh;
+      text = builtins.readFile ./scripts/power-menu.sh;
       excludeShellChecks = [ "SC2029" "SC2016" ];
     })
   ];

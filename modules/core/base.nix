@@ -2,7 +2,7 @@
 
 let
   inherit (config.hawker) username;
-  cli = import ../../../cli { inherit pkgs; };
+  cli = import ../../cli { inherit pkgs; };
 in
 {
   # ── Nix settings ──
@@ -27,27 +27,12 @@ in
     shell = pkgs.fish;
   };
 
-  # Expose username to scripts/dotfiles at runtime
-  environment.sessionVariables.HAWKER_USER = username;
-
   security.sudo.wheelNeedsPassword = false;
 
   # ── Core system packages ──
   environment.systemPackages = with pkgs; [
-    stow
-    curl
-    wget
-    which
-    coreutils
-    findutils
-    gnused
-    gnugrep
-    gawk
-    util-linux
-    procps
-    git
-
-    # NixOS rebuild helper
+    curl wget which coreutils findutils gnused gnugrep gawk
+    util-linux procps
     cli.hawker-switch
   ];
 
