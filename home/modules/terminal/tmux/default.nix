@@ -21,7 +21,7 @@
 # ┌─ Task level (window -- indexed + directional) ──────────────────────┐
 # │  Alt + 1-9             switch to window N                           │
 # │  Alt + [ / ]           prev/next window                             │
-# │  Alt + Ctrl + 1-9      move pane to window N                       │
+# │  prefix + 1-9          move pane to window N                       │
 # │  Alt + Ctrl + [ / ]    swap window position (reorder)              │
 # │  Alt + Ctrl + Enter    break pane to new window                    │
 # │  Alt + Enter           new window                                   │
@@ -32,6 +32,7 @@
 # │  Alt + Tab             previous session                             │
 # └─────────────────────────────────────────────────────────────────────┘
 # ┌─ Prefix (Alt+Space, then key) ──────────────────────────────────────┐
+# │  1-9                   move pane to window N (join-pane)           │
 # │  Space                 sessionizer (fzf project picker)             │
 # │  ,                     rename window (tmux default)                 │
 # │  $                     rename session (tmux default)                │
@@ -136,16 +137,17 @@
       bind -n M-C-[ swap-window -t -1\; select-window -t -1
       bind -n M-C-] swap-window -t +1\; select-window -t +1
 
-      # Move pane to window N: Alt + Ctrl + 1-9
-      bind -n M-C-1 join-pane -t :1
-      bind -n M-C-2 join-pane -t :2
-      bind -n M-C-3 join-pane -t :3
-      bind -n M-C-4 join-pane -t :4
-      bind -n M-C-5 join-pane -t :5
-      bind -n M-C-6 join-pane -t :6
-      bind -n M-C-7 join-pane -t :7
-      bind -n M-C-8 join-pane -t :8
-      bind -n M-C-9 join-pane -t :9
+      # Move pane to window N: prefix + 1-9
+      # (Ctrl+number can't be encoded by terminals, so this goes behind prefix)
+      bind 1 join-pane -t :1
+      bind 2 join-pane -t :2
+      bind 3 join-pane -t :3
+      bind 4 join-pane -t :4
+      bind 5 join-pane -t :5
+      bind 6 join-pane -t :6
+      bind 7 join-pane -t :7
+      bind 8 join-pane -t :8
+      bind 9 join-pane -t :9
 
       # Break pane to new window: Alt + Ctrl + Enter
       bind -n M-C-Enter break-pane
