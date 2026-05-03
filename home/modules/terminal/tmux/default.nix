@@ -18,9 +18,11 @@
 # │  Alt + z               zoom pane (fullscreen)                       │
 # │  Ctrl + hjkl           vim-tmux-navigator (cross-layer with nvim)  │
 # └─────────────────────────────────────────────────────────────────────┘
-# ┌─ Task level (window -- indexed) ────────────────────────────────────┐
+# ┌─ Task level (window -- indexed + directional) ──────────────────────┐
 # │  Alt + 1-9             switch to window N                           │
+# │  Alt + [ / ]           prev/next window                             │
 # │  Alt + Ctrl + 1-9      move pane to window N                       │
+# │  Alt + Ctrl + [ / ]    move pane to prev/next window               │
 # │  Alt + Ctrl + Enter    break pane to new window                    │
 # │  Alt + Ctrl + arrows   reorder window left/right                   │
 # │  Alt + Enter           new window                                   │
@@ -76,6 +78,10 @@
       set -g focus-events on
       set-option -sa terminal-overrides ",xterm*:Tc,tmux*:Tc"
 
+      # Extended keys for modified arrow key sequences from modern terminals
+      set -s extended-keys on
+      set -as terminal-features 'xterm*:extkeys'
+
       # Pane/window base index
       set -g pane-base-index 1
       set-window-option -g pane-base-index 1
@@ -122,6 +128,14 @@
       bind -n M-7 select-window -t 7
       bind -n M-8 select-window -t 8
       bind -n M-9 select-window -t 9
+
+      # Cycle windows: Alt + [ / ]
+      bind -n M-[ previous-window
+      bind -n M-] next-window
+
+      # Move pane to prev/next window: Alt + Ctrl + [ / ]
+      bind -n M-C-[ join-pane -t :-1
+      bind -n M-C-] join-pane -t :+1
 
       # Move pane to window N: Alt + Ctrl + 1-9
       bind -n M-C-1 join-pane -t :1
