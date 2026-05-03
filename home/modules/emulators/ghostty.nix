@@ -24,6 +24,7 @@ lib.mkIf (settings.terminal == "ghostty") {
     settings = {
       font-family = "CaskaydiaMono Nerd Font";
       font-size = 12;
+      font-thicken = true;
       window-padding-x = 14;
       window-padding-y = 14;
       window-decoration = false;
