@@ -1,12 +1,39 @@
 # Typed option declarations for all configuration.
-# Global values are set in settings.nix. Per-host values are set by each host config
-# reading from hawker.hosts.<name>. Type errors are caught at evaluation time.
+# Global values are set in settings.nix. Per-host values are set by each host
+# config reading from hawker.hosts.<name>. Type errors are caught at evaluation time.
 { lib, ... }:
 
 with lib;
 
+let
+  # Per-host settings submodule
+  hostModule = types.submodule {
+    options = {
+      username = mkOption {
+        type = types.str;
+        description = "System username for this host.";
+      };
+      gpu = mkOption {
+        type = types.enum [ "nvidia" "intel" "amd" "none" ];
+        default = "none";
+        description = "GPU driver to use on this host.";
+      };
+      cudaVisibleDevices = mkOption {
+        type = types.str;
+        default = "";
+        description = "CUDA_VISIBLE_DEVICES for remote dev hosts. Empty to use all.";
+      };
+      projects = mkOption {
+        type = types.attrsOf types.attrs;
+        default = {};
+        description = "Dev project configurations for this host.";
+      };
+    };
+  };
+in
 {
   options.hawker = {
+    # ── Active host options (set by each host config) ──
     username = mkOption {
       type = types.str;
       description = "System username. Set per-host from settings.nix hosts section.";
@@ -19,10 +46,11 @@ with lib;
       example = "nvidia";
     };
 
+    # ── Global settings (shared across all hosts) ──
     defaultTheme = mkOption {
       type = types.str;
       default = "ayu-dark";
-      description = "Default theme (from dotfiles/themes/). Consumed by Home Manager.";
+      description = "Default theme (from themes/). Consumed by Home Manager.";
     };
 
     git = {
@@ -56,13 +84,11 @@ with lib;
       };
     };
 
-    # Per-host settings (freeform). Keyed by host name.
-    # Each host config reads its section and populates typed options.
+    # ── Per-host settings (type-checked submodule) ──
     hosts = mkOption {
-      type = types.raw;
+      type = types.attrsOf hostModule;
       default = {};
-      description = "Per-host settings (username, gpu, projects, etc.). Keyed by host name.";
+      description = "Per-host settings keyed by host name. Each entry is type-checked.";
     };
-
   };
 }

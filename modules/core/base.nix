@@ -24,7 +24,7 @@ in
   users.users.${username} = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    shell = pkgs.fish;
+    shell = pkgs.zsh;
   };
 
   security.sudo.wheelNeedsPassword = false;

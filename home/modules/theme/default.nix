@@ -8,27 +8,37 @@ let
   hawkerPath = "${config.home.homeDirectory}/.local/share/hawker";
   scripts = ./scripts;
 
-  mkFish = name: pkgs.writeScriptBin name ''
-    #!${pkgs.fish}/bin/fish
-    set -gx HAWKER_PATH "${hawkerPath}"
-    ${builtins.readFile "${scripts}/${name}.fish"}
-  '';
+  mkScript = name: runtimeInputs: pkgs.writeShellApplication {
+    inherit name runtimeInputs;
+    text = ''
+      export HAWKER_PATH="${hawkerPath}"
+      ${builtins.readFile "${scripts}/${name}.sh"}
+    '';
+  };
 in
 {
   # ── Core engine scripts ──
   home.packages = [
-    (mkFish "hawker-theme-set")
-    (mkFish "hawker-theme-apply")
-    (mkFish "hawker-theme-current")
-    (mkFish "hawker-theme-list")
-    (mkFish "hawker-theme-next")
-    (mkFish "hawker-theme-prev")
-    (mkFish "hawker-theme-refresh")
-    (mkFish "hawker-theme")
+    (mkScript "hawker-theme-set" (with pkgs; [ coreutils gnused libnotify ]))
+    (pkgs.writeShellApplication {
+      name = "hawker-theme-apply";
+      runtimeInputs = with pkgs; [ coreutils gnused findutils ];
+      excludeShellChecks = [ "SC2129" ];
+      text = ''
+        export HAWKER_PATH="${hawkerPath}"
+        ${builtins.readFile "${scripts}/hawker-theme-apply.sh"}
+      '';
+    })
+    (mkScript "hawker-theme-current" (with pkgs; [ coreutils ]))
+    (mkScript "hawker-theme-list" (with pkgs; [ coreutils ]))
+    (mkScript "hawker-theme-next" [])
+    (mkScript "hawker-theme-prev" [])
+    (mkScript "hawker-theme-refresh" [])
+    (mkScript "hawker-theme" (with pkgs; [ coreutils gnused fzf ]))
 
     # Custom apply scripts for apps with complex logic
-    (mkFish "hawker-theme-apply-neovim")
-    (mkFish "hawker-theme-apply-yazi")
+    (mkScript "hawker-theme-apply-neovim" (with pkgs; [ neovim coreutils ]))
+    (mkScript "hawker-theme-apply-yazi" (with pkgs; [ coreutils gnugrep ]))
   ];
 
   home.sessionVariables.HAWKER_PATH = hawkerPath;

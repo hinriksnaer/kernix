@@ -6,7 +6,7 @@
 {
   programs.yazi = {
     enable = true;
-    enableFishIntegration = true;
+    enableZshIntegration = true;
     shellWrapperName = "y";
 
     # Plugins from nixpkgs (pkgs.yaziPlugins)

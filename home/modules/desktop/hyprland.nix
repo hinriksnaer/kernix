@@ -32,11 +32,11 @@ in
     _JAVA_AWT_WM_NONREPARENTING = "1";
   };
 
-  # ── UWSM auto-start (fish) ──
-  programs.fish.interactiveShellInit = ''
-    if uwsm check may-start
+  # ── UWSM auto-start ──
+  programs.zsh.initContent = lib.mkOrder 100 ''
+    if uwsm check may-start 2>/dev/null; then
         exec uwsm start hyprland-uwsm.desktop
-    end
+    fi
   '';
 
   wayland.windowManager.hyprland = {

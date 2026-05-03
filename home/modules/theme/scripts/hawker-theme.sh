@@ -1,47 +1,44 @@
-#!/usr/bin/env fish
 # Interactive CLI theme selector using fzf
 # Perfect for terminal-only environments
 # Usage: hawker-theme
 
-# Find script directory for calling other scripts
-
 # Get list of available themes
-set theme_list (hawker-theme-list)
+mapfile -t theme_list < <(hawker-theme-list)
 
-if test (count $theme_list) -eq 0
+if [[ ${#theme_list[@]} -eq 0 ]]; then
     echo "No themes found"
     exit 1
-end
+fi
 
 # Get current theme (may fail, that's ok)
-set current_theme (hawker-theme-current 2>/dev/null)
+current_theme="$(hawker-theme-current 2>/dev/null || true)"
 
 # Prepare theme list with current indicator
-set display_list
-for theme in $theme_list
-    if test "$theme" = "$current_theme"
-        set -a display_list "● $theme (current)"
+display_list=()
+for theme in "${theme_list[@]}"; do
+    if [[ "$theme" == "$current_theme" ]]; then
+        display_list+=("● $theme (current)")
     else
-        set -a display_list "  $theme"
-    end
-end
+        display_list+=("  $theme")
+    fi
+done
 
 # Show fzf selector with preview
-set selected (printf '%s\n' $display_list | \
+selected="$(printf '%s\n' "${display_list[@]}" | \
     fzf --height=40% \
         --reverse \
         --border=rounded \
         --prompt="Select theme > " \
         --header="Use ↑↓ to navigate, Enter to select, Esc to cancel" \
-        --preview="echo 'Theme: {}' | sed 's/^[● ]*//'")
+        --preview="echo 'Theme: {}' | sed 's/^[● ]*//' " || true)"
 
 # Extract theme name from selection (remove indicator and "(current)")
-if test -n "$selected"
-    set theme_name (echo $selected | sed 's/^[● ]*//' | sed 's/ (current)$//')
+if [[ -n "$selected" ]]; then
+    theme_name="$(echo "$selected" | sed 's/^[● ]*//' | sed 's/ (current)$//')"
 
     echo ""
     echo "Applying theme: $theme_name"
-    hawker-theme-set $theme_name
+    hawker-theme-set "$theme_name"
 else
     echo "Theme selection cancelled"
-end
+fi

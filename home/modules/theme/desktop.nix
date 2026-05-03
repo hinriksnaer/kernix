@@ -7,25 +7,22 @@ let
   hawkerPath = "${config.home.homeDirectory}/.local/share/hawker";
   scripts = ./scripts;
 
-  mkFish = name: pkgs.writeScriptBin name ''
-    #!${pkgs.fish}/bin/fish
-    set -gx HAWKER_PATH "${hawkerPath}"
-    ${builtins.readFile "${scripts}/${name}.fish"}
-  '';
+  mkScript = name: runtimeInputs: pkgs.writeShellApplication {
+    inherit name runtimeInputs;
+    text = ''
+      export HAWKER_PATH="${hawkerPath}"
+      ${builtins.readFile "${scripts}/${name}.sh"}
+    '';
+  };
 in
 {
   home.packages = [
-    # Wallpaper picker (bash, uses rofi)
-    (pkgs.writeShellApplication {
-      name = "hawker-rofi-wallpaper-select";
-      runtimeInputs = with pkgs; [ rofi swaybg findutils coreutils ];
-      text = builtins.readFile "${scripts}/hawker-rofi-wallpaper-select.sh";
-      excludeShellChecks = [ "SC2029" "SC2016" ];
-    })
+    # Wallpaper picker (rofi grid)
+    (mkScript "hawker-rofi-wallpaper-select" (with pkgs; [ rofi swaybg findutils coreutils ]))
 
-    # Desktop theme scripts (fish)
-    (mkFish "hawker-rofi-theme-select")
-    (mkFish "hawker-wallpaper-set")
-    (mkFish "hawker-wallpaper-next")
+    # Desktop theme scripts
+    (mkScript "hawker-rofi-theme-select" (with pkgs; [ rofi coreutils gnused libnotify ]))
+    (mkScript "hawker-wallpaper-set" (with pkgs; [ swaybg coreutils findutils procps ]))
+    (mkScript "hawker-wallpaper-next" (with pkgs; [ swaybg coreutils findutils procps libnotify ]))
   ];
 }

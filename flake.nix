@@ -9,7 +9,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, ... } @inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -57,6 +57,19 @@
 
     in {
 
+      # ── Formatter (nix fmt) ──
+      formatter.${system} = pkgs.alejandra;
+
+      # ── Overlays ──
+      overlays = import ./overlays { inherit inputs; };
+
+      # ── Custom packages (nix build .#<name>) ──
+      packages.${system} = let
+        cli = import ./cli { inherit pkgs; };
+      in {
+        inherit (cli) hawker-switch hawker-dev;
+      };
+
       # ── Individually importable modules (auto-discovered) ──
       nixosModules = let
         discoverAll = dir: (discoverModules dir) // (discoverDirs dir);
@@ -69,22 +82,18 @@
         (discoverModules ./roles);
 
       # ── Machine configurations ──
-      nixosConfigurations = {
-        desktop = nixpkgs.lib.nixosSystem {
+      nixosConfigurations = let
+        mkHost = hostname: nixpkgs.lib.nixosSystem {
           inherit system;
           modules = commonModules ++ [
-            ./hosts/desktop/default.nix
-            (hmNixosModule "desktop")
+            ./hosts/${hostname}/default.nix
+            (hmNixosModule hostname)
+            { nixpkgs.overlays = builtins.attrValues self.overlays; }
           ];
         };
-
-        laptop = nixpkgs.lib.nixosSystem {
-          inherit system;
-          modules = commonModules ++ [
-            ./hosts/laptop/default.nix
-            (hmNixosModule "laptop")
-          ];
-        };
+      in {
+        desktop = mkHost "desktop";
+        laptop = mkHost "laptop";
       };
 
       # ── Home Manager (standalone, user@host convention) ──

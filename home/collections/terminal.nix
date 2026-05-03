@@ -8,7 +8,7 @@
     ../modules/terminal/tmux.nix
     ../modules/terminal/cli-tools.nix
     ../modules/terminal/gh.nix
-    ../modules/terminal/fish.nix
+    ../modules/terminal/zsh.nix
     ../modules/terminal/direnv.nix
     ../modules/terminal/neovim
     ../modules/terminal/build-tools.nix

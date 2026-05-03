@@ -9,9 +9,10 @@
     pamixer
     playerctl
     alsa-utils
-    (writeScriptBin "volume-control" ''
-      #!${fish}/bin/fish
-      ${builtins.readFile ./scripts/volume-control.fish}
-    '')
+    (writeShellApplication {
+      name = "volume-control";
+      runtimeInputs = [ wireplumber libnotify ];
+      text = builtins.readFile ./scripts/volume-control.sh;
+    })
   ];
 }
