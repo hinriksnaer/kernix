@@ -1,101 +1,138 @@
 # kernix
 
-NixOS configuration and CUDA development environment.
+NixOS configuration and CUDA development environment. Flake-based, multi-host,
+with a runtime theme engine and declarative everything.
 
-CUDA 12.9, cuDNN 9.13, GCC 14. Development shell via `nix develop`
-with direnv integration. All project settings configured in `settings.nix`.
-
-## Development Shell
+## Quick Start
 
 ```bash
-# 1. Install Nix (one-time, needs root for /nix only)
-sudo mkdir -p /nix && sudo chown $USER /nix
-curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
-mkdir -p ~/.config/nix
-echo 'experimental-features = nix-command flakes' > ~/.config/nix/nix.conf
+# NixOS hosts
+git clone git@github.com:hinriksnaer/kernix.git ~/kernix
+# Edit settings.nix -- set username, git identity, GPU, monitors
+kernix rebuild
 
-# 2. Clone and configure
-git clone https://github.com/hinriksnaer/kernix.git ~/kernix
-cd ~/kernix
-# Edit settings.nix -- set username, git identity, projects
+# Remote dev hosts (non-NixOS)
+nix develop ~/kernix
+kernix-dev build pytorch
+```
 
-# 3. Enter the dev shell
-nix develop
-# or: cd into a project dir with .envrc → direnv auto-enters
+## CLI
+
+```
+kernix rebuild       Rebuild and switch (nh os switch with diff display)
+kernix boot          Rebuild for next boot (safer for session changes)
+kernix test          Activate without adding to boot menu
+kernix update        Update flake inputs + rebuild
+kernix cleanup [N]   Remove old generations (keep N, default 5)
+kernix list-gens     List system generations
 ```
 
 ## Configuration
 
-All settings live in `settings.nix`. Project settings under `hosts.remote.projects`
-are used by the development shell.
+All settings live in `settings.nix` -- the single source of truth:
 
-## CUDA Environment
+```nix
+kernix = {
+  defaultTheme = "ayu-dark";
+  git = { name = "..."; email = "..."; };
 
-- `cudaPackages.cudatoolkit` — merged symlinkJoin of all CUDA redist packages
-- `cudaPackages.backendStdenv.cc` (GCC 14) — default compiler (CUDA 12.9 requires <=14)
-- `CMAKE_PREFIX_PATH` — set to cudatoolkit + python3 for cmake discovery
-- `FindCUDAToolkit.cmake` passthrough — replaces PyTorch's vendored cmake module with cmake's standard one (following nixpkgs upstream)
-
-## NixOS Desktop
-
-Full desktop environment with Hyprland, themed terminal tools, and 12 color themes.
-
-### Fresh install
-
-```bash
-nixos-generate-config --root /mnt
-# Copy hardware-configuration.nix to hosts/desktop/
-nixos-install --flake github:hinriksnaer/kernix#desktop
-# After reboot:
-git clone git@github.com:hinriksnaer/kernix.git ~/kernix
-cd ~/kernix && bash bootstrap.sh
+  hosts = {
+    desktop = {
+      username = "softmax";
+      gpu = "nvidia";
+      monitors = [
+        { name = "HDMI-A-1"; resolution = "7680x2160@120"; scale = 1.5; primary = true; }
+      ];
+    };
+    laptop = {
+      username = "hgudmund";
+      gpu = "intel";
+      monitors = [{ name = ""; resolution = "preferred"; scale = 1.0; primary = true; }];
+    };
+  };
+};
 ```
 
-### Existing NixOS system
+All host options are type-checked via `kernix-options.nix`. Typos and wrong types
+are caught at evaluation time.
 
-```bash
-git clone git@github.com:hinriksnaer/kernix.git ~/kernix
-nixos-generate-config --dir ~/kernix/hosts/desktop/
-# Edit settings.nix
-sudo nixos-rebuild switch --flake ~/kernix#desktop
-bash bootstrap.sh
-```
+## Themes
 
-### Themes
-
-12 themes across hyprland, kitty, neovim, btop, waybar, mako, rofi, hyprlock.
+13 themes with runtime switching across hyprland, kitty, neovim, btop, waybar,
+mako, rofi, and hyprlock. No rebuild required to switch.
 
 ```
-Super+T          Theme picker
+Super+T          Theme picker (rofi)
 Super+Shift+T    Next theme
 Super+W          Wallpaper picker
 Super+Shift+W    Next wallpaper
+kernix-theme     Interactive fzf selector (terminal)
 ```
 
 ## Structure
 
 ```
-settings.nix          all user config (single source of truth)
-flake.nix             2 machine configs + dev shell
+settings.nix              single source of truth for all config
+flake.nix                  2 hosts, overlays, formatter, dev shell
 
-modules/              NixOS modules (flat, one per tool/service)
-  kernix-options.nix  typed option declarations
-  gpu.nix             GPU driver dispatch (nvidia/intel/amd/none)
-  fish.nix            fish shell + starship + fzf + zoxide
-  ...
+modules/                   NixOS system modules
+  core/                    base, zsh, nh, kernix-options
+  desktop/                 hyprland, fonts, desktop-session
+  hardware/                gpu/{nvidia,intel,amd}, audio, bluetooth, networking
+  apps/                    firefox, podman, proton-pass
+  gaming/                  steam, gpu-extra
 
-roles/                named module collections (assigned to hosts)
-  core.nix            base system, fish, cli-tools, git
-  desktop.nix         hyprland, kitty, waybar, mako, rofi, fonts
-  hardware.nix        GPU, bluetooth, networking, audio
-  apps.nix            firefox, discord, obsidian, steam, podman
+roles/                     module collections assigned to hosts
+  core.nix                 base system, zsh, nh
+  desktop.nix              hyprland, fonts, session
+  hardware.nix             GPU, audio, bluetooth, networking
+  apps.nix                 user applications
 
-dev/                  development shell
-  shell.nix           entry point (nix develop / direnv)
-  base/               shared tooling + CUDA base layer
-  projects/           per-project modules (pytorch, helion, vllm)
-  cli/                kernix-dev CLI (available inside the shell)
+home/                      Home Manager configuration
+  profiles/                per-host profiles (desktop, laptop, remote)
+  collections/             module bundles (terminal, desktop, apps, gaming)
+  modules/
+    terminal/
+      neovim/              default.nix + config/ (Lua config)
+      zsh.nix, git.nix, tmux.nix, cli-tools.nix, ...
+    desktop/
+      hyprland.nix, monitors.nix, kitty.nix, rofi.nix, ...
+      waybar/              default.nix + config/style.css
+    theme/
+      default.nix          theme engine + hook registrations
+      desktop.nix          wallpaper/rofi theme scripts
+      scripts/             all theme scripts (bash, writeShellApplication)
 
-hosts/                machine configs (desktop, laptop)
-dotfiles/             stow-managed configs + 12 themes
+themes/                    13 color themes (per-app configs + wallpapers)
+overlays/                  additions, flake-inputs, modifications
+cli/                       kernix, kernix-dev, kernix-hm-switch
+dev/                       CUDA development shell
+  shell.nix                entry point (nix develop / direnv)
+  base/                    shared tooling + CUDA base layer
+  projects/                per-project modules (pytorch, helion, vllm)
 ```
+
+## Infrastructure
+
+- **Overlays**: custom packages via `pkgs.kernix-cli.*`, flake inputs via `pkgs.inputs'.*`
+- **Dual channels**: `nixpkgs` (unstable) + `nixpkgs-stable` (25.05) for pinning
+- **Formatter**: `nix fmt` (alejandra)
+- **Registry pinning**: `nix run nixpkgs#foo` uses the system's pinned nixpkgs
+- **CI**: `nix flake check` + format check on push, weekly flake lock updates
+- **nh**: diff display, nix-output-monitor, automatic GC (7d/5 gens)
+- **Typed options**: `kernix.hosts` is a typed submodule, catches config errors at eval time
+- **Monitors option**: `config.monitors` typed HM option, fed from settings.nix
+
+## CUDA Development
+
+```bash
+nix develop ~/kernix         # enter dev shell
+kernix-dev build pytorch     # clone + build PyTorch from source
+kernix-dev build helion      # clone + build Helion compiler
+kernix-dev status            # show project build status
+```
+
+- CUDA 12.9, cuDNN 9.13, GCC 14
+- `CMAKE_PREFIX_PATH` set for cmake discovery
+- direnv integration (auto-enters shell in project dirs)
+- All project settings in `settings.nix` under `hosts.remote.projects`
