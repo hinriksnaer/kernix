@@ -13,7 +13,13 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     historySubstringSearch.enable = true;
-    defaultKeymap = "viins";
+    plugins = [
+      {
+        name = "zsh-vi-mode";
+        src = pkgs.zsh-vi-mode;
+        file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
+      }
+    ];
 
     # Nix profile paths for non-NixOS hosts
     envExtra = ''
@@ -26,11 +32,6 @@
     '';
 
     initContent = lib.mkMerge [
-      # Reduce key timeout for snappy mode switching
-      (lib.mkOrder 550 ''
-        export KEYTIMEOUT=1
-      '')
-
       # Terminfo from HM profile (kitty terminfo for SSH sessions)
       (lib.mkOrder 600 ''
         if [ -d "$HOME/.nix-profile/share/terminfo" ]; then
