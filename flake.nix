@@ -25,13 +25,13 @@
     };
     lib = nixpkgs.lib;
 
-    # Common modules: user settings (imported by all machine configs)
-    commonModules = [
-      ./settings.nix
-    ];
+      # User settings (plain attrset, assigned to config.kernix.*)
+      settings = import ./settings.nix;
 
-    # Per-host settings (read directly, not through module system)
-    settings = (import ./settings.nix {}).kernix;
+      # Common modules: settings + base config (imported by all machines)
+      commonModules = [
+        {kernix = settings;}
+      ];
 
     # Auto-discover .nix files from a directory
     discoverModules = dir:
