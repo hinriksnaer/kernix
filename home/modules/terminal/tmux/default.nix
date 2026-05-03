@@ -164,22 +164,23 @@
 
       # Move pane to adjacent window: Alt + Shift + [ / ]
       # Both legacy (M-{) and extended (M-S-[) encodings for compatibility
-      bind -n M-'{' join-pane -t :-1
-      bind -n M-'}' join-pane -t :+1
-      bind -n M-S-'[' join-pane -t :-1
-      bind -n M-S-']' join-pane -t :+1
+      # -h = horizontal (side-by-side) join
+      bind -n M-'{' join-pane -h -t :-1
+      bind -n M-'}' join-pane -h -t :+1
+      bind -n M-S-'[' join-pane -h -t :-1
+      bind -n M-S-']' join-pane -h -t :+1
 
       # Move pane to window N: prefix + 1-9
       # (Ctrl+number can't be encoded by terminals, so this goes behind prefix)
-      bind 1 join-pane -t :1
-      bind 2 join-pane -t :2
-      bind 3 join-pane -t :3
-      bind 4 join-pane -t :4
-      bind 5 join-pane -t :5
-      bind 6 join-pane -t :6
-      bind 7 join-pane -t :7
-      bind 8 join-pane -t :8
-      bind 9 join-pane -t :9
+      bind 1 join-pane -h -t :1
+      bind 2 join-pane -h -t :2
+      bind 3 join-pane -h -t :3
+      bind 4 join-pane -h -t :4
+      bind 5 join-pane -h -t :5
+      bind 6 join-pane -h -t :6
+      bind 7 join-pane -h -t :7
+      bind 8 join-pane -h -t :8
+      bind 9 join-pane -h -t :9
 
       # Break pane to new window: Alt + Ctrl + Enter
       bind -n M-C-Enter break-pane
