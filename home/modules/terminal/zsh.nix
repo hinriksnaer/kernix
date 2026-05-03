@@ -45,14 +45,7 @@
 
       # Use base16 theme for fast-syntax-highlighting (inherits terminal ANSI colors)
       (lib.mkOrder 600 ''
-        fast-theme base16 >/dev/null 2>&1 || true
-      '')
-
-      # Terminfo from HM profile (terminal emulator terminfo for SSH sessions)
-      (lib.mkOrder 700 ''
-        if [ -d "$HOME/.nix-profile/share/terminfo" ]; then
-          export TERMINFO_DIRS="$HOME/.nix-profile/share/terminfo:''${TERMINFO_DIRS:-}"
-        fi
+      fast-theme base16 >/dev/null 2>&1 || true
       '')
     ];
 

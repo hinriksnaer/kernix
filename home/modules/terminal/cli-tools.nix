@@ -38,13 +38,14 @@
   programs.fd.enable = true;
 
   # Terminal emulator terminfo for SSH sessions
-  home.packages = [
-    (
-      if settings.terminal == "ghostty"
-      then pkgs.ghostty.terminfo
-      else pkgs.kitty.terminfo
-    )
-  ];
+  # Symlinked to ~/.terminfo so ncurses finds it automatically (all shells, no env vars)
+  home.file.".terminfo".source =
+    let
+      pkg =
+        if settings.terminal == "ghostty"
+        then pkgs.ghostty.terminfo
+        else pkgs.kitty.terminfo;
+    in "${pkg}/share/terminfo";
 
   # Man pager via bat
   home.sessionVariables = {
