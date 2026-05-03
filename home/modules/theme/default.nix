@@ -51,11 +51,10 @@ in {
   # reads from this path, so immutable nix store is safe.
   xdg.dataFile."kernix/themes".source = ../../../themes;
 
-  # ── Hook registrations ──
-  # All apps register here. The engine skips hooks at runtime when
-  # the source file or target directory doesn't exist.
+  # ── Hook registrations (terminal apps) ──
+  # Desktop hooks (waybar, terminal emulator, rofi, hyprlock, mako, hyprland)
+  # live in desktop.nix since they require the emulators module.
   xdg.configFile = {
-    # Terminal apps
     "kernix/theme-hooks.d/10-btop".text = ''
       source=btop.theme
       target=~/.config/btop/themes/active.theme
@@ -74,41 +73,6 @@ in {
       type=config-rewrite
       target=~/.config/opencode/tui.json
       key=theme
-    '';
-
-    # Desktop apps
-    "kernix/theme-hooks.d/20-waybar".text = ''
-      source=waybar.css
-      target=~/.config/waybar/theme.css
-      reload=pkill -SIGUSR2 -f waybar
-    '';
-    "kernix/theme-hooks.d/21-terminal".text = let
-      t = config.kernix.terminal.themeHook;
-    in ''
-      source=${t.source}
-      target=${t.target}
-      ${
-        if t.reload != ""
-        then "reload=${t.reload}"
-        else ""
-      }
-    '';
-    "kernix/theme-hooks.d/22-rofi".text = ''
-      source=rofi.rasi
-      target=~/.config/rofi/theme.rasi
-    '';
-    "kernix/theme-hooks.d/23-hyprlock".text = ''
-      source=hyprlock.conf
-      target=~/.config/hypr/hyprlock-theme.conf
-    '';
-    "kernix/theme-hooks.d/24-mako".text = ''
-      source=mako.ini
-      target=~/.config/mako/theme.conf
-      reload=pkill -f mako; sleep 0.3; setsid mako >/dev/null 2>&1 &
-    '';
-    "kernix/theme-hooks.d/25-hyprland".text = ''
-      type=hyprland
-      reload=hyprctl reload
     '';
   };
 
