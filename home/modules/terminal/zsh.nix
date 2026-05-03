@@ -33,6 +33,12 @@
     '';
 
     initContent = lib.mkMerge [
+      # Blinking cursor for zsh-vi-mode (must be set before plugin loads)
+      (lib.mkOrder 500 ''
+        ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BEAM
+        ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
+      '')
+
       # Terminfo from HM profile (kitty terminfo for SSH sessions)
       (lib.mkOrder 600 ''
         if [ -d "$HOME/.nix-profile/share/terminfo" ]; then
