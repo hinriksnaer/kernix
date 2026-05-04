@@ -105,20 +105,23 @@ return {
     require('fzf-lua').register_ui_select()
 
     -- Set up keybindings
+    --
+    -- Shared concepts use the SAME lowercase letter in both groups:
+    --   g = grep    (fg / sg)     s = symbols     (fs / ss)
+    --   d = diag    (fd / sd)     h = hunks       (fh / sh)
+    --   c = commits (fc / sc)
+    --
+    -- Non-shared items use unique or uppercase keys.
+
     local wk = require 'which-key'
     wk.add {
+      ----------------------------------------------------------------
+      -- Find (project) — <leader>f
+      ----------------------------------------------------------------
+
       -- Files and buffers
-      {
-        '<leader>ff',
-        '<cmd>FzfLua files<cr>',
-        desc = 'Find Files',
-      },
-      {
-        '<C-p>',
-        '<cmd>FzfLua files<cr>',
-        desc = 'Find Files',
-        mode = 'n',
-      },
+      { '<leader>ff', '<cmd>FzfLua files<cr>', desc = 'Files' },
+      { '<C-p>', '<cmd>FzfLua files<cr>', desc = 'Find Files', mode = 'n' },
       {
         '<leader>fF',
         function()
@@ -126,114 +129,54 @@ return {
         end,
         desc = 'Files (relative to current)',
       },
-      {
-        '<leader>fb',
-        '<cmd>FzfLua buffers<cr>',
-        desc = 'Buffers',
-      },
-      {
-        '<leader>fo',
-        '<cmd>FzfLua oldfiles<cr>',
-        desc = 'Recent Files',
-      },
+      { '<leader>fb', '<cmd>FzfLua buffers<cr>', desc = 'Buffers' },
+      { '<leader>fo', '<cmd>FzfLua oldfiles<cr>', desc = 'Recent Files' },
 
-      -- Search
-      {
-        '<leader>fg',
-        '<cmd>FzfLua live_grep<cr>',
-        desc = 'Live Grep',
-      },
-      {
-        '<leader>fw',
-        '<cmd>FzfLua grep_cword<cr>',
-        desc = 'Grep Word Under Cursor',
-      },
-      {
-        '<leader>/',
-        '<cmd>FzfLua blines<cr>',
-        desc = 'Search Lines (buffer)',
-      },
+      -- Shared: grep, symbols, diagnostics (lowercase — mirrors <leader>s)
+      { '<leader>fg', '<cmd>FzfLua live_grep<cr>', desc = 'Grep' },
+      { '<leader>fs', '<cmd>FzfLua lsp_live_workspace_symbols<cr>', desc = 'Symbols' },
+      { '<leader>fd', '<cmd>FzfLua diagnostics_workspace<cr>', desc = 'Diagnostics' },
 
-      -- Help and info
-      {
-        '<leader>fh',
-        '<cmd>FzfLua help_tags<cr>',
-        desc = 'Help',
-      },
-      {
-        '<leader>fk',
-        '<cmd>FzfLua keymaps<cr>',
-        desc = 'Keymaps',
-      },
-      {
-        '<leader>fm',
-        '<cmd>FzfLua marks<cr>',
-        desc = 'Marks',
-      },
-      {
-        '<leader>fr',
-        '<cmd>FzfLua resume<cr>',
-        desc = 'Resume',
-      },
-      {
-        '<leader>fc',
-        '<cmd>FzfLua colorschemes<cr>',
-        desc = 'Colorschemes',
-      },
+      -- Shared: git hunks, commits (lowercase — mirrors <leader>s)
+      { '<leader>fh', '<cmd>FzfLua git_hunks<cr>', desc = 'Hunks' },
+      { '<leader>fc', '<cmd>FzfLua git_commits<cr>', desc = 'Commits' },
 
-      -- LSP (project-scoped)
-      {
-        '<leader>fS',
-        '<cmd>FzfLua lsp_live_workspace_symbols<cr>',
-        desc = 'Workspace Symbols',
-      },
-      {
-        '<leader>fD',
-        '<cmd>FzfLua diagnostics_workspace<cr>',
-        desc = 'Workspace Diagnostics',
-      },
+      -- Project-only (uppercase / unique keys)
+      { '<leader>fw', '<cmd>FzfLua grep_cword<cr>', desc = 'Grep Word Under Cursor' },
+      { '<leader>fw', '<cmd>FzfLua grep_visual<cr>', desc = 'Grep Visual Selection', mode = 'v' },
+      { '<leader>fG', '<cmd>FzfLua git_status<cr>', desc = 'Git Status' },
+      { '<leader>fH', '<cmd>FzfLua help_tags<cr>', desc = 'Help' },
+      { '<leader>fC', '<cmd>FzfLua colorschemes<cr>', desc = 'Colorschemes' },
+      { '<leader>fk', '<cmd>FzfLua keymaps<cr>', desc = 'Keymaps' },
+      { '<leader>fm', '<cmd>FzfLua marks<cr>', desc = 'Marks' },
+      { '<leader>fr', '<cmd>FzfLua resume<cr>', desc = 'Resume' },
 
-      -- Search in current file (<leader>s)
-      {
-        '<leader>sl',
-        '<cmd>FzfLua blines<cr>',
-        desc = 'Lines',
-      },
-      {
-        '<leader>ss',
-        '<cmd>FzfLua lsp_document_symbols<cr>',
-        desc = 'Symbols (LSP)',
-      },
-      {
-        '<leader>st',
-        '<cmd>FzfLua treesitter<cr>',
-        desc = 'Symbols (Treesitter)',
-      },
-      {
-        '<leader>sd',
-        '<cmd>FzfLua diagnostics_document<cr>',
-        desc = 'Diagnostics',
-      },
+      ----------------------------------------------------------------
+      -- Search (file) — <leader>s
+      ----------------------------------------------------------------
 
-      -- Visual grep
-      {
-        '<leader>fw',
-        '<cmd>FzfLua grep_visual<cr>',
-        desc = 'Grep Visual Selection',
-        mode = 'v',
-      },
+      -- Shared: grep, symbols, diagnostics (lowercase — mirrors <leader>f)
+      { '<leader>sg', '<cmd>FzfLua lgrep_curbuf<cr>', desc = 'Grep' },
+      { '<leader>ss', '<cmd>FzfLua lsp_document_symbols<cr>', desc = 'Symbols' },
+      { '<leader>sd', '<cmd>FzfLua diagnostics_document<cr>', desc = 'Diagnostics' },
 
-      -- Git file search
+      -- Shared: git hunks, commits (lowercase — mirrors <leader>f)
       {
-        '<leader>fG',
-        '<cmd>FzfLua git_status<cr>',
-        desc = 'Git changed files',
+        '<leader>sh',
+        function()
+          require('fzf-lua').git_hunks { file = vim.fn.expand '%' }
+        end,
+        desc = 'Hunks',
       },
-      {
-        '<leader>fC',
-        '<cmd>FzfLua git_commits<cr>',
-        desc = 'Git commits',
-      },
+      { '<leader>sc', '<cmd>FzfLua git_bcommits<cr>', desc = 'Commits' },
+
+      -- File-only
+      { '<leader>sl', '<cmd>FzfLua blines<cr>', desc = 'Lines' },
+      { '<leader>st', '<cmd>FzfLua treesitter<cr>', desc = 'Treesitter' },
+      { '<leader>sb', '<cmd>FzfLua git_blame<cr>', desc = 'Blame' },
+
+      -- Quick alias
+      { '<leader>/', '<cmd>FzfLua blines<cr>', desc = 'Search Lines (buffer)' },
     }
   end,
 }

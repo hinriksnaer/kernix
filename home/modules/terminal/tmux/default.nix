@@ -117,11 +117,11 @@
       bind -n M-k select-pane -U
       bind -n M-l select-pane -R
 
-      # Swap panes: Alt + Ctrl + hjkl (-d keeps active pane, so focus follows)
-      bind -n M-C-h swap-pane -d -t '{left-of}'
-      bind -n M-C-j swap-pane -d -t '{down-of}'
-      bind -n M-C-k swap-pane -d -t '{up-of}'
-      bind -n M-C-l swap-pane -d -t '{right-of}'
+      # Swap panes: Alt + Ctrl + hjkl (focus first, then swap with last-active)
+      bind -n M-C-h select-pane -L \; swap-pane -s '!'
+      bind -n M-C-j select-pane -D \; swap-pane -s '!'
+      bind -n M-C-k select-pane -U \; swap-pane -s '!'
+      bind -n M-C-l select-pane -R \; swap-pane -s '!'
 
       # Resize panes: Alt + Shift + hjkl
       bind -n M-H resize-pane -L 5
