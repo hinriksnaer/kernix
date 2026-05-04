@@ -187,6 +187,31 @@ return {
         '<cmd>FzfLua lsp_document_symbols<cr>',
         desc = 'Document Symbols',
       },
+      {
+        '<leader>fS',
+        '<cmd>FzfLua lsp_live_workspace_symbols<cr>',
+        desc = 'Workspace Symbols',
+      },
+
+      -- Diagnostics
+      {
+        '<leader>fd',
+        '<cmd>FzfLua diagnostics_document<cr>',
+        desc = 'Document Diagnostics',
+      },
+      {
+        '<leader>fD',
+        '<cmd>FzfLua diagnostics_workspace<cr>',
+        desc = 'Workspace Diagnostics',
+      },
+
+      -- Visual grep
+      {
+        '<leader>fw',
+        '<cmd>FzfLua grep_visual<cr>',
+        desc = 'Grep Visual Selection',
+        mode = 'v',
+      },
 
       -- Git file search
       {

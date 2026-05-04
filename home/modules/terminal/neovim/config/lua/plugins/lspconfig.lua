@@ -57,13 +57,15 @@ return {
           mode = mode or 'n'
           vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
         end
-        -- Navigation
-        map('gd', vim.lsp.buf.definition, 'Go to Definition')
-        map('gD', vim.lsp.buf.declaration, 'Go to Declaration')
-        map('gr', vim.lsp.buf.references, 'Go to References')
-        map('gi', vim.lsp.buf.implementation, 'Go to Implementation')
-        map('<leader>cD', vim.lsp.buf.type_definition, 'Type Definition')
-        map('<leader>cs', vim.lsp.buf.workspace_symbol, 'Workspace Symbols')
+        -- Navigation (routed through fzf-lua for fuzzy multi-result handling)
+        local fzf = require 'fzf-lua'
+        local jump1 = { jump_to_single_result = true }
+        map('gd', function() fzf.lsp_definitions(jump1) end, 'Go to Definition')
+        map('gD', function() fzf.lsp_declarations(jump1) end, 'Go to Declaration')
+        map('gr', function() fzf.lsp_references(jump1) end, 'Go to References')
+        map('gi', function() fzf.lsp_implementations(jump1) end, 'Go to Implementation')
+        map('<leader>cD', function() fzf.lsp_typedefs(jump1) end, 'Type Definition')
+        map('<leader>cs', fzf.lsp_live_workspace_symbols, 'Workspace Symbols')
 
         -- Hover & Info
         map('K', vim.lsp.buf.hover, 'Hover Documentation')
@@ -77,7 +79,7 @@ return {
         map('[d', vim.diagnostic.goto_prev, 'Go to previous diagnostic')
         map(']d', vim.diagnostic.goto_next, 'Go to next diagnostic')
         map('<leader>le', vim.diagnostic.open_float, 'Show diagnostic')
-        map('<leader>lq', vim.diagnostic.setloclist, 'Diagnostics to location list')
+        map('<leader>lq', function() require('fzf-lua').diagnostics_document() end, 'Document Diagnostics')
 
         -- Formatting
         map('<leader>cf', function()

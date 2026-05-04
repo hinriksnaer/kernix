@@ -55,6 +55,7 @@ return {
       { '<leader>s', group = '󰁯 Session' }, -- Session management
       { '<leader>h', group = '󰛢 Harpoon' }, -- Harpoon file marks
       { '<leader>d', group = ' Debug' }, -- DAP debugging
+      { '<leader>\\', group = ' Toggle' }, -- mini.basics option toggles
 
       -- Git subgroups
       { '<leader>gt', group = 'Toggle' }, -- Git toggles (blame, deleted)

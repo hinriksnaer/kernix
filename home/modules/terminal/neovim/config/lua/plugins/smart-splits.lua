@@ -17,13 +17,21 @@ return {
   config = function(_, opts)
     require('smart-splits').setup(opts)
 
-    -- Navigation that works seamlessly with tmux
-    -- These replace the existing Ctrl+hjkl mappings
-    vim.keymap.set('n', '<C-h>', require('smart-splits').move_cursor_left, { desc = 'Move to left window' })
-    vim.keymap.set('n', '<C-j>', require('smart-splits').move_cursor_down, { desc = 'Move to lower window' })
-    vim.keymap.set('n', '<C-k>', require('smart-splits').move_cursor_up, { desc = 'Move to upper window' })
-    vim.keymap.set('n', '<C-l>', require('smart-splits').move_cursor_right, { desc = 'Move to right window' })
+    local splits = require('smart-splits')
+
+    -- Navigate (Ctrl+hjkl): cross-layer, seamless vim <-> tmux
+    vim.keymap.set('n', '<C-h>', splits.move_cursor_left, { desc = 'Move to left window' })
+    vim.keymap.set('n', '<C-j>', splits.move_cursor_down, { desc = 'Move to lower window' })
+    vim.keymap.set('n', '<C-k>', splits.move_cursor_up, { desc = 'Move to upper window' })
+    vim.keymap.set('n', '<C-l>', splits.move_cursor_right, { desc = 'Move to right window' })
+
+    -- Resize (Ctrl+arrows): intuitive directional resize
+    vim.keymap.set('n', '<C-Left>', splits.resize_left, { desc = 'Resize split left' })
+    vim.keymap.set('n', '<C-Down>', splits.resize_down, { desc = 'Resize split down' })
+    vim.keymap.set('n', '<C-Up>', splits.resize_up, { desc = 'Resize split up' })
+    vim.keymap.set('n', '<C-Right>', splits.resize_right, { desc = 'Resize split right' })
 
     -- Note: Alt+hjkl reserved for tmux navigation layer (see tmux/default.nix)
+    -- Swap bindings are in config/keymaps.lua under <leader>w
   end,
 }

@@ -50,6 +50,7 @@ return {
         },
         mappings = {
           basic = false, -- Don't override our custom keymaps
+          option_toggle_prefix = '<leader>\\', -- moved from default '\' to avoid nav layer conflict
         },
       }
 
