@@ -52,7 +52,8 @@ return {
       { '<leader>b', group = '󰓩 Buffer' }, -- Buffer management
       { '<leader>w', group = '󰖯 Window' }, -- Window management (smart-splits Ctrl+hjkl, Alt+hjkl reserved for tmux)
       { '<leader>q', group = ' Quickfix' }, -- Quickfix & location list
-      { '<leader>s', group = '󰁯 Session' }, -- Session management
+      { '<leader>s', group = ' Search' }, -- Buffer/file-scoped search (fzf-lua)
+      { '<leader>S', group = '󰁯 Session' }, -- Session management
       { '<leader>h', group = '󰛢 Harpoon' }, -- Harpoon file marks
       { '<leader>d', group = ' Debug' }, -- DAP debugging
       { '<leader>\\', group = ' Toggle' }, -- mini.basics option toggles

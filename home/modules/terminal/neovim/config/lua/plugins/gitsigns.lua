@@ -51,6 +51,12 @@ return {
         map('n', '<leader>gd', gitsigns.diffthis, { desc = 'Diff against index' })
         map('n', '<leader>gtb', gitsigns.toggle_current_line_blame, { desc = 'Toggle blame line' })
         map('n', '<leader>gtd', gitsigns.toggle_deleted, { desc = 'Toggle deleted lines' })
+
+        -- Search changes in current file (via fzf-lua)
+        map('n', '<leader>sg', function()
+          gitsigns.setqflist(0, { open = false })
+          require('fzf-lua').quickfix()
+        end, { desc = 'Git changes' })
       end,
     },
   },

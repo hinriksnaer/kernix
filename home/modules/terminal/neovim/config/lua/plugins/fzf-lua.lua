@@ -151,7 +151,7 @@ return {
       {
         '<leader>/',
         '<cmd>FzfLua blines<cr>',
-        desc = 'Fuzzy in Current Buffer',
+        desc = 'Search Lines (buffer)',
       },
 
       -- Help and info
@@ -181,28 +181,38 @@ return {
         desc = 'Colorschemes',
       },
 
-      -- LSP
-      {
-        '<leader>fs',
-        '<cmd>FzfLua lsp_document_symbols<cr>',
-        desc = 'Document Symbols',
-      },
+      -- LSP (project-scoped)
       {
         '<leader>fS',
         '<cmd>FzfLua lsp_live_workspace_symbols<cr>',
         desc = 'Workspace Symbols',
       },
-
-      -- Diagnostics
-      {
-        '<leader>fd',
-        '<cmd>FzfLua diagnostics_document<cr>',
-        desc = 'Document Diagnostics',
-      },
       {
         '<leader>fD',
         '<cmd>FzfLua diagnostics_workspace<cr>',
         desc = 'Workspace Diagnostics',
+      },
+
+      -- Search in current file (<leader>s)
+      {
+        '<leader>sl',
+        '<cmd>FzfLua blines<cr>',
+        desc = 'Lines',
+      },
+      {
+        '<leader>ss',
+        '<cmd>FzfLua lsp_document_symbols<cr>',
+        desc = 'Symbols (LSP)',
+      },
+      {
+        '<leader>st',
+        '<cmd>FzfLua treesitter<cr>',
+        desc = 'Symbols (Treesitter)',
+      },
+      {
+        '<leader>sd',
+        '<cmd>FzfLua diagnostics_document<cr>',
+        desc = 'Diagnostics',
       },
 
       -- Visual grep
