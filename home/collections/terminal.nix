@@ -15,5 +15,6 @@
     ../modules/terminal/btop.nix
     ../modules/terminal/lazygit.nix
     ../modules/terminal/yazi.nix
+    ../modules/terminal/ibmcloud.nix
   ];
 }

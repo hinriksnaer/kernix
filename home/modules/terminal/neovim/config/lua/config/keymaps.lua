@@ -46,7 +46,7 @@ vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Previous search result (centered)' }
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Half page down (centered)' })
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Half page up (centered)' })
 
--- Buffer navigation (uses BufferLine for consistent ordering, defined below)
+-- Buffer navigation
 
 -- Quick switch to alternate buffer
 vim.keymap.set('n', '<leader><leader>', '<cmd>e#<CR>', { desc = 'Switch to alternate buffer' })
@@ -130,16 +130,5 @@ end, { desc = 'Toggle split orientation' })
 
 -- ── Buffer management (<leader>b + [b/]b) ──
 -- Cycle buffers (bracket convention, matches [d/]d, [q/]q)
-vim.keymap.set('n', '[b', '<cmd>BufferLineCyclePrev<CR>', { desc = 'Previous buffer' })
-vim.keymap.set('n', ']b', '<cmd>BufferLineCycleNext<CR>', { desc = 'Next buffer' })
-
--- Reorder buffers in the bufferline
-vim.keymap.set('n', '<leader>bh', '<cmd>BufferLineMovePrev<CR>', { desc = 'Move buffer left' })
-vim.keymap.set('n', '<leader>bl', '<cmd>BufferLineMoveNext<CR>', { desc = 'Move buffer right' })
-
--- Jump to buffer by ordinal position (top-level for speed)
-for i = 1, 9 do
-  vim.keymap.set('n', '<leader>' .. i, function()
-    require('bufferline').go_to(i, true)
-  end, { desc = 'Go to buffer ' .. i })
-end
+vim.keymap.set('n', '[b', '<cmd>bprevious<CR>', { desc = 'Previous buffer' })
+vim.keymap.set('n', ']b', '<cmd>bnext<CR>', { desc = 'Next buffer' })
