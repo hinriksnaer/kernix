@@ -6,7 +6,7 @@
     ../../roles/hardware.nix
     ../../roles/apps.nix
     ../../roles/gaming.nix
-    ../../modules/hardware/fancontrol.nix
+    ./fancontrol.nix
   ];
 
   kernix.username = config.kernix.hosts.desktop.username;
