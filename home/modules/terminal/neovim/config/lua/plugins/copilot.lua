@@ -9,10 +9,10 @@ return {
       auto_trigger = true,
       hide_during_completion = true, -- Hide ghost text when blink menu is open
       keymap = {
-        accept = '<M-l>',     -- Alt+l to accept ghost text (not <C-y>, that's for blink)
-        next = '<M-]>',
-        prev = '<M-[>',
-        dismiss = '<C-]>',
+        accept = '<C-l>',
+        next = false,
+        prev = false,
+        dismiss = false,
       },
     },
     panel = { enabled = false },
