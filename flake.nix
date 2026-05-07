@@ -139,6 +139,6 @@
 
     # ── Development shells (powered by nixtorch) ──
     devShells.${system}.default =
-      nixtorch.lib.mkDevShell settings.hosts.remote.nixtorch;
+      nixtorch.lib.mkDevShell settings.hosts.container.nixtorch;
   };
 }

@@ -66,5 +66,24 @@
         };
       };
     };
+
+    container = {
+      username = "root";
+
+      nixtorch = {
+        cudaVisibleDevices = "";
+        workspace = "$HOME/workspace";
+        projects = {
+          pytorch = {
+            cudaArch = "9.0";
+            maxJobs = 32;
+          };
+          helion = {
+            torchIndex = "nightly/cu130";
+            backends = ["cute"];
+          };
+        };
+      };
+    };
   };
 }
