@@ -27,6 +27,14 @@ in {
   home.homeDirectory = homeDir;
   home.stateVersion = "24.11";
 
+  # oc exec starts a non-login shell that only sources .bashrc, not .profile.
+  # Ensure Nix paths and USER are available in all interactive bash sessions.
+  programs.bash.initExtra = ''
+    export USER="${username}"
+    [ -f "${homeDir}/.nix-profile/etc/profile.d/nix.sh" ] && . "${homeDir}/.nix-profile/etc/profile.d/nix.sh"
+    [ -f "${homeDir}/.nix-profile/etc/profile.d/hm-session-vars.sh" ] && . "${homeDir}/.nix-profile/etc/profile.d/hm-session-vars.sh"
+  '';
+
   home.packages = [cli.kernix-hm-switch];
 
   # Auto-activate devshell when cd-ing into workspace
