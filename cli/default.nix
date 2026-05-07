@@ -19,11 +19,13 @@
   kernix-hm-switch = assert hmProfile != null;
     pkgs.writeShellApplication {
       name = "kernix-hm-switch";
-      runtimeInputs = with pkgs; [git];
+      runtimeInputs = with pkgs; [git nix];
       text = ''
         KERNIX_ROOT="''${KERNIX_ROOT:-$HOME/kernix}"
         echo ":: pulling latest config"
         git -C "$KERNIX_ROOT" pull --ff-only
+        echo ":: updating flake inputs"
+        nix flake update --flake "$KERNIX_ROOT"
         echo ":: applying Home Manager (${hmProfile})"
         home-manager switch --flake "$KERNIX_ROOT#${hmProfile}" "$@"
         echo ":: done — run 'direnv reload' to pick up devshell changes"
