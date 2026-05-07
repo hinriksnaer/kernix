@@ -8,12 +8,14 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixtorch.url = "github:hinriksnaer/nixtorch";
   };
 
   outputs = {
     self,
     nixpkgs,
     home-manager,
+    nixtorch,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -83,7 +85,7 @@
 
     # ── Custom packages (nix build .#<name>) ──
     packages.${system} = {
-      inherit (pkgsUnfree.kernix-cli) kernix kernix-dev;
+      inherit (pkgsUnfree.kernix-cli) kernix;
     };
 
     # ── Individually importable modules (auto-discovered) ──
@@ -135,10 +137,8 @@
       )
       settings.hosts;
 
-    # ── Development shells ──
-    devShells.${system}.default = import ./dev/shell.nix {
-      pkgs = pkgsUnfree;
-      inherit settings;
-    };
+    # ── Development shells (powered by nixtorch) ──
+    devShells.${system}.default =
+      nixtorch.lib.mkDevShell settings.hosts.remote.nixtorch;
   };
 }

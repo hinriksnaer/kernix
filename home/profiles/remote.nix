@@ -9,7 +9,7 @@
 }: let
   username = settings.hosts.${hostname}.username;
   homeDir = "/home/${username}";
-  reposDir = "${homeDir}/workspace/repos";
+  reposDir = "${homeDir}/workspace";
   kernixRoot = "${homeDir}/kernix";
   cli = import ../../cli {
     inherit pkgs;

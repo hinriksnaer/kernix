@@ -29,11 +29,4 @@
         echo ":: done — run 'direnv reload' to pick up devshell changes"
       '';
     };
-
-  # Devshell: project setup/build/status/update/clean
-  kernix-dev = pkgs.writeShellApplication {
-    name = "kernix-dev";
-    text = builtins.readFile ./kernix-dev.sh;
-    excludeShellChecks = ["SC1091" "SC2086" "SC2155"];
-  };
 }

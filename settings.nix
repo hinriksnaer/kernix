@@ -49,31 +49,20 @@
 
     remote = {
       username = "hgudmund";
-      cudaVisibleDevices = "4";
 
-      projects = {
-        helion = {
-          enable = true;
-          repo = "https://github.com/pytorch/helion.git";
-          branch = "main";
-          torchIndex = "nightly/cu130";
-          backends = ["cute"];
-        };
-        pytorch = {
-          enable = true;
-          repo = "https://github.com/pytorch/pytorch.git";
-          branch = "viable/strict";
-          cudaArch = "9.0";
-          buildTests = false;
-          maxJobs = 32;
-        };
-        vllm = {
-          enable = false;
-          repo = "https://github.com/vllm-project/vllm.git";
-          branch = "main";
-          cudaArch = "9.0";
-          maxJobs = 32;
-          torchIndex = "nightly/cu130";
+      # Passed directly to nixtorch.lib.mkDevShell
+      nixtorch = {
+        cudaVisibleDevices = "";
+        workspace = "$HOME/workspace";
+        projects = {
+          pytorch = {
+            cudaArch = "9.0";
+            maxJobs = 32;
+          };
+          helion = {
+            torchIndex = "nightly/cu130";
+            backends = ["cute"];
+          };
         };
       };
     };

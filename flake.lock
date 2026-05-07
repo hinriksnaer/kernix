@@ -52,11 +52,46 @@
         "type": "github"
       }
     },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1777954456,
+        "narHash": "sha256-hGdgeU2Nk87RAuZyYjyDjFL6LK7dAZN5RE9+hrDTkDU=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixtorch": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1778185202,
+        "narHash": "sha256-lRQCf8TGsJBcmDzYABacK8Ssmcn0CuOzouotbLARL0g=",
+        "owner": "hinriksnaer",
+        "repo": "nixtorch",
+        "rev": "2636c579f8f7331882ee3e85d8ea59e9b8d28426",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hinriksnaer",
+        "repo": "nixtorch",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-stable": "nixpkgs-stable"
+        "nixpkgs-stable": "nixpkgs-stable",
+        "nixtorch": "nixtorch"
       }
     }
   },
