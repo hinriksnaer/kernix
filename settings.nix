@@ -57,7 +57,7 @@
         projects = {
           pytorch = {
             cudaArch = "9.0";
-            maxJobs = 32;
+            maxJobs = 16;
           };
           helion = {
             torchIndex = "nightly/cu130";
@@ -76,7 +76,7 @@
         projects = {
           pytorch = {
             cudaArch = "9.0";
-            maxJobs = 32;
+            maxJobs = 16;
           };
           helion = {
             torchIndex = "nightly/cu130";
