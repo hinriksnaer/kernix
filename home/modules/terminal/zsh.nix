@@ -37,10 +37,13 @@
     '';
 
     initContent = lib.mkMerge [
-      # Blinking cursor for zsh-vi-mode (must be set before plugin loads)
+      # zsh-vi-mode config (must be set before plugin loads)
       (lib.mkOrder 500 ''
         ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BEAM
         ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
+
+        # Re-source fzf keybindings after zsh-vi-mode steals them
+        zvm_after_init_commands+=('source <(fzf --zsh)')
       '')
 
       # Use base16 theme for fast-syntax-highlighting (inherits terminal ANSI colors)
