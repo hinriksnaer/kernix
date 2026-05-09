@@ -12,5 +12,10 @@
       runtimeInputs = [wireplumber libnotify];
       text = builtins.readFile ./scripts/volume-control.sh;
     })
+    (writeShellApplication {
+      name = "rofi-audio-select";
+      runtimeInputs = [rofi wireplumber libnotify gawk];
+      text = builtins.readFile ./scripts/rofi-audio-select.sh;
+    })
   ];
 }

@@ -327,6 +327,9 @@ in {
         "$mainMod, Print, exec, grim - | wl-copy"
         "$mainMod SHIFT, S, exec, grim -g \"$(slurp)\" - | wl-copy"
 
+        # Audio
+        "$mainMod, A, exec, rofi-audio-select"
+
         # Theme
         "$mainMod, T, exec, kernix-rofi-theme-select"
         "$mainMod SHIFT, T, exec, kernix-theme-next"
