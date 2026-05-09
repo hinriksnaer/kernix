@@ -37,7 +37,7 @@ in {
       then "xterm-kitty"
       else "xterm-256color";
     COLORTERM = "truecolor";
-    LANG = "en_US.UTF-8";
+    LANG = "C.UTF-8";
   };
 
   # oc exec starts a non-login shell that only sources .bashrc, not .profile.
