@@ -1,53 +1,30 @@
-# Visual Studio Code with extensions and theme.
-# Extensions are managed declaratively -- install/update via kernix rebuild.
-{
-  pkgs,
-  lib,
-  ...
-}: let
-  # Extensions shared between local and remote SSH sessions.
-  sharedExtensions = with pkgs.vscode-extensions; [
-    # AI
-    saoudrizwan.claude-dev
-
-    # Python
-    ms-python.python
-    ms-python.vscode-pylance
-
-    # Vim
-    vscodevim.vim
-
-    # Theme
-    teabyii.ayu
-    pkief.material-icon-theme
-  ];
-
-  # Derive "publisher.name" identifiers for remote.SSH.defaultExtensions.
-  sharedExtensionIds = map (ext: "${ext.vscodeExtPublisher}.${ext.vscodeExtName}") sharedExtensions;
-in {
+# Visual Studio Code with base extensions.
+# Extensions dir is mutable -- install additional extensions from the marketplace.
+# Settings are managed by VS Code directly (not locked by Nix).
+{pkgs, ...}: {
   programs.vscode = {
     enable = true;
-    mutableExtensionsDir = false;
+    mutableExtensionsDir = true;
 
     profiles.default = {
-      enableUpdateCheck = false;
-      enableExtensionUpdateCheck = false;
+      extensions = with pkgs.vscode-extensions; [
+        # AI
+        saoudrizwan.claude-dev
 
-      extensions =
-        sharedExtensions
-        ++ (with pkgs.vscode-extensions; [
-          # Remote
-          ms-vscode-remote.remote-ssh
-        ]);
+        # Python
+        ms-python.python
+        ms-python.vscode-pylance
 
-      userSettings = {
-        "workbench.colorTheme" = "Ayu Dark";
-        "workbench.iconTheme" = "material-icon-theme";
+        # Vim
+        vscodevim.vim
 
-        # Sync settings and extensions to remote SSH sessions
-        "remote.SSH.useLocalServer" = true;
-        "remote.SSH.defaultExtensions" = sharedExtensionIds;
-      };
+        # Theme
+        teabyii.ayu
+        pkief.material-icon-theme
+
+        # Remote
+        ms-vscode-remote.remote-ssh
+      ];
     };
   };
 }
