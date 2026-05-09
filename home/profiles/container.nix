@@ -28,9 +28,12 @@ in {
   home.stateVersion = "24.11";
 
   # oc exec starts a non-login shell that only sources .bashrc, not .profile.
-  # Ensure Nix paths and USER are available in all interactive bash sessions.
+  # Fix terminal settings that oc exec doesn't propagate.
   programs.bash.initExtra = ''
     export USER="${username}"
+    [[ "$TERM" == "xterm" ]] && export TERM="xterm-256color"
+    export COLORTERM="''${COLORTERM:-truecolor}"
+    export LANG="''${LANG:-en_US.UTF-8}"
     [ -f "${homeDir}/.nix-profile/etc/profile.d/nix.sh" ] && . "${homeDir}/.nix-profile/etc/profile.d/nix.sh"
     [ -f "${homeDir}/.nix-profile/etc/profile.d/hm-session-vars.sh" ] && . "${homeDir}/.nix-profile/etc/profile.d/hm-session-vars.sh"
   '';
