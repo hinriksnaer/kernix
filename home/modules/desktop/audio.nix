@@ -7,5 +7,10 @@
     pamixer
     playerctl
     alsa-utils
+    (writeShellApplication {
+      name = "volume-control";
+      runtimeInputs = [wireplumber libnotify];
+      text = builtins.readFile ./scripts/volume-control.sh;
+    })
   ];
 }

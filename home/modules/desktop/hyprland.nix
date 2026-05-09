@@ -333,23 +333,18 @@ in {
         "$mainMod, W, exec, kernix-rofi-wallpaper-select"
         "$mainMod SHIFT, W, exec, kernix-wallpaper-next"
 
-        # Media
+        # Brightness
+        ", XF86MonBrightnessUp, exec, brightness-control up"
+        ", XF86MonBrightnessDown, exec, brightness-control down"
+
+        # Volume / Media
+        ", XF86AudioRaiseVolume, exec, volume-control up"
+        ", XF86AudioLowerVolume, exec, volume-control down"
+        ", XF86AudioMute, exec, volume-control mute"
         ", XF86AudioPlay, exec, playerctl play-pause"
         ", XF86AudioPause, exec, playerctl play-pause"
         ", XF86AudioNext, exec, playerctl next"
         ", XF86AudioPrev, exec, playerctl previous"
-      ];
-
-      # Keys that should repeat when held
-      binde = [
-        # Volume
-        ", XF86AudioRaiseVolume, exec, swayosd-client --output-volume raise --max-volume 100"
-        ", XF86AudioLowerVolume, exec, swayosd-client --output-volume lower"
-        ", XF86AudioMute, exec, swayosd-client --output-volume mute-toggle"
-
-        # Brightness
-        ", XF86MonBrightnessUp, exec, swayosd-client --brightness raise"
-        ", XF86MonBrightnessDown, exec, swayosd-client --brightness lower"
       ];
 
       bindm = [
