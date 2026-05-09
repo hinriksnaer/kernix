@@ -11,6 +11,7 @@
     ../modules/desktop/hyprlock.nix
     ../modules/desktop/session.nix
     ../modules/desktop/audio.nix
+    ../modules/desktop/swayosd.nix
     ../modules/desktop/power-menu.nix
     ../modules/desktop/hardware-tools.nix
     ../modules/theme/desktop.nix

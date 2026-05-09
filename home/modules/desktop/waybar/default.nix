@@ -110,14 +110,14 @@
         format-icons = ["" "" "" "" "" "" "" "" ""];
         tooltip-format = "Brightness {percent}%";
         scroll-step = 5;
-        on-scroll-up = "brightness-control up";
-        on-scroll-down = "brightness-control down";
+        on-scroll-up = "swayosd-client --brightness raise";
+        on-scroll-down = "swayosd-client --brightness lower";
       };
 
       pulseaudio = {
         format = "{icon}";
         on-click = "pavucontrol";
-        on-click-right = "pamixer -t";
+        on-click-right = "swayosd-client --output-volume mute-toggle";
         tooltip-format = "Playing at {volume}%";
         scroll-step = 5;
         format-muted = "";

@@ -6,10 +6,5 @@
     bluetui
     brightnessctl
     lm_sensors
-    (writeShellApplication {
-      name = "brightness-control";
-      runtimeInputs = [brightnessctl libnotify gawk];
-      text = builtins.readFile ./scripts/brightness-control.sh;
-    })
   ];
 }
