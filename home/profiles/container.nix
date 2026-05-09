@@ -30,7 +30,12 @@ in {
   # Terminal settings that oc exec doesn't propagate
   home.sessionVariables = {
     USER = username;
-    TERM = "xterm-ghostty";
+    TERM =
+      if settings.terminal == "ghostty"
+      then "xterm-ghostty"
+      else if settings.terminal == "kitty"
+      then "xterm-kitty"
+      else "xterm-256color";
     COLORTERM = "truecolor";
     LANG = "en_US.UTF-8";
   };
