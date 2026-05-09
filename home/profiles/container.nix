@@ -27,13 +27,17 @@ in {
   home.homeDirectory = homeDir;
   home.stateVersion = "24.11";
 
+  # Terminal settings that oc exec doesn't propagate
+  home.sessionVariables = {
+    USER = username;
+    TERM = "xterm-ghostty";
+    COLORTERM = "truecolor";
+    LANG = "en_US.UTF-8";
+  };
+
   # oc exec starts a non-login shell that only sources .bashrc, not .profile.
-  # Fix terminal settings that oc exec doesn't propagate.
+  # Ensure Nix paths and session vars are loaded.
   programs.bash.initExtra = ''
-    export USER="${username}"
-    [[ "$TERM" == "xterm" ]] && export TERM="xterm-256color"
-    export COLORTERM="''${COLORTERM:-truecolor}"
-    export LANG="''${LANG:-en_US.UTF-8}"
     [ -f "${homeDir}/.nix-profile/etc/profile.d/nix.sh" ] && . "${homeDir}/.nix-profile/etc/profile.d/nix.sh"
     [ -f "${homeDir}/.nix-profile/etc/profile.d/hm-session-vars.sh" ] && . "${homeDir}/.nix-profile/etc/profile.d/hm-session-vars.sh"
   '';
