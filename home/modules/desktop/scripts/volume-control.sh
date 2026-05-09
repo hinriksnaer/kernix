@@ -1,15 +1,31 @@
 # Volume control with OSD notification
 # Usage: volume-control [up|down|mute]
 
+# Serialize concurrent invocations to prevent race conditions
+exec 9>"${XDG_RUNTIME_DIR:-/tmp}/volume-control.lock"
+flock -n 9 || exit 0
+
 action="${1:-}"
 active_sink="@DEFAULT_AUDIO_SINK@"
 
 case "$action" in
     up)
-        wpctl set-volume "$active_sink" 5%+
+        # Read current volume, snap up to next 5% increment, cap at 100%
+        current="$(wpctl get-volume "$active_sink" | awk '{print $2}')"
+        current_pct="$(awk "BEGIN {printf \"%.0f\", $current * 100}")"
+        target=$(( ((current_pct / 5) + 1) * 5 ))
+        if [ "$target" -gt 100 ]; then target=100; fi
+        target_dec="$(awk "BEGIN {printf \"%.2f\", $target / 100}")"
+        wpctl set-volume "$active_sink" "$target_dec"
         ;;
     down)
-        wpctl set-volume "$active_sink" 5%-
+        # Read current volume, snap down to previous 5% increment, floor at 0%
+        current="$(wpctl get-volume "$active_sink" | awk '{print $2}')"
+        current_pct="$(awk "BEGIN {printf \"%.0f\", $current * 100}")"
+        target=$(( ((current_pct - 1) / 5) * 5 ))
+        if [ "$target" -lt 0 ]; then target=0; fi
+        target_dec="$(awk "BEGIN {printf \"%.2f\", $target / 100}")"
+        wpctl set-volume "$active_sink" "$target_dec"
         ;;
     mute)
         wpctl set-mute "$active_sink" toggle
@@ -40,6 +56,9 @@ elif [[ "$volume_percent" -lt 66 ]]; then
 else
     icon="audio-volume-high"
 fi
+
+# Release lock before sending notification (non-blocking)
+exec 9>&-
 
 # Send notification with progress bar hint
 if [[ "$is_muted" == "yes" ]]; then
