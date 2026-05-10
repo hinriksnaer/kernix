@@ -12,7 +12,7 @@
     if username == "root"
     then "/root"
     else "/home/${username}";
-  kernixRoot = "${homeDir}/workspace/settings";
+  kernixRoot = settings.hosts.${hostname}.kernixRoot or "${homeDir}/kernix";
   workspaceDir = "${homeDir}/workspace";
   cli = import ../../cli {
     inherit pkgs;

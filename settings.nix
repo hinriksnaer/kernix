@@ -69,6 +69,7 @@
 
     container = {
       username = "root";
+      kernixRoot = "$HOME/workspace/settings";
 
       nixtorch = {
         cudaVisibleDevices = "";
