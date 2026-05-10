@@ -33,6 +33,7 @@ in {
     TERM = "xterm-256color";
     COLORTERM = "truecolor";
     LANG = "C.UTF-8";
+    KERNIX_ROOT = kernixRoot;
   };
 
   # oc exec starts a non-login shell that only sources .bashrc, not .profile.
