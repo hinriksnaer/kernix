@@ -1,5 +1,5 @@
 # Container profile -- Kubernetes/OpenShift pods running as root.
-# Apply with: nix run home-manager/master -- switch --flake ~/kernix#root@container
+# Apply with: nix run home-manager/master -- switch --flake ~/workspace/settings#root@container
 {
   pkgs,
   config,
@@ -12,7 +12,7 @@
     if username == "root"
     then "/root"
     else "/home/${username}";
-  kernixRoot = "${homeDir}/kernix";
+  kernixRoot = "${homeDir}/workspace/settings";
   workspaceDir = "${homeDir}/workspace";
   cli = import ../../cli {
     inherit pkgs;

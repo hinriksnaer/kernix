@@ -21,7 +21,7 @@
       name = "kernix-hm-switch";
       runtimeInputs = with pkgs; [git nix];
       text = ''
-        KERNIX_ROOT="''${KERNIX_ROOT:-$HOME/kernix}"
+        KERNIX_ROOT="''${KERNIX_ROOT:-''${SETTINGS_DIR:-$HOME/kernix}}"
         echo ":: pulling latest config"
         git -C "$KERNIX_ROOT" pull --ff-only
         echo ":: updating flake inputs"
