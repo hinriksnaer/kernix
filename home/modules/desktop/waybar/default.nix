@@ -161,7 +161,8 @@
       };
       temperature = {
         interval = 2;
-        hwmon-path = "/sys/class/hwmon/hwmon3/temp1_input";
+        hwmon-path-abs = "/sys/devices/pci0000:00/0000:00:18.3/hwmon";
+        input-filename = "temp1_input";
         critical-threshold = 75;
         format = "{temperatureC}°";
         format-critical = " {temperatureC}°";
