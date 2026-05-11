@@ -73,6 +73,7 @@
 
       nixtorch = {
         cudaVisibleDevices = "";
+        cudaVersion = "13";
         workspace = "$HOME/workspace";
         projects = {
           pytorch = {
