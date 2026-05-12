@@ -37,6 +37,7 @@
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Context (session) ───────────────────────────────────────────────┐
 # │  Alt + f               fzf session finder                          │
+# │  Alt + n               rename session (name)                       │
 # │  Alt + Tab             previous session                            │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Prefix (Alt+Space) ──────────────────────────────────────────────┐
@@ -155,6 +156,9 @@ in {
 
       # Rotate layout: Alt + r
       bind -n M-r next-layout
+
+      # Rename session: Alt + n (name)
+      bind -n M-n command-prompt -I "#S" { rename-session "%%" }
 
       # ── Task level: window ([/] + 1-9) ──
 
