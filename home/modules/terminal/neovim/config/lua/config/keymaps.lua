@@ -17,16 +17,8 @@ vim.keymap.set('n', '<leader>li', '<cmd>LspInfo<CR>', { desc = 'LSP Info' })
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- Window navigation is handled by smart-splits.nvim plugin
--- Alt+hjkl works seamlessly between vim windows and tmux panes
-
--- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
--- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
--- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
--- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
--- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
-
--- Note: Ctrl+hjkl unreliable over SSH (ambiguous ASCII control codes)
+-- Window/pane navigation is handled entirely by smart-splits.nvim
+-- (see plugins/smart-splits.lua and tmux/default.nix for the unified grammar)
 
 -- Better indenting - stay in visual mode
 vim.keymap.set('v', '<', '<gv', { desc = 'Indent left' })
@@ -34,9 +26,6 @@ vim.keymap.set('v', '>', '>gv', { desc = 'Indent right' })
 
 -- Better paste - don't yank replaced text
 vim.keymap.set('v', 'p', '"_dP', { desc = 'Paste without yanking' })
-
--- Window resizing available via smart-splits.nvim plugin if needed
--- Alt+hjkl reserved for tmux navigation layer
 
 -- Better search - center screen on next/previous match
 vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Next search result (centered)' })
@@ -82,27 +71,10 @@ vim.keymap.set('n', '<leader>wo', '<cmd>only<CR>', { desc = 'Close other windows
 vim.keymap.set('n', '<leader>w=', '<C-w>=', { desc = 'Equalize window sizes' })
 
 -- ── Extended window management (<leader>w) ──
--- Navigate: Alt+hjkl (smart-splits, cross-layer with tmux)
--- Resize:   Ctrl+arrows (smart-splits)
--- Swap/zoom/rotate: <leader>w (prefix)
-
--- Swap buffer with adjacent split (focus follows the buffer)
-vim.keymap.set('n', '<leader>wh', function()
-  require('smart-splits').swap_buf_left()
-  vim.cmd 'wincmd h'
-end, { desc = 'Swap split left' })
-vim.keymap.set('n', '<leader>wj', function()
-  require('smart-splits').swap_buf_down()
-  vim.cmd 'wincmd j'
-end, { desc = 'Swap split down' })
-vim.keymap.set('n', '<leader>wk', function()
-  require('smart-splits').swap_buf_up()
-  vim.cmd 'wincmd k'
-end, { desc = 'Swap split up' })
-vim.keymap.set('n', '<leader>wl', function()
-  require('smart-splits').swap_buf_right()
-  vim.cmd 'wincmd l'
-end, { desc = 'Swap split right' })
+-- Navigate:  Alt+hjkl       (smart-splits, cross-layer with tmux)
+-- Swap:      Alt+Ctrl+hjkl  (smart-splits, cross-layer with tmux)
+-- Resize:    Alt+Shift+HJKL (smart-splits, cross-layer with tmux)
+-- Zoom/rotate/split: <leader>w (prefix)
 
 -- Zoom toggle (save/restore window sizes, like tmux Alt+z)
 vim.keymap.set('n', '<leader>wz', function()

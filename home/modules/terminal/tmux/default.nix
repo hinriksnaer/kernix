@@ -18,13 +18,12 @@
 # Where Mod = Super (Hyprland) or Alt (tmux).
 #
 # ┌─ View (hjkl) ──────────────────────────────────────────────────────┐
-# │  Alt + hjkl            navigate panes                              │
-# │  Alt + Ctrl + hjkl     swap panes                                  │
-# │  Alt + Shift + hjkl    resize panes                                │
+# │  Alt + hjkl            navigate panes (smart-splits, vim-aware)    │
+# │  Alt + Ctrl + hjkl     swap panes (vim-aware)                      │
+# │  Alt + Shift + hjkl    resize panes (smart-splits, vim-aware)      │
 # │  Alt + arrows          create split in direction                   │
 # │  Alt + z               zoom pane (fullscreen)                      │
 # │  Alt + r               rotate layout (cycle)                      │
-# │  Alt + hjkl            navigate panes (vim-aware, cross-layer)      │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Task ([/] + 1-9) ────────────────────────────────────────────────┐
 # │  Alt + [ / ]           prev/next window                            │
@@ -52,7 +51,19 @@
   pkgs,
   config,
   ...
-}: {
+}: let
+  smartSplits = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "smart-splits";
+    rtpFilePath = "smart-splits.tmux";
+    version = "2.1.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "mrjones2014";
+      repo = "smart-splits.nvim";
+      rev = "v2.1.0";
+      hash = "sha256-IuJNQT0bN68K5lnw0ixyU/heG8V1+zUwlvm0mNvvHOw=";
+    };
+  };
+in {
   imports = [
     ./cli.nix
   ];
@@ -78,6 +89,21 @@
     terminal = "tmux-256color";
 
     plugins = with pkgs.tmuxPlugins; [
+      {
+        plugin = smartSplits;
+        # Settings must be set BEFORE the plugin runs
+        extraConfig = ''
+          set -g @smart-splits_move_left_key  'M-h'
+          set -g @smart-splits_move_down_key  'M-j'
+          set -g @smart-splits_move_up_key    'M-k'
+          set -g @smart-splits_move_right_key 'M-l'
+          set -g @smart-splits_resize_left_key  'M-H'
+          set -g @smart-splits_resize_down_key  'M-J'
+          set -g @smart-splits_resize_up_key    'M-K'
+          set -g @smart-splits_resize_right_key 'M-L'
+          set -g @smart-splits_resize_step_size '3'
+        '';
+      }
       yank
       {
         plugin = dotbar;
@@ -109,27 +135,14 @@
       set-option -g renumber-windows on
 
       # ── View level: pane (hjkl) ──
+      # Navigate + resize: handled by smart-splits plugin (see plugins above)
 
-      # Navigate panes (vim-aware): Alt + hjkl
-      # When the active pane runs vim/neovim, forward the key so smart-splits
-      # handles cross-layer navigation. Otherwise, navigate tmux panes directly.
-      is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|l?n?vim?x?|fzf)(diff)?$'"
-      bind -n M-h if-shell "$is_vim" 'send-keys M-h' 'select-pane -L'
-      bind -n M-j if-shell "$is_vim" 'send-keys M-j' 'select-pane -D'
-      bind -n M-k if-shell "$is_vim" 'send-keys M-k' 'select-pane -U'
-      bind -n M-l if-shell "$is_vim" 'send-keys M-l' 'select-pane -R'
-
-      # Swap panes: Alt + Ctrl + hjkl (focus first, then swap with last-active)
-      bind -n M-C-h select-pane -L \; swap-pane -s '!'
-      bind -n M-C-j select-pane -D \; swap-pane -s '!'
-      bind -n M-C-k select-pane -U \; swap-pane -s '!'
-      bind -n M-C-l select-pane -R \; swap-pane -s '!'
-
-      # Resize panes: Alt + Shift + hjkl
-      bind -n M-H resize-pane -L 5
-      bind -n M-J resize-pane -D 5
-      bind -n M-K resize-pane -U 5
-      bind -n M-L resize-pane -R 5
+      # Swap panes (vim-aware): Alt + Ctrl + hjkl
+      # Not supported by smart-splits.tmux plugin, manual @pane-is-vim check.
+      bind -n M-C-h if -F "#{@pane-is-vim}" { send-keys M-C-h } { select-pane -L ; swap-pane -s ! }
+      bind -n M-C-j if -F "#{@pane-is-vim}" { send-keys M-C-j } { select-pane -D ; swap-pane -s ! }
+      bind -n M-C-k if -F "#{@pane-is-vim}" { send-keys M-C-k } { select-pane -U ; swap-pane -s ! }
+      bind -n M-C-l if -F "#{@pane-is-vim}" { send-keys M-C-l } { select-pane -R ; swap-pane -s ! }
 
       # Create split in direction: Alt + arrows
       bind -n M-Left split-window -hb -c "#{pane_current_path}"
