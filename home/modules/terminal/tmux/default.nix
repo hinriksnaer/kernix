@@ -139,10 +139,10 @@ in {
 
       # Swap panes (vim-aware): Alt + Ctrl + hjkl
       # Not supported by smart-splits.tmux plugin, manual @pane-is-vim check.
-      bind -n M-C-h if -F "#{@pane-is-vim}" { send-keys M-C-h } { select-pane -L ; swap-pane -s ! }
-      bind -n M-C-j if -F "#{@pane-is-vim}" { send-keys M-C-j } { select-pane -D ; swap-pane -s ! }
-      bind -n M-C-k if -F "#{@pane-is-vim}" { send-keys M-C-k } { select-pane -U ; swap-pane -s ! }
-      bind -n M-C-l if -F "#{@pane-is-vim}" { send-keys M-C-l } { select-pane -R ; swap-pane -s ! }
+      bind -n M-C-h if -F "#{@pane-is-vim}" { send-keys M-C-h } { select-pane -L ; swap-pane -d -s ! }
+      bind -n M-C-j if -F "#{@pane-is-vim}" { send-keys M-C-j } { select-pane -D ; swap-pane -d -s ! }
+      bind -n M-C-k if -F "#{@pane-is-vim}" { send-keys M-C-k } { select-pane -U ; swap-pane -d -s ! }
+      bind -n M-C-l if -F "#{@pane-is-vim}" { send-keys M-C-l } { select-pane -R ; swap-pane -d -s ! }
 
       # Create split in direction: Alt + arrows
       bind -n M-Left split-window -hb -c "#{pane_current_path}"
