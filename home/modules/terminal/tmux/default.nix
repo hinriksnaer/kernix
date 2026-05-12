@@ -38,6 +38,7 @@
 # ┌─ Context (session) ───────────────────────────────────────────────┐
 # │  Alt + f               fzf session finder                          │
 # │  Alt + n               rename session (name)                       │
+# │  Alt + Shift + n       new session in current path                 │
 # │  Alt + Tab             previous session                            │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Prefix (Alt+Space) ──────────────────────────────────────────────┐
@@ -159,6 +160,9 @@ in {
 
       # Rename session: Alt + n (name)
       bind -n M-n command-prompt -I "#S" { rename-session "%%" }
+
+      # New session in current path: Alt + Shift + n
+      bind -n M-N new-session -c "#{pane_current_path}"
 
       # ── Task level: window ([/] + 1-9) ──
 
