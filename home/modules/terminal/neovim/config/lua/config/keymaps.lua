@@ -18,7 +18,7 @@ vim.keymap.set('n', '<leader>li', '<cmd>LspInfo<CR>', { desc = 'LSP Info' })
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- Window navigation is handled by smart-splits.nvim plugin
--- Ctrl+hjkl works seamlessly between vim windows and tmux panes
+-- Alt+hjkl works seamlessly between vim windows and tmux panes
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -26,7 +26,7 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
--- Note: Alt+hjkl reserved for tmux navigation layer (see tmux/default.nix)
+-- Note: Ctrl+hjkl unreliable over SSH (ambiguous ASCII control codes)
 
 -- Better indenting - stay in visual mode
 vim.keymap.set('v', '<', '<gv', { desc = 'Indent left' })
@@ -82,7 +82,7 @@ vim.keymap.set('n', '<leader>wo', '<cmd>only<CR>', { desc = 'Close other windows
 vim.keymap.set('n', '<leader>w=', '<C-w>=', { desc = 'Equalize window sizes' })
 
 -- ── Extended window management (<leader>w) ──
--- Navigate: Ctrl+hjkl (smart-splits, cross-layer)
+-- Navigate: Alt+hjkl (smart-splits, cross-layer with tmux)
 -- Resize:   Ctrl+arrows (smart-splits)
 -- Swap/zoom/rotate: <leader>w (prefix)
 

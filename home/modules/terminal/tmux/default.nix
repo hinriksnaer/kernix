@@ -24,7 +24,7 @@
 # │  Alt + arrows          create split in direction                   │
 # │  Alt + z               zoom pane (fullscreen)                      │
 # │  Alt + r               rotate layout (cycle)                      │
-# │  Ctrl + hjkl           vim-tmux-navigator (cross-layer with nvim)  │
+# │  Alt + hjkl            navigate panes (vim-aware, cross-layer)      │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Task ([/] + 1-9) ────────────────────────────────────────────────┐
 # │  Alt + [ / ]           prev/next window                            │
@@ -78,7 +78,6 @@
     terminal = "tmux-256color";
 
     plugins = with pkgs.tmuxPlugins; [
-      vim-tmux-navigator
       yank
       {
         plugin = dotbar;
@@ -111,11 +110,14 @@
 
       # ── View level: pane (hjkl) ──
 
-      # Navigate panes: Alt + hjkl
-      bind -n M-h select-pane -L
-      bind -n M-j select-pane -D
-      bind -n M-k select-pane -U
-      bind -n M-l select-pane -R
+      # Navigate panes (vim-aware): Alt + hjkl
+      # When the active pane runs vim/neovim, forward the key so smart-splits
+      # handles cross-layer navigation. Otherwise, navigate tmux panes directly.
+      is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|l?n?vim?x?|fzf)(diff)?$'"
+      bind -n M-h if-shell "$is_vim" 'send-keys M-h' 'select-pane -L'
+      bind -n M-j if-shell "$is_vim" 'send-keys M-j' 'select-pane -D'
+      bind -n M-k if-shell "$is_vim" 'send-keys M-k' 'select-pane -U'
+      bind -n M-l if-shell "$is_vim" 'send-keys M-l' 'select-pane -R'
 
       # Swap panes: Alt + Ctrl + hjkl (focus first, then swap with last-active)
       bind -n M-C-h select-pane -L \; swap-pane -s '!'
