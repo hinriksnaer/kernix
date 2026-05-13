@@ -37,6 +37,8 @@
   programs.ripgrep.enable = true;
   programs.fd.enable = true;
 
+  home.packages = [pkgs.glow];
+
   # Terminal emulator terminfo for SSH sessions
   # Symlinked to ~/.terminfo so ncurses finds it automatically (all shells, no env vars)
   home.file.".terminfo".source = let
