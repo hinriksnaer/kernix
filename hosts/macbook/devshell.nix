@@ -1,5 +1,6 @@
-# Helion development shell for macOS (MPS backend).
-# Mirrors nixtorch's helion setup but targets Apple Silicon GPU.
+# Helion MPS backend development shell.
+# For developing Metal/MPS backend support in Helion on Apple Silicon.
+# Metal compiler (xcrun metal) and frameworks come from Xcode CLT.
 {pkgs}: let
   helion-setup = pkgs.writeShellApplication {
     name = "helion-setup";
@@ -19,6 +20,10 @@ in
       pkg-config
       git
       helion-setup
+
+      # Metal shader tooling (llvm for IR generation/analysis)
+      llvmPackages.llvm
+      llvmPackages.clang
     ];
 
     env = {
@@ -32,6 +37,11 @@ in
     shellHook = ''
       export HELION_WORKSPACE="''${HELION_WORKSPACE:-$HOME/workspace}"
       export PATH="$HOME/.local/bin:$PATH"
+
+      # Expose Xcode CLT Metal toolchain (xcrun metal, metallib, etc.)
+      if xcode-select -p &>/dev/null; then
+        export SDKROOT="$(xcrun --show-sdk-path)"
+      fi
 
       # Activate shared venv if it exists
       if [ -f "$HELION_WORKSPACE/.venv/bin/activate" ]; then
