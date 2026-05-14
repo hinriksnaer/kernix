@@ -171,8 +171,10 @@
       )
       settings.hosts;
 
-    # ── Development shells (powered by nixtorch) ──
+    # ── Development shells ──
     devShells.${system}.default =
       nixtorch.lib.mkDevShell settings.hosts.container.nixtorch;
+    devShells.${darwinSystem}.default =
+      import ./hosts/macbook/devshell.nix {pkgs = pkgsDarwin;};
   };
 }
