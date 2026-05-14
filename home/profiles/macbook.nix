@@ -13,6 +13,7 @@
   cli = import ../../cli {
     inherit pkgs;
     hmProfile = "${username}@${hostname}";
+    darwinHost = hostname;
   };
 in {
   imports = [
@@ -23,8 +24,11 @@ in {
   home.homeDirectory = homeDir;
   home.stateVersion = "24.11";
 
-  # kernix-hm-switch: pull latest + home-manager switch
-  home.packages = [cli.kernix-hm-switch];
+  # CLI helpers: pull + rebuild
+  home.packages = [
+    cli.kernix-darwin-switch
+    cli.kernix-hm-switch
+  ];
 
   # Auto-activate devshell when cd-ing into workspace/repos
   home.activation.setupDirenv = config.lib.dag.entryAfter ["linkGeneration"] ''

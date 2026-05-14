@@ -13,7 +13,10 @@
   # ── Homebrew (packages not in nixpkgs for darwin) ──
   homebrew = {
     enable = true;
-    casks = ["ghostty"];
+    casks = [
+      "ghostty"
+      "font-jetbrains-mono-nerd-font"
+    ];
     onActivation.cleanup = "zap";
   };
 
