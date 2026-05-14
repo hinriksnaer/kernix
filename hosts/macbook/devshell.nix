@@ -6,6 +6,7 @@
     name = "helion-setup";
     runtimeInputs = with pkgs; [git uv python3];
     text = builtins.readFile ./helion-setup.sh;
+    excludeShellChecks = ["SC1091"];
   };
 in
   pkgs.mkShell {
