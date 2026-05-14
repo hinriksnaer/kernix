@@ -2,7 +2,6 @@
 # Applied as a darwin module via darwinConfigurations.macbook.
 {
   pkgs,
-  lib,
   config,
   settings,
   hostname,
@@ -26,11 +25,6 @@ in {
 
   # kernix-hm-switch: pull latest + home-manager switch
   home.packages = [cli.kernix-hm-switch];
-
-  # ghostty ships its own terminfo on macOS -- disable the nixpkgs symlink
-  home.file.".terminfo".source =
-    lib.mkForce
-    "${pkgs.ncurses}/share/terminfo";
 
   # Auto-activate devshell when cd-ing into workspace/repos
   home.activation.setupDirenv = config.lib.dag.entryAfter ["linkGeneration"] ''
