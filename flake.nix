@@ -9,12 +9,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixtorch.url = "github:hinriksnaer/nixtorch";
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
     home-manager,
+    nix-darwin,
     nixtorch,
     ...
   } @ inputs: let
@@ -64,6 +69,24 @@
     pkgs-stable = import inputs.nixpkgs-stable {
       inherit system;
       config.allowUnfree = true;
+    };
+
+    # ── Darwin (macOS) ──
+    darwinSystem = "aarch64-darwin";
+    pkgsDarwin = import nixpkgs {
+      system = darwinSystem;
+      config.allowUnfree = true;
+      overlays = builtins.attrValues self.overlays;
+    };
+
+    # Home Manager darwin integration -- auto-applies HM on darwin-rebuild switch.
+    hmDarwinModule = hostname: {
+      imports = [home-manager.darwinModules.home-manager];
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+      home-manager.backupFileExtension = "hm-backup";
+      home-manager.users.${settings.hosts.${hostname}.username} =
+        import ./home {inherit hostname settings;};
     };
 
     # Home Manager NixOS integration -- auto-applies HM on nixos-rebuild switch.
@@ -116,6 +139,16 @@
     in {
       desktop = mkHost "desktop";
       laptop = mkHost "laptop";
+    };
+
+    # ── Darwin (macOS) configurations ──
+    darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+      system = darwinSystem;
+      modules = [
+        ./hosts/macbook/default.nix
+        (hmDarwinModule "macbook")
+        {nixpkgs.overlays = builtins.attrValues self.overlays;}
+      ];
     };
 
     # ── Home Manager (standalone, user@host convention) ──

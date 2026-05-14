@@ -67,6 +67,10 @@
       };
     };
 
+    macbook = {
+      username = "dev";
+    };
+
     container = {
       username = "root";
       kernixRoot = "$HOME/workspace/settings";
