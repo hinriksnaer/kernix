@@ -1,9 +1,6 @@
 # macbook -- nix-darwin system configuration for Apple Silicon Mac.
-# Apply with: sudo darwin-rebuild switch --flake ~/kernix#macbook
+# Apply with: darwin-rebuild switch --flake ~/kernix#macbook
 {pkgs, ...}: {
-  # ── Primary user (required: nix-darwin runs activation as root) ──
-  system.primaryUser = "softmax";
-
   # ── Nix daemon ──
   nix.settings = {
     experimental-features = ["nix-command" "flakes"];
