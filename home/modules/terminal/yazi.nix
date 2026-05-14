@@ -41,12 +41,24 @@
             block = true;
             "for" = "linux";
           }
+          {
+            run = ''nvim "$@"'';
+            block = true;
+            "for" = "macos";
+          }
         ];
         open = [
           {
             run = ''xdg-open "$@"'';
             desc = "Open";
             orphan = true;
+            "for" = "linux";
+          }
+          {
+            run = ''open "$@"'';
+            desc = "Open";
+            orphan = true;
+            "for" = "macos";
           }
         ];
         reveal = [
@@ -55,6 +67,12 @@
             desc = "Reveal in Yazi";
             "for" = "linux";
           }
+          {
+            run = ''open -R "$@"'';
+            desc = "Reveal in Finder";
+            orphan = true;
+            "for" = "macos";
+          }
         ];
         play = [
           {
@@ -62,6 +80,12 @@
             orphan = true;
             "for" = "linux";
             desc = "Play with mpv";
+          }
+          {
+            run = ''open "$@"'';
+            orphan = true;
+            "for" = "macos";
+            desc = "Play with default";
           }
         ];
         archive = [
@@ -79,11 +103,13 @@
             run = ''imv "$@"'';
             orphan = true;
             desc = "View in imv";
+            "for" = "linux";
           }
           {
-            run = ''xdg-open "$@"'';
+            run = ''open "$@"'';
             orphan = true;
-            desc = "Open with default";
+            desc = "Open in Preview";
+            "for" = "macos";
           }
         ];
         pdf = [
@@ -91,11 +117,13 @@
             run = ''zathura "$@"'';
             orphan = true;
             desc = "Open in Zathura";
+            "for" = "linux";
           }
           {
-            run = ''xdg-open "$@"'';
+            run = ''open "$@"'';
             orphan = true;
-            desc = "Open with default";
+            desc = "Open in Preview";
+            "for" = "macos";
           }
         ];
       };

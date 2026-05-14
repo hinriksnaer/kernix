@@ -67,6 +67,10 @@
       };
     };
 
+    macbook = {
+      username = "softmax";
+    };
+
     container = {
       username = "root";
       kernixRoot = "$HOME/workspace/settings";
