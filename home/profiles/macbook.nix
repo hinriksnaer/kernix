@@ -30,6 +30,17 @@ in {
     cli.kernix-hm-switch
   ];
 
+  # Skip ownership check on Nix-managed zsh dirs (multi-user Nix on macOS)
+  programs.zsh.completionInit = "autoload -Uz compinit && compinit -u";
+
+  # Ghostty terminfo for SSH sessions (ghostty ships it in the app bundle)
+  home.activation.ghosttyTerminfo = config.lib.dag.entryAfter ["linkGeneration"] ''
+    if [ -d "/Applications/Ghostty.app/Contents/Resources/terminfo" ]; then
+      mkdir -p "$HOME/.terminfo"
+      cp -r /Applications/Ghostty.app/Contents/Resources/terminfo/* "$HOME/.terminfo/"
+    fi
+  '';
+
   # Auto-activate devshell when cd-ing into workspace/repos
   home.activation.setupDirenv = config.lib.dag.entryAfter ["linkGeneration"] ''
     mkdir -p "${homeDir}/workspace"
