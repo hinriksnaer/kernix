@@ -10,6 +10,9 @@
   # ── User (home directory must be declared for home-manager integration) ──
   users.users.${settings.hosts.macbook.username}.home = "/Users/${settings.hosts.macbook.username}";
 
+  # ── Zsh (disable system compinit -- HM handles it with -u for Nix dirs) ──
+  programs.zsh.enableCompletion = false;
+
   # ── Locale (required for proper UTF-8 / Nerd Font rendering) ──
   environment.variables.LANG = "en_US.UTF-8";
   environment.variables.LC_ALL = "en_US.UTF-8";
