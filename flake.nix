@@ -8,10 +8,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-darwin = {
-      url = "github:nix-darwin/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixtorch.url = "github:hinriksnaer/nixtorch";
   };
 
@@ -19,21 +15,13 @@
     self,
     nixpkgs,
     home-manager,
-    nix-darwin,
     nixtorch,
     ...
   } @ inputs: let
     system = "x86_64-linux";
-    darwinSystem = "aarch64-darwin";
-
     pkgs = nixpkgs.legacyPackages.${system};
     pkgsUnfree = import nixpkgs {
       inherit system;
-      config.allowUnfree = true;
-      overlays = builtins.attrValues self.overlays;
-    };
-    pkgsDarwin = import nixpkgs {
-      system = darwinSystem;
       config.allowUnfree = true;
       overlays = builtins.attrValues self.overlays;
     };
@@ -41,13 +29,6 @@
 
     # User settings (plain attrset, assigned to config.kernix.*)
     settings = import ./settings.nix;
-
-    # Hosts that run on darwin (used to select the right pkgs)
-    darwinHosts = ["macbook"];
-    pkgsForHost = hostname:
-      if builtins.elem hostname darwinHosts
-      then pkgsDarwin
-      else pkgsUnfree;
 
     # Common modules: settings + base config (imported by all machines)
     commonModules = [
@@ -98,7 +79,6 @@
   in {
     # ── Formatter (nix fmt) ──
     formatter.${system} = pkgs.alejandra;
-    formatter.${darwinSystem} = pkgsDarwin.alejandra;
 
     # ── Overlays ──
     overlays = import ./overlays {inherit inputs;};
@@ -146,7 +126,7 @@
           lib.nameValuePair
           "${hostCfg.username}@${hostName}"
           (home-manager.lib.homeManagerConfiguration {
-            pkgs = pkgsForHost hostName;
+            pkgs = pkgsUnfree;
             modules = [
               (import ./home {
                 hostname = hostName;
@@ -156,25 +136,6 @@
           })
       )
       settings.hosts;
-
-    # ── Darwin configurations ──
-    darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
-      system = darwinSystem;
-      modules = [
-        ./hosts/macbook/default.nix
-        home-manager.darwinModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "hm-backup";
-          home-manager.users.${settings.hosts.macbook.username} = import ./home {
-            hostname = "macbook";
-            inherit settings;
-          };
-        }
-        {nixpkgs.overlays = builtins.attrValues self.overlays;}
-      ];
-    };
 
     # ── Development shells (powered by nixtorch) ──
     devShells.${system}.default =

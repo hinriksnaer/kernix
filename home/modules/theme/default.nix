@@ -4,7 +4,6 @@
 # The engine applies what it can and skips the rest.
 {
   pkgs,
-  lib,
   config,
   settings,
   ...
@@ -23,7 +22,7 @@
 in {
   # ── Core engine scripts ──
   home.packages = [
-    (mkScript "kernix-theme-set" (with pkgs; [coreutils gnused] ++ lib.optionals stdenv.isLinux [libnotify]))
+    (mkScript "kernix-theme-set" (with pkgs; [coreutils gnused libnotify]))
     (pkgs.writeShellApplication {
       name = "kernix-theme-apply";
       runtimeInputs = with pkgs; [coreutils gnused findutils];
