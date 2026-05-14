@@ -46,7 +46,14 @@ in {
     mkdir -p "${homeDir}/workspace"
     envrc="${homeDir}/workspace/.envrc"
     if [ ! -f "$envrc" ] || ! grep -q "use flake ${kernixRoot}" "$envrc" 2>/dev/null; then
-      echo "use flake ${kernixRoot}" > "$envrc"
+      cat > "$envrc" << 'ENVRC'
+    use flake ${kernixRoot}
+
+    # Activate venv after devshell (direnv doesn't run shellHook)
+    if [ -f "$HELION_WORKSPACE/.venv/bin/activate" ]; then
+      source "$HELION_WORKSPACE/.venv/bin/activate"
+    fi
+    ENVRC
     fi
     ${pkgs.direnv}/bin/direnv allow "$envrc" 2>/dev/null || true
   '';
