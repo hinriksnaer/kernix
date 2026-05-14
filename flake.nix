@@ -144,6 +144,7 @@
     # ── Darwin (macOS) configurations ──
     darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
       system = darwinSystem;
+      specialArgs = {inherit settings;};
       modules = [
         ./hosts/macbook/default.nix
         (hmDarwinModule "macbook")
