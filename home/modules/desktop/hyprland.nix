@@ -147,7 +147,6 @@ in {
       };
 
       dwindle = {
-        pseudotile = true;
         preserve_split = true;
       };
 
@@ -247,7 +246,7 @@ in {
         "$mainMod, V, togglefloating,"
         "$mainMod, F, fullscreen,"
         "$mainMod, P, pseudo,"
-        "$mainMod ALT, R, togglesplit,"
+        "$mainMod ALT, R, layoutmsg, togglesplit"
         ''$mainMod ALT, Space, exec, hyprctl keyword general:layout "$([ "$(hyprctl getoption general:layout -j | grep -o '"dwindle\|"master' | tr -d '"')" = "dwindle" ] && echo master || echo dwindle)"''
 
         # Focus (vim)
