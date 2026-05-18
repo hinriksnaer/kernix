@@ -5,6 +5,7 @@
     ../modules/terminal/git.nix
     ../modules/terminal/tmux
     ../modules/terminal/cli-tools.nix
+    ../modules/terminal/claude-code.nix
     ../modules/terminal/gh.nix
     ../modules/terminal/zsh.nix
     ../modules/terminal/direnv.nix
@@ -12,6 +13,7 @@
     ../modules/terminal/build-tools.nix
     ../modules/theme
     ../modules/terminal/opencode.nix
+    ../modules/terminal/vertex-auth.nix
     ../modules/terminal/btop.nix
     ../modules/terminal/lazygit.nix
     ../modules/terminal/yazi.nix
