@@ -1,12 +1,12 @@
 # Home Manager entry point.
 # Receives hostname and settings from flake.nix, imports the
-# matching profile which opts into shared modules.
+# matching host profile which opts into shared modules.
 {
   hostname,
   settings,
 }: {...}: {
   imports = [
-    ./profiles/${hostname}.nix
+    ../hosts/${hostname}/home.nix
   ];
 
   # Make settings available to all modules

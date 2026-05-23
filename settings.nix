@@ -1,6 +1,6 @@
 # ── User settings ──
 # Single source of truth for all user-specific configuration.
-# Type-checked against modules/core/kernix-options.nix.
+# Type-checked against system/core/kernix-options.nix.
 # Imported by flake.nix and assigned to config.kernix.*.
 {
   # ── Global (shared across all hosts) ──

@@ -165,27 +165,26 @@ nixtorch status                # show environment + project state
 settings.nix              single source of truth for all config
 flake.nix                 hosts, overlays, formatter, nixtorch dev shell
 
-modules/                  NixOS system modules
+system/                   NixOS/Darwin system modules
   core/                   base, zsh, nh, kernix-options
   desktop/                hyprland, fonts, desktop-session
   hardware/               gpu/{nvidia,intel,amd}, audio, bluetooth, networking
-  apps/                   firefox, podman, proton-pass
+  apps/                   podman, proton-pass, thunar
   gaming/                 steam, gpu-extra
 
-roles/                    module collections assigned to hosts
-  core.nix                base system, zsh, nh
-  desktop.nix             hyprland, fonts, session
-  hardware.nix            GPU, audio, bluetooth, networking
-  apps.nix                user applications
+home/                     Home Manager user modules
+  terminal/               neovim, zsh, git, tmux, cli-tools, ...
+  desktop/                hyprland, monitors, rofi, waybar, emulators, ...
+  apps/                   firefox, proton-pass
+  gaming/                 tools, gpu
+  theme/                  theme engine + scripts
 
-home/                     Home Manager configuration
-  profiles/               per-host profiles (desktop, laptop, remote, container)
-  collections/            module bundles (terminal, desktop, apps, gaming)
-  modules/
-    terminal/             neovim, zsh, git, tmux, cli-tools, ...
-    desktop/              hyprland, monitors, rofi, waybar, ...
-    emulators/            ghostty, kitty (via settings.terminal)
-    theme/                theme engine + scripts
+hosts/                    per-machine config (system + user colocated)
+  desktop/                system.nix + home.nix + hardware + fancontrol
+  laptop/                 system.nix + home.nix + hardware
+  macbook/                system.nix + home.nix + devshell
+  remote/                 home.nix (HM-only)
+  container/              home.nix (HM-only)
 
 themes/                   13 color themes (per-app configs + wallpapers)
 overlays/                 additions, flake-inputs, modifications
@@ -196,7 +195,7 @@ cli/                      kernix, kernix-hm-switch
 
 - **nixtorch**: CUDA dev shell consumed as a flake input
 - **Overlays**: custom packages via `pkgs.kernix-cli.*`, flake inputs via `pkgs.inputs'.*`
-- **Dual channels**: `nixpkgs` (unstable) + `nixpkgs-stable` (25.05) for pinning
+- **Channel**: `nixpkgs` (unstable)
 - **Formatter**: `nix fmt` (alejandra)
 - **CI**: `nix flake check` + format check on push, weekly flake lock updates
 - **nh**: diff display, nix-output-monitor, automatic GC (7d/5 gens)

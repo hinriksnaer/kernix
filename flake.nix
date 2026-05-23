@@ -24,7 +24,6 @@
   } @ inputs: let
     lib = nixpkgs.lib;
     settings = import ./settings.nix;
-    discover = import ./lib/discover.nix {inherit lib;};
 
     # ── Package sets ──
 
@@ -69,7 +68,7 @@
         modules =
           commonModules
           ++ [
-            ./hosts/${hostname}/default.nix
+            ./hosts/${hostname}/system.nix
             (mkHmModule home-manager.nixosModules.home-manager hostname)
           ];
       };
@@ -81,7 +80,7 @@
         modules =
           commonModules
           ++ [
-            ./hosts/${hostname}/default.nix
+            ./hosts/${hostname}/system.nix
             (mkHmModule home-manager.darwinModules.home-manager hostname)
           ];
       };
@@ -96,15 +95,6 @@
     packages.${system} = {
       inherit (pkgsUnfree.kernix-cli) kernix;
     };
-
-    # ── Individually importable modules (auto-discovered) ──
-    nixosModules =
-      (discover.discoverAll ./modules/core)
-      // (discover.discoverAll ./modules/desktop)
-      // (discover.discoverAll ./modules/hardware)
-      // (discover.discoverAll ./modules/apps)
-      // (discover.discoverAll ./modules/gaming)
-      // (discover.discoverModules ./roles);
 
     # ── Machine configurations ──
     nixosConfigurations = {
