@@ -5,5 +5,6 @@
   home.packages = with pkgs; [
     bitwarden-cli # official CLI (bw)
     rbw # agent-based CLI (rbw unlock, rbw get, etc.)
+    pinentry-curses # terminal password prompt for rbw
   ];
 }
