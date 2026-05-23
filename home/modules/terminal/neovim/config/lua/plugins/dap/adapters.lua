@@ -2,12 +2,7 @@
 -- Defines debug adapters for various languages/debuggers
 
 local M = {}
-
--- Helper to find executables
-local function which(bin)
-  local p = vim.fn.exepath(bin)
-  return (p ~= '' and p) or nil
-end
+local which = require('plugins.dap.utils').which
 
 function M.setup(dap)
   local mason_bin = vim.fn.stdpath('data') .. '/mason/bin'

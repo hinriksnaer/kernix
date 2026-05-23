@@ -8,17 +8,8 @@
   settings,
   ...
 }: let
-  kernixPath = "${config.home.homeDirectory}/.local/share/kernix";
-  scripts = ./scripts;
-
-  mkScript = name: runtimeInputs:
-    pkgs.writeShellApplication {
-      inherit name runtimeInputs;
-      text = ''
-        export KERNIX_PATH="${kernixPath}"
-        ${builtins.readFile "${scripts}/${name}.sh"}
-      '';
-    };
+  themeLib = import ./lib.nix {inherit pkgs config;};
+  inherit (themeLib) kernixPath scripts mkScript;
 in {
   # ── Core engine scripts ──
   home.packages = [

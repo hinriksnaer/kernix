@@ -22,6 +22,12 @@
     nixtorch,
     ...
   } @ inputs: let
+    lib = nixpkgs.lib;
+    settings = import ./settings.nix;
+    discover = import ./lib/discover.nix {inherit lib;};
+
+    # ── Package sets ──
+
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
     pkgsUnfree = import nixpkgs {
@@ -29,42 +35,7 @@
       config.allowUnfree = true;
       overlays = builtins.attrValues self.overlays;
     };
-    lib = nixpkgs.lib;
 
-    # User settings (plain attrset, assigned to config.kernix.*)
-    settings = import ./settings.nix;
-
-    # Common modules: settings + base config (imported by all machines)
-    commonModules = [
-      {kernix = settings;}
-    ];
-
-    # Auto-discover .nix files from a directory
-    discoverModules = dir:
-      lib.mapAttrs'
-      (
-        name: _:
-          lib.nameValuePair
-          (lib.removeSuffix ".nix" name)
-          (import (dir + "/${name}"))
-      )
-      (
-        lib.filterAttrs
-        (name: type: type == "regular" && lib.hasSuffix ".nix" name)
-        (builtins.readDir dir)
-      );
-
-    # Auto-discover directories with default.nix
-    discoverDirs = dir:
-      lib.mapAttrs'
-      (name: _: lib.nameValuePair name (import (dir + "/${name}")))
-      (
-        lib.filterAttrs
-        (name: type: type == "directory" && builtins.pathExists (dir + "/${name}/default.nix"))
-        (builtins.readDir dir)
-      );
-
-    # ── Darwin (macOS) ──
     darwinSystem = "aarch64-darwin";
     pkgsDarwin = import nixpkgs {
       system = darwinSystem;
@@ -72,9 +43,16 @@
       overlays = builtins.attrValues self.overlays;
     };
 
-    # Home Manager darwin integration -- auto-applies HM on darwin-rebuild switch.
-    hmDarwinModule = hostname: {
-      imports = [home-manager.darwinModules.home-manager];
+    # ── Shared modules ──
+
+    commonModules = [
+      {kernix = settings;}
+      {nixpkgs.overlays = builtins.attrValues self.overlays;}
+    ];
+
+    # Home Manager integration (works for both NixOS and Darwin).
+    mkHmModule = hmModule: hostname: {
+      imports = [hmModule];
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
       home-manager.backupFileExtension = "hm-backup";
@@ -82,15 +60,31 @@
         import ./home {inherit hostname settings;};
     };
 
-    # Home Manager NixOS integration -- auto-applies HM on nixos-rebuild switch.
-    hmNixosModule = hostname: {
-      imports = [home-manager.nixosModules.home-manager];
-      home-manager.useGlobalPkgs = true;
-      home-manager.useUserPackages = true;
-      home-manager.backupFileExtension = "hm-backup";
-      home-manager.users.${settings.hosts.${hostname}.username} =
-        import ./home {inherit hostname settings;};
-    };
+    # ── Host builders ──
+
+    mkHost = hostname:
+      nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = {inherit inputs;};
+        modules =
+          commonModules
+          ++ [
+            ./hosts/${hostname}/default.nix
+            (mkHmModule home-manager.nixosModules.home-manager hostname)
+          ];
+      };
+
+    mkDarwinHost = hostname:
+      nix-darwin.lib.darwinSystem {
+        system = darwinSystem;
+        specialArgs = {inherit settings;};
+        modules =
+          commonModules
+          ++ [
+            ./hosts/${hostname}/default.nix
+            (mkHmModule home-manager.darwinModules.home-manager hostname)
+          ];
+      };
   in {
     # ── Formatter (nix fmt) ──
     formatter.${system} = pkgs.alejandra;
@@ -104,44 +98,23 @@
     };
 
     # ── Individually importable modules (auto-discovered) ──
-    nixosModules = let
-      discoverAll = dir: (discoverModules dir) // (discoverDirs dir);
-    in
-      (discoverAll ./modules/core)
-      // (discoverAll ./modules/desktop)
-      // (discoverAll ./modules/hardware)
-      // (discoverAll ./modules/apps)
-      // (discoverAll ./modules/gaming)
-      // (discoverModules ./roles);
+    nixosModules =
+      (discover.discoverAll ./modules/core)
+      // (discover.discoverAll ./modules/desktop)
+      // (discover.discoverAll ./modules/hardware)
+      // (discover.discoverAll ./modules/apps)
+      // (discover.discoverAll ./modules/gaming)
+      // (discover.discoverModules ./roles);
 
     # ── Machine configurations ──
-    nixosConfigurations = let
-      mkHost = hostname:
-        nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {inherit inputs;};
-          modules =
-            commonModules
-            ++ [
-              ./hosts/${hostname}/default.nix
-              (hmNixosModule hostname)
-              {nixpkgs.overlays = builtins.attrValues self.overlays;}
-            ];
-        };
-    in {
+    nixosConfigurations = {
       desktop = mkHost "desktop";
       laptop = mkHost "laptop";
     };
 
     # ── Darwin (macOS) configurations ──
-    darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
-      system = darwinSystem;
-      specialArgs = {inherit settings;};
-      modules = [
-        ./hosts/macbook/default.nix
-        (hmDarwinModule "macbook")
-        {nixpkgs.overlays = builtins.attrValues self.overlays;}
-      ];
+    darwinConfigurations = {
+      macbook = mkDarwinHost "macbook";
     };
 
     # ── Home Manager (standalone, user@host convention) ──

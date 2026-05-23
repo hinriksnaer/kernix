@@ -2,15 +2,10 @@
 -- Handles Python debugging with debugpy and C++ attachment (GDB/LLDB)
 
 local M = {}
+local which = require('plugins.dap.utils').which
 
 -- Track the last Python PID for C++ attachment
 local last_pid = { python = nil }
-
--- Helper to find executables
-local function which(bin)
-  local p = vim.fn.exepath(bin)
-  return (p ~= '' and p) or nil
-end
 
 function M.setup(dap)
   local py = which('python3') or which('python') or 'python'

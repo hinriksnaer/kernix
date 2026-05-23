@@ -14,7 +14,6 @@ return {
         treesitter = true,
         which_key = true,
         dap = true,
-        dap_ui = true,
         native_lsp = {
           enabled = true,
           virtual_text = {

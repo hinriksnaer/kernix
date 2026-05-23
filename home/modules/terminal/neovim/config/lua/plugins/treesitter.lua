@@ -66,9 +66,6 @@ return {
       vim.api.nvim_create_autocmd('FileType', {
         group = vim.api.nvim_create_augroup('treesitter_setup', { clear = true }),
         callback = function(ev)
-          local ft = ev.match
-          local lang = vim.treesitter.language.get_lang(ft)
-
           -- Enable highlighting
           if opts.highlight and opts.highlight.enable then
             pcall(vim.treesitter.start, ev.buf)

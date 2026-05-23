@@ -9,9 +9,7 @@
   hostname,
   ...
 }: let
-  hostSettings = settings.hosts.${hostname};
   monitors = config.monitors;
-  hasMultipleMonitors = builtins.length monitors > 1;
   primaryMonitor = lib.findFirst (m: m.primary) (builtins.head monitors) monitors;
   isHiDPI = builtins.any (m: m.scale > 1.0) monitors;
   isDesktop = hostname == "desktop";
@@ -289,11 +287,6 @@ in {
         # Navigate workspaces: Super + [ / ]
         "$mainMod, bracketleft, workspace, e-1"
         "$mainMod, bracketright, workspace, e+1"
-
-        # Swap workspaces: Super + Ctrl + [ / ] (Ctrl = swap, multi-monitor)
-        # swapactiveworkspaces requires monitor names; uncomment for multi-monitor:
-        # "$mainMod CTRL, bracketleft, swapactiveworkspaces, eDP-1 DP-1"
-        # "$mainMod CTRL, bracketright, swapactiveworkspaces, eDP-1 DP-1"
 
         # Move view to adjacent task: Super + Shift + [ / ] (Shift = move view)
         "$mainMod SHIFT, bracketleft, movetoworkspace, e-1"
