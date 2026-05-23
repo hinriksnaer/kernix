@@ -17,5 +17,6 @@
     ./lazygit.nix
     ./yazi.nix
     ./ibmcloud.nix
+    ./bitwarden.nix
   ];
 }

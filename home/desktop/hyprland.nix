@@ -56,7 +56,7 @@ in {
           "KERNIX_PATH,$HOME/.local/share/kernix"
         ]
         ++ lib.optionals isDesktop [
-          "SSH_AUTH_SOCK,$HOME/.ssh/proton-pass-agent.sock"
+          "SSH_AUTH_SOCK,$HOME/.bitwarden-ssh-agent.sock"
         ];
 
       # ── Monitors (from config.monitors, set in profiles) ──
@@ -219,8 +219,8 @@ in {
           "sleep 2 && kernix-theme-refresh 2>/dev/null || true"
         ]
         ++ lib.optionals isDesktop [
-          # Proton Pass SSH agent (desktop only)
-          "bash -c 'nohup pass-cli ssh-agent start > /tmp/proton-pass-agent.log 2>&1 &'"
+          # Bitwarden desktop (provides SSH agent)
+          "bitwarden"
         ];
 
       # ── Keybinds ──
