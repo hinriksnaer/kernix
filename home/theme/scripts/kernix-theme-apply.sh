@@ -108,22 +108,13 @@ for hook_file in "$hooks_dir"/*; do
 
     # ── hyprland type ──
     elif [[ "$hook_type" == "hyprland" ]]; then
-        if [[ -f "$theme_path/hyprland.conf" ]]; then
-            active_theme_conf="$HOME/.config/hypr/active-theme.conf"
-            printf '%s\n' \
-                '# Active Hyprland Theme (runtime-generated)' \
-                '# Managed by kernix-theme-apply' \
-                "# theme: $theme_name" \
-                '' \
-                > "$active_theme_conf"
-            grep '^\$' "$theme_path/hyprland.conf" >> "$active_theme_conf" 2>/dev/null
-            sed -n '/^general {/,/^}/p' "$theme_path/hyprland.conf" >> "$active_theme_conf" 2>/dev/null
-            sed -n '/^group {/,/^}/p' "$theme_path/hyprland.conf" >> "$active_theme_conf" 2>/dev/null
+        if [[ -f "$theme_path/hyprland.lua" ]]; then
+            cp "$theme_path/hyprland.lua" "$HOME/.config/hypr/active-theme.lua"
             applied_count=$((applied_count + 1))
             success "Applied $hook_name"
         else
             skipped_count=$((skipped_count + 1))
-            warning "Skipped $hook_name (no hyprland.conf in theme)"
+            warning "Skipped $hook_name (no hyprland.lua in theme)"
         fi
 
     # ── config-rewrite type ──

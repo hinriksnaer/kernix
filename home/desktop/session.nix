@@ -36,6 +36,6 @@
 
   home.sessionVariables = {
     GTK_THEME = "Adwaita:dark";
-    TERMINAL = config.kernix.terminal.command;
+    TERMINAL = "ghostty";
   };
 }

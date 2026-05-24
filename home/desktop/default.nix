@@ -2,17 +2,9 @@
 {...}: {
   imports = [
     ./monitors.nix
-    ./hyprland.nix
-    ./emulators
-    ./mako.nix
-    ./waybar
-    ./rofi.nix
-    ./hyprlock.nix
-    ./hypridle.nix
+    ./hyprland
+    ./ghostty.nix
     ./session.nix
-    ./audio.nix
-    ./power-menu.nix
-    ./hardware-tools.nix
-    ../theme/desktop.nix
+    ./utilities
   ];
 }
