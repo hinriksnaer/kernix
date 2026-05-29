@@ -8,6 +8,7 @@
     ./waybar
     ./rofi.nix
     ./hyprlock.nix
+    ./hypridle.nix
     ./session.nix
     ./audio.nix
     ./power-menu.nix

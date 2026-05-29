@@ -5,6 +5,7 @@
     ../../system/desktop
     ../../system/hardware
     ../../system/apps
+    ./power.nix
   ];
 
   kernix.username = config.kernix.hosts.laptop.username;
