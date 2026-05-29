@@ -6,13 +6,11 @@
   lib,
   pkgs,
   settings,
-  hostname,
   ...
 }: let
   monitors = config.monitors;
   primaryMonitor = lib.findFirst (m: m.primary) (builtins.head monitors) monitors;
   isHiDPI = builtins.any (m: m.scale > 1.0) monitors;
-  isDesktop = hostname == "desktop";
 in {
   # ── Wayland packages ──
   home.packages = with pkgs; [
@@ -51,13 +49,9 @@ in {
 
     settings = {
       # ── Environment ──
-      env =
-        [
-          "KERNIX_PATH,$HOME/.local/share/kernix"
-        ]
-        ++ lib.optionals isDesktop [
-          "SSH_AUTH_SOCK,$HOME/.bitwarden-ssh-agent.sock"
-        ];
+      env = [
+        "KERNIX_PATH,$HOME/.local/share/kernix"
+      ];
 
       # ── Monitors (from config.monitors, set in profiles) ──
       monitor =
@@ -208,20 +202,15 @@ in {
       ];
 
       # ── Autostart ──
-      exec-once =
-        [
-          "dbus-update-activation-environment --systemd --all"
-          "nm-applet"
-          "waybar"
-          "mako"
-          "wl-paste --watch cliphist store"
-          "swaybg -i $HOME/.config/hypr/wallpapers/current -m fill"
-          "sleep 2 && kernix-theme-refresh 2>/dev/null || true"
-        ]
-        ++ lib.optionals isDesktop [
-          # Bitwarden desktop (provides SSH agent)
-          "bitwarden"
-        ];
+      exec-once = [
+        "dbus-update-activation-environment --systemd --all"
+        "nm-applet"
+        "waybar"
+        "mako"
+        "wl-paste --watch cliphist store"
+        "swaybg -i $HOME/.config/hypr/wallpapers/current -m fill"
+        "sleep 2 && kernix-theme-refresh 2>/dev/null || true"
+      ];
 
       # ── Keybinds ──
       "$mainMod" = "SUPER";
