@@ -1,7 +1,54 @@
 # kernix
 
-NixOS configuration and CUDA development environment. Flake-based, multi-host,
-with a runtime theme engine and declarative everything.
+One Nix flake that manages every machine -- from a multi-GPU desktop to a
+Kubernetes container. Clone, set your identity in `settings.nix`, rebuild.
+
+## Architecture
+
+### Hardware targets
+
+A single repo produces five host configurations, each composed from the
+same shared module library:
+
+| Host | Platform | System layer | Use case |
+|---|---|---|---|
+| `desktop` | NixOS `x86_64` | Full NixOS + Home Manager | Nvidia GPU, multi-monitor workstation |
+| `laptop` | NixOS `x86_64` | Full NixOS + Home Manager | Intel, power management, Meteor Lake |
+| `macbook` | Darwin `aarch64` | nix-darwin + Home Manager | Apple Silicon, local dev shell |
+| `remote` | Linux | Home Manager only | Headless server |
+| `container` | Linux | Home Manager only | Kubernetes/OpenShift, CUDA dev |
+
+Full hosts (`desktop`, `laptop`, `macbook`) get OS-level configuration --
+boot, networking, GPU drivers, display server. Headless hosts (`remote`,
+`container`) get only user-level tooling via Home Manager, making them
+portable to any Linux with Nix installed.
+
+### Layered composition
+
+Configuration is split into two layers that compose independently:
+
+- **`system/`** -- OS-level NixOS and Darwin modules: hardware, boot, GPU
+  drivers, system services. Only imported by hosts that manage the full OS.
+- **`home/`** -- User-level Home Manager modules: terminal, desktop,
+  applications, themes. Portable across all hosts regardless of OS.
+
+Each host in `hosts/` selectively imports the modules it needs. A desktop
+gets both layers; a container gets only `home/`. Adding a new machine means
+writing a thin host file that picks from existing modules.
+
+### Single source of truth
+
+All per-host settings -- usernames, GPU type, monitor layout, git identity,
+CUDA config -- live in `settings.nix`. A typed NixOS module
+(`kernix-options.nix`) validates the full attrset at eval time, so
+misconfigurations fail fast with clear errors instead of silently producing
+a broken system.
+
+### Overlays as escape hatches
+
+Upstream nixpkgs fixes live in `overlays/`, one file per patch. When a
+package breaks (EOL Electron, linker issues), the fix is a single file
+that's easy to add and easy to drop once upstream catches up.
 
 ## Quick Start
 
@@ -131,8 +178,8 @@ sets `USER` automatically in `.bashrc`.
 
 ## Themes
 
-13 themes with runtime switching across hyprland, kitty, neovim, btop, waybar,
-mako, rofi, and hyprlock. No rebuild required to switch.
+13 themes with runtime switching across hyprland, ghostty, neovim, btop, waybar,
+mako, rofi, hyprlock, and opencode. No rebuild required to switch.
 
 ```
 Super+T          Theme picker (rofi)
@@ -155,48 +202,26 @@ nixtorch build helion          # clone + build Helion compiler
 nixtorch status                # show environment + project state
 ```
 
-- CUDA 12.9, cuDNN 9.13, GCC 14
+- CUDA 13, cuDNN, GCC (versions from nixtorch flake input)
 - PyTorch env vars configurable via `projects.pytorch.env`
 - All project settings in `settings.nix` under `hosts.<host>.nixtorch`
 
 ## Structure
 
 ```
-settings.nix              single source of truth for all config
-flake.nix                 hosts, overlays, formatter, nixtorch dev shell
-
-system/                   NixOS/Darwin system modules
-  core/                   base, zsh, nh, kernix-options
-  desktop/                hyprland, fonts, desktop-session
-  hardware/               gpu/{nvidia,intel,amd}, audio, bluetooth, networking
-  apps/                   podman, proton-pass, thunar
-  gaming/                 steam, gpu-extra
-
-home/                     Home Manager user modules
-  terminal/               neovim, zsh, git, tmux, cli-tools, ...
-  desktop/                hyprland, monitors, rofi, waybar, emulators, ...
-  apps/                   firefox, proton-pass
-  gaming/                 tools, gpu
-  theme/                  theme engine + scripts
-
-hosts/                    per-machine config (system + user colocated)
-  desktop/                system.nix + home.nix + hardware + fancontrol
-  laptop/                 system.nix + home.nix + hardware
-  macbook/                system.nix + home.nix + devshell
-  remote/                 home.nix (HM-only)
-  container/              home.nix (HM-only)
-
-themes/                   13 color themes (per-app configs + wallpapers)
-overlays/                 additions, flake-inputs, modifications
-cli/                      kernix, kernix-hm-switch
+settings.nix       all per-host config (usernames, GPU, monitors, nixtorch)
+flake.nix          host definitions, overlays, dev shells
+system/            OS-level modules: hardware, boot, GPU, desktop, services
+home/              user-level modules: terminal, desktop, apps, themes
+hosts/             per-machine entry points (imports from system/ and home/)
+themes/            13 color themes (per-app configs + wallpapers)
+overlays/          nixpkgs additions and per-package patches
+cli/               kernix, kernix-hm-switch, kernix-darwin-switch
 ```
 
 ## Infrastructure
 
-- **nixtorch**: CUDA dev shell consumed as a flake input
-- **Overlays**: custom packages via `pkgs.kernix-cli.*`, flake inputs via `pkgs.inputs'.*`
-- **Channel**: `nixpkgs` (unstable)
-- **Formatter**: `nix fmt` (alejandra)
-- **CI**: `nix flake check` + format check on push, weekly flake lock updates
-- **nh**: diff display, nix-output-monitor, automatic GC (7d/5 gens)
-- **Typed options**: `kernix.hosts` is a typed submodule, catches config errors at eval time
+- **Channel**: nixpkgs unstable
+- **CI**: `nix flake check` + `nix fmt` on push; weekly `flake.lock` updates via PR
+- **Formatter**: alejandra
+- **nh**: diff display, nix-output-monitor, automatic GC (7d / 5 gens)
