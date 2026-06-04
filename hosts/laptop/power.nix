@@ -9,7 +9,11 @@
   # ── Intel thermal daemon ──
   # Proactively manages thermals via DPTF adaptive tables instead of
   # waiting for hard throttle limits.
-  services.thermald.enable = true;
+  # ignoreCpuidCheck required for Meteor Lake (family 6, model 170).
+  services.thermald = {
+    enable = true;
+    ignoreCpuidCheck = true;
+  };
 
   # ── TLP ──
   # Comprehensive power tuning: CPU governor, energy policy, USB autosuspend,
