@@ -9,5 +9,6 @@
     openssl.dev
     unzip
     gnutar
+    uv
   ];
 }
