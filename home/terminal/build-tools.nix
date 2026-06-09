@@ -9,6 +9,7 @@
     openssl.dev
     unzip
     gnutar
+    python3
     uv
   ];
 }
