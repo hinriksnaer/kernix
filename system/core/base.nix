@@ -46,6 +46,7 @@ in {
     gnused
     gnugrep
     gawk
+    jq
     util-linux
     procps
     pkgs.kernix-cli.kernix
