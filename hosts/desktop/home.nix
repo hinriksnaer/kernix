@@ -13,6 +13,8 @@ in {
     ../../home/gaming
   ];
 
+  # TV (HDMI-A-2) is NOT added to Hyprland monitors -- it's only used by
+  # the standalone gamescope session on TTY3 (couch/game mode).
   monitors = settings.hosts.${hostname}.monitors;
 
   home.username = username;

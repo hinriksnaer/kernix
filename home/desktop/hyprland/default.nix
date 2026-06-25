@@ -66,6 +66,10 @@
     -- Monitors (from config.monitors)
     ${monitorLines}
 
+    -- Disable TV output (used exclusively by gamescope on TTY3)
+    -- Without this, Hyprland auto-configures any detected monitor.
+    ${lib.optionalString isDesktop ''hl.monitor({ output = "HDMI-A-2", disabled = true })''}
+
     -- Cursor default monitor
     ${lib.optionalString (primaryMonitor.name != "") ''hl.config({ cursor = { default_monitor = "${primaryMonitor.name}" } })''}
 
@@ -136,9 +140,10 @@ in {
     _JAVA_AWT_WM_NONREPARENTING = "1";
   };
 
-  # ── UWSM auto-start (TTY login only) ──
+  # ── UWSM auto-start (TTY1 login only) ──
+  # Only start Hyprland on TTY1. TTY3 is reserved for gamescope couch mode.
   programs.zsh.initContent = lib.mkOrder 100 ''
-    if [[ -z "$DISPLAY" && -z "$WAYLAND_DISPLAY" ]] && uwsm check may-start 2>/dev/null; then
+    if [[ "$(tty)" == "/dev/tty1" && -z "$DISPLAY" && -z "$WAYLAND_DISPLAY" ]] && uwsm check may-start 2>/dev/null; then
         exec uwsm start hyprland-uwsm.desktop
     fi
   '';

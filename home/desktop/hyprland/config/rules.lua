@@ -31,3 +31,5 @@ hl.window_rule({
     match = { class = "^(discord|Slack)$" },
     workspace = "3",
 })
+
+-- Couch mode: not needed for standalone gamescope (runs on its own TTY).

@@ -103,6 +103,9 @@ hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("volume-control mute"), { repeat
 hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("brightness-control up"),   { repeating = true })
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightness-control down"), { repeating = true })
 
+-- Couch mode (gamescope + Steam Deck UI on TV)
+hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("kernix-couch"))
+
 -- Media
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
