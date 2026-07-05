@@ -31,9 +31,15 @@
   bar.start = "waybar";
   notifications.start = "mako";
 
-  # Generate hl.monitor() calls from config.monitors
+  # Generate hl.monitor() calls from config.monitors.
+  # On desktop, the primary monitor gets 10-bit wide gamut output
+  # (Samsung Odyssey G95NC -> XBGR2101010). Using "wide" instead of "hdr"
+  # because Hyprland lacks SDR-to-HDR tone mapping -- "hdr" makes desktop
+  # content muddy. Games can still request HDR per-window via DXVK_HDR=1.
   monitorLines = builtins.concatStringsSep "\n" (map (
-      m: ''hl.monitor({ output = "${m.name}", mode = "${m.resolution}", position = "${m.position}", scale = ${toString m.scale} })''
+      m: let
+        extraFields = lib.optionalString (isDesktop && m.primary) '', bitdepth = 10, cm = "wide"'';
+      in ''hl.monitor({ output = "${m.name}", mode = "${m.resolution}", position = "${m.position}", scale = ${toString m.scale}${extraFields} })''
     )
     monitors);
 
@@ -128,17 +134,24 @@ in {
   ];
 
   # ── Wayland session variables ──
-  home.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-    XDG_SESSION_TYPE = "wayland";
-    QT_QPA_PLATFORM = "wayland";
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-    QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-    MOZ_ENABLE_WAYLAND = "1";
-    CLUTTER_BACKEND = "wayland";
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
-    _JAVA_AWT_WM_NONREPARENTING = "1";
-  };
+  home.sessionVariables =
+    {
+      NIXOS_OZONE_WL = "1";
+      XDG_SESSION_TYPE = "wayland";
+      QT_QPA_PLATFORM = "wayland";
+      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+      QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+      MOZ_ENABLE_WAYLAND = "1";
+      CLUTTER_BACKEND = "wayland";
+      ELECTRON_OZONE_PLATFORM_HINT = "auto";
+      _JAVA_AWT_WM_NONREPARENTING = "1";
+    }
+    // lib.optionalAttrs isDesktop {
+      # HDR: tell DXVK/VKD3D and Vulkan WSI to use HDR output.
+      # Games need these to output HDR to the compositor.
+      DXVK_HDR = "1";
+      ENABLE_HDR_WSI = "1";
+    };
 
   # ── UWSM auto-start (TTY1 login only) ──
   # Only start Hyprland on TTY1. TTY3 is reserved for gamescope couch mode.

@@ -5,5 +5,6 @@
     ./boot.nix
     ./gpu
     ./networking.nix
+    ./printing.nix
   ];
 }

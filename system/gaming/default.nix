@@ -3,5 +3,6 @@
     ./gpu-extra.nix
     ./steam.nix
     ./couch-session.nix
+    ./sunshine.nix
   ];
 }

@@ -1,10 +1,17 @@
 # Waybar status bar.
 # Theme CSS loaded at runtime via @import (swapped by kernix-theme-set).
-{config, ...}: {
+{
+  config,
+  lib,
+  ...
+}: let
+  primaryMonitor = lib.findFirst (m: m.primary) (builtins.head config.monitors) config.monitors;
+in {
   programs.waybar = {
     enable = true;
 
     settings.mainBar = {
+      output = primaryMonitor.name;
       reload_style_on_change = true;
       layer = "top";
       position = "top";

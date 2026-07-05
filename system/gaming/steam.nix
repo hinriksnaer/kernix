@@ -33,6 +33,16 @@
         "3000" # hide cursor after 3s (couch UX)
         "--fade-out-duration"
         "200" # smooth focus transitions
+        # HDR output (TV must support HDR10)
+        "--hdr-enabled"
+        "--hdr-itm-enabled" # SDR->HDR inverse tone mapping
+        "--hdr-sdr-content-nits"
+        "400" # SDR content brightness in HDR mode
+        "--hdr-itm-sdr-nits"
+        "400" # SDR input luminance for ITM (must match sdr-content-nits)
+        "--hdr-itm-target-nits"
+        "1000" # HDR target peak luminance for ITM
+        "--mangoapp" # Performance overlay via MangoHud (toggle in Steam QAM)
       ];
       steamArgs = ["-gamepadui" "-pipewire-dmabuf"];
 
@@ -47,6 +57,10 @@
         vk_xwayland_wait_ready = "false"; # don't wait for client buffers to idle
         ENABLE_GAMESCOPE_WSI = "1"; # force gamescope Vulkan WSI layer
         mesa_glthread = "true"; # better frame timing
+
+        # -- HDR --
+        ENABLE_HDR_WSI = "1"; # Gamescope HDR WSI layer for HDR-aware clients
+        DXVK_HDR = "1"; # DXVK HDR output for DirectX games via Proton
 
         # -- Game compatibility --
         SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0"; # prevent games minimizing on focus loss
