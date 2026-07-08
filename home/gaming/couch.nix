@@ -134,6 +134,7 @@ lib.mkIf (hostname == "desktop") {
 
         # Gamescope session with mode-selected resolution.
         # Env vars match steam.nix gamescopeSession.env exactly.
+        DXVK_ASYNC=1 \
         DXVK_HDR=1 \
         ENABLE_GAMESCOPE_WSI=1 \
         ENABLE_HDR_WSI=1 \

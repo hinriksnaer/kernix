@@ -58,6 +58,9 @@
         ENABLE_GAMESCOPE_WSI = "1"; # force gamescope Vulkan WSI layer
         mesa_glthread = "true"; # better frame timing
 
+        # -- Shader compilation --
+        DXVK_ASYNC = "1"; # async shader compilation (no stutter, placeholders until ready)
+
         # -- HDR --
         ENABLE_HDR_WSI = "1"; # Gamescope HDR WSI layer for HDR-aware clients
         DXVK_HDR = "1"; # DXVK HDR output for DirectX games via Proton
