@@ -74,6 +74,11 @@
           ++ [
             ./hosts/${hostname}/system.nix
             (mkHmModule home-manager.nixosModules.home-manager hostname)
+            ({config, ...}: {
+              kernix.username = config.kernix.hosts.${hostname}.username;
+              kernix.gpu = config.kernix.hosts.${hostname}.gpu;
+              networking.hostName = "kernix-${hostname}";
+            })
           ];
       };
 

@@ -8,10 +8,7 @@
   ...
 }: let
   username = settings.hosts.${hostname}.username;
-  homeDir =
-    if username == "root"
-    then "/root"
-    else "/home/${username}";
+  homeDir = config.home.homeDirectory;
   kernixRoot = settings.hosts.${hostname}.kernixRoot or "${homeDir}/kernix";
   cli = import ../../cli {
     inherit pkgs;
@@ -21,10 +18,6 @@ in {
   imports = [
     ../../home/terminal
   ];
-
-  home.username = username;
-  home.homeDirectory = homeDir;
-  home.stateVersion = "24.11";
 
   # Terminal settings that oc exec doesn't propagate
   home.sessionVariables = {

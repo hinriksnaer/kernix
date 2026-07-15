@@ -2,6 +2,8 @@
 # Fully managed by Home Manager's programs.yazi module.
 # theme.toml is NOT managed here -- kernix-theme-set writes it at runtime.
 {pkgs, ...}: {
+  kernix.theme.hooks = ["yazi"];
+
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;

@@ -105,6 +105,8 @@ in {
     ./idle.nix
   ];
 
+  kernix.theme.hooks = ["hyprland"];
+
   # ── Wayland packages ──
   home.packages = with pkgs; [
     swaybg
@@ -173,12 +175,6 @@ in {
     "hypr/rules.lua".source = ./config/rules.lua;
     "hypr/binds.lua".source = ./config/binds.lua;
     "hypr/autostart.lua".source = ./config/autostart.lua;
-
-    # Theme hook registration (25-hyprland)
-    "kernix/theme-hooks.d/25-hyprland".text = ''
-      type=hyprland
-      reload=hyprctl reload
-    '';
   };
 
   # ── Activation hooks ──

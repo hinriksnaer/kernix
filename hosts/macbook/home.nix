@@ -8,7 +8,7 @@
   ...
 }: let
   username = settings.hosts.${hostname}.username;
-  homeDir = "/Users/${username}";
+  homeDir = config.home.homeDirectory;
   kernixRoot = "${homeDir}/kernix";
   cli = import ../../cli {
     inherit pkgs;
@@ -19,10 +19,6 @@ in {
   imports = [
     ../../home/terminal
   ];
-
-  home.username = username;
-  home.homeDirectory = homeDir;
-  home.stateVersion = "24.11";
 
   # CLI helpers: pull + rebuild
   home.packages = [

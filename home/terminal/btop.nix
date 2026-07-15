@@ -1,6 +1,8 @@
 # btop -- system monitor.
 # Theme switching creates a symlink at ~/.config/btop/themes/active.theme.
 {config, ...}: {
+  kernix.theme.hooks = ["btop"];
+
   programs.btop = {
     enable = true;
 

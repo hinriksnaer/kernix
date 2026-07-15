@@ -7,6 +7,8 @@
 }: let
   primaryMonitor = lib.findFirst (m: m.primary) (builtins.head config.monitors) config.monitors;
 in {
+  kernix.theme.hooks = ["waybar"];
+
   programs.waybar = {
     enable = true;
 
@@ -215,16 +217,4 @@ in {
     # Theme CSS imported at runtime (symlinked by kernix-theme-apply)
     style = builtins.readFile ./config/style.css;
   };
-
-  # ── Theme hook (20-waybar) ──
-  xdg.configFile."kernix/theme-hooks.d/20-waybar".text = ''
-    source=waybar.css
-    target=~/.config/waybar/theme.css
-    reload=pkill -SIGUSR2 -f waybar
-  '';
-
-  # Create empty stub so waybar doesn't error before first theme switch
-  home.activation.waybarThemeStub = config.lib.dag.entryAfter ["linkGeneration"] ''
-    [ -e "$HOME/.config/waybar/theme.css" ] || touch "$HOME/.config/waybar/theme.css"
-  '';
 }

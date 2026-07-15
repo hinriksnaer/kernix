@@ -6,6 +6,8 @@
   config,
   ...
 }: {
+  kernix.theme.hooks = ["rofi"];
+
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
@@ -60,15 +62,4 @@
       '';
     })
   ];
-
-  # ── Theme hook (22-rofi) ──
-  xdg.configFile."kernix/theme-hooks.d/22-rofi".text = ''
-    source=rofi.rasi
-    target=~/.config/rofi/theme.rasi
-  '';
-
-  # Create empty stub so rofi doesn't error before first theme switch
-  home.activation.rofiThemeStub = config.lib.dag.entryAfter ["linkGeneration"] ''
-    [ -e "$HOME/.config/rofi/theme.rasi" ] || touch "$HOME/.config/rofi/theme.rasi"
-  '';
 }

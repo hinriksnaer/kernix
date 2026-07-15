@@ -3,9 +3,7 @@
   settings,
   hostname,
   ...
-}: let
-  username = settings.hosts.${hostname}.username;
-in {
+}: {
   imports = [
     ../../home/terminal
     ../../home/desktop
@@ -13,8 +11,4 @@ in {
   ];
 
   monitors = settings.hosts.${hostname}.monitors;
-
-  home.username = username;
-  home.homeDirectory = "/home/${username}";
-  home.stateVersion = "24.11";
 }

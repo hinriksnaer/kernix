@@ -83,6 +83,7 @@
 
     macbook = {
       username = "dev";
+      homePrefix = "/Users";
     };
 
     container = {

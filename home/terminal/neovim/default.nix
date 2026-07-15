@@ -2,6 +2,8 @@
 # Lua config lives in ./neovim/ alongside this module and is symlinked
 # into ~/.config/nvim/ at build time via the Nix store.
 {pkgs, ...}: {
+  kernix.theme.hooks = ["neovim"];
+
   home.packages = with pkgs; [
     neovim
     tree-sitter

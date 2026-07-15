@@ -1,6 +1,8 @@
 # Hyprlock screen locker.
 # Theme colors loaded at runtime via source (swapped by kernix-theme-set).
-{config, ...}: {
+{...}: {
+  kernix.theme.hooks = ["hyprlock"];
+
   programs.hyprlock = {
     enable = true;
 
@@ -50,16 +52,4 @@
       ];
     };
   };
-
-  # ── Theme hook (23-hyprlock) ──
-  xdg.configFile."kernix/theme-hooks.d/23-hyprlock".text = ''
-    source=hyprlock.conf
-    target=~/.config/hypr/hyprlock-theme.conf
-  '';
-
-  # Create empty stub so hyprlock doesn't error before first theme switch
-  home.activation.hyprlockThemeStub = config.lib.dag.entryAfter ["linkGeneration"] ''
-    mkdir -p "$HOME/.config/hypr"
-    [ -e "$HOME/.config/hypr/hyprlock-theme.conf" ] || touch "$HOME/.config/hypr/hyprlock-theme.conf"
-  '';
 }
