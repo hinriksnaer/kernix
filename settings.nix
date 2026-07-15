@@ -27,7 +27,7 @@
         {
           name = "HDMI-A-1";
           resolution = "7680x2160@120";
-          scale = 1.5;
+          scale = 1.0;
           primary = true;
         }
       ];

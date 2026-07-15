@@ -5,11 +5,13 @@
     enableZshIntegration = true;
     settings = {
       font-family = "JetBrainsMono Nerd Font";
-      font-size = 10;
+      font-size = 16;
       font-style = "SemiBold";
-      font-thicken = true;
+      font-thicken = false;
+      adjust-cell-height = 2;
       window-padding-x = 14;
       window-padding-y = 14;
+      gtk-single-instance = true;
       window-decoration = false;
       confirm-close-surface = false;
       cursor-style = "block";
