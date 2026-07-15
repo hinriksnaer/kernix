@@ -1,9 +1,9 @@
 -- Layout -- dwindle, master, misc settings.
--- IS_HIDPI and TERMINAL_CLASS are injected by the Nix entry point.
+-- LAYOUT and TERMINAL_CLASS are injected by the Nix entry point.
 
 hl.config({
     general = {
-        layout = IS_HIDPI and "master" or "dwindle",
+        layout = LAYOUT,
     },
 
     dwindle = {

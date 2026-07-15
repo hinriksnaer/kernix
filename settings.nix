@@ -22,6 +22,7 @@
     desktop = {
       username = "softmax";
       gpu = "nvidia";
+      layout = "master";
       monitors = [
         {
           name = "HDMI-A-1";

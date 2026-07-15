@@ -10,11 +10,12 @@
   lib,
   pkgs,
   hostname,
+  settings,
   ...
 }: let
   monitors = config.monitors;
   primaryMonitor = lib.findFirst (m: m.primary) (builtins.head monitors) monitors;
-  isHiDPI = builtins.any (m: m.scale > 1.0) monitors;
+  layout = settings.hosts.${hostname}.layout or "dwindle";
   isDesktop = hostname == "desktop";
 
   # ── Sub-component defaults ──
@@ -54,7 +55,7 @@
     TERMINAL_CLASS = "com.mitchellh.ghostty"
     TERMINAL_EXEC = "-e"
     IS_DESKTOP = ${lib.boolToString isDesktop}
-    IS_HIDPI = ${lib.boolToString isHiDPI}
+    LAYOUT = "${layout}"
     PRIMARY_MONITOR = "${primaryMonitor.name}"
     LAUNCHER_RUN = "${launcher.run}"
     LAUNCHER_CLIPBOARD = "${launcher.clipboard}"

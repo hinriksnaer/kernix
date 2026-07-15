@@ -37,6 +37,11 @@ with lib; let
         default = {};
         description = "Configuration passed directly to nixtorch.lib.mkDevShell.";
       };
+      layout = mkOption {
+        type = types.enum ["dwindle" "master"];
+        default = "dwindle";
+        description = "Hyprland layout for this host.";
+      };
       kernixRoot = mkOption {
         type = types.str;
         default = "";
