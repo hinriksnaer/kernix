@@ -21,6 +21,7 @@
   # Cursor theme (replaces NixOS environment.etc."icons/default/index.theme"
   # and cursor-related environment.sessionVariables)
   home.pointerCursor = {
+    enable = true;
     name = "Adwaita";
     size = 24;
     package = pkgs.adwaita-icon-theme;

@@ -14,7 +14,7 @@
       builtins.mapAttrs
       (
         _: flake: let
-          packages = (flake.packages or {}).${final.system} or {};
+          packages = (flake.packages or {}).${final.stdenv.hostPlatform.system} or {};
         in
           packages
       )

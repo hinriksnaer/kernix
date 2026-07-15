@@ -30,6 +30,21 @@
           primary = true;
         }
       ];
+
+      nixtorch = {
+        cudaVisibleDevices = "";
+        workspace = "$HOME/workspace";
+        projects = {
+          pytorch = {
+            cudaArch = "8.6";
+            maxJobs = 8;
+          };
+          helion = {
+            torchIndex = "nightly/cu130";
+            backends = ["cute"];
+          };
+        };
+      };
     };
 
     laptop = {

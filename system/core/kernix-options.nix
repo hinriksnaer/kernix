@@ -32,6 +32,16 @@ with lib; let
         default = {};
         description = "Dev project configurations for this host.";
       };
+      nixtorch = mkOption {
+        type = types.attrs;
+        default = {};
+        description = "Configuration passed directly to nixtorch.lib.mkDevShell.";
+      };
+      kernixRoot = mkOption {
+        type = types.str;
+        default = "";
+        description = "Override for the kernix config root directory.";
+      };
     };
   };
 in {
