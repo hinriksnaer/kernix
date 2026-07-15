@@ -7,6 +7,7 @@
 }: {...}: {
   imports = [
     ../hosts/${hostname}/home.nix
+    ./nixtorch.nix
   ];
 
   # Make settings available to all modules

@@ -13,7 +13,6 @@
     then "/root"
     else "/home/${username}";
   kernixRoot = settings.hosts.${hostname}.kernixRoot or "${homeDir}/kernix";
-  workspaceDir = "${homeDir}/workspace";
   cli = import ../../cli {
     inherit pkgs;
     hmProfile = "${username}@${hostname}";
@@ -44,14 +43,4 @@ in {
   '';
 
   home.packages = [cli.kernix-hm-switch];
-
-  # Auto-activate devshell when cd-ing into workspace
-  home.activation.setupDirenv = config.lib.dag.entryAfter ["linkGeneration"] ''
-    mkdir -p "${workspaceDir}"
-    envrc="${workspaceDir}/.envrc"
-    if [ ! -f "$envrc" ] || ! grep -q "use flake ${kernixRoot}" "$envrc" 2>/dev/null; then
-      echo "use flake ${kernixRoot}" > "$envrc"
-    fi
-    ${pkgs.direnv}/bin/direnv allow "$envrc" 2>/dev/null || true
-  '';
 }
