@@ -14,7 +14,6 @@
 
   opencode = {
     vertexProject = "itpc-gcp-ai-eng-claude";
-    vertexRegion = "us-east5";
     cloudMlRegion = "global";
   };
 

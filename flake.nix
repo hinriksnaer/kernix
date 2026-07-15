@@ -7,6 +7,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixtorch.url = "github:hinriksnaer/nixtorch";
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
@@ -19,6 +23,7 @@
     nixpkgs,
     home-manager,
     nix-darwin,
+    llm-agents,
     nixtorch,
     ...
   } @ inputs: let

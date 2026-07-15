@@ -12,7 +12,13 @@
 #   3. Open https://localhost:47990 to set username/password
 #   4. On Steam Deck: install Moonlight, add host <desktop-ip>:47989
 #   5. Enter the PIN shown in Moonlight into Sunshine's web UI
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: let
+  inherit (config.kernix) username;
+in {
   services.sunshine = {
     enable = true;
     autoStart = false; # Managed by kernix-couch-session, not graphical-session.target
@@ -66,11 +72,11 @@
         }
         {
           name = "Steam Big Picture";
-          detached = ["sudo -u softmax setsid steam steam://open/bigpicture"];
+          detached = ["sudo -u ${username} setsid steam steam://open/bigpicture"];
           prep-cmd = [
             {
               do = "";
-              undo = "sudo -u softmax setsid steam steam://close/bigpicture";
+              undo = "sudo -u ${username} setsid steam steam://close/bigpicture";
             }
           ];
           image-path = "steam.png";
@@ -104,5 +110,5 @@
     sunshine-nvenc;
 
   # Virtual input devices (mouse/keyboard/gamepad emulation)
-  users.users.softmax.extraGroups = ["uinput"];
+  users.users.${username}.extraGroups = ["uinput"];
 }

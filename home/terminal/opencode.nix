@@ -11,7 +11,7 @@
   kernixPath = "${config.home.homeDirectory}/.local/share/kernix";
   ocDir = "${config.home.homeDirectory}/.config/opencode";
 in {
-  home.packages = [pkgs.opencode];
+  home.packages = [pkgs.inputs'.llm-agents.opencode];
 
   # Symlink per-theme opencode.json files into ~/.config/opencode/themes/
   # and create initial tui.json with the default theme.

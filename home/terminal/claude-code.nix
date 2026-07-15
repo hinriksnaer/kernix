@@ -3,5 +3,5 @@
 # Vertex AI auth is handled by vertex-auth.nix module.
 # Config stored in ~/.claude/
 {pkgs, ...}: {
-  home.packages = [pkgs.claude-code];
+  home.packages = [pkgs.inputs'.llm-agents.claude-code];
 }

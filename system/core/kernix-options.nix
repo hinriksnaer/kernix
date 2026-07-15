@@ -81,11 +81,6 @@ in {
         default = "";
         description = "GCP project ID for Vertex AI. Empty to disable.";
       };
-      vertexRegion = mkOption {
-        type = types.str;
-        default = "us-east5";
-        description = "GCP region for Vertex AI.";
-      };
       cloudMlRegion = mkOption {
         type = types.str;
         default = "global";
