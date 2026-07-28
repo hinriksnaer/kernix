@@ -21,6 +21,4 @@
       inputs;
   };
 
-  # Patches/overrides to upstream nixpkgs packages
-  electron = import ./electron.nix;
 }

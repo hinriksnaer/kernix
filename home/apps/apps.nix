@@ -7,9 +7,6 @@
     slack
     obsidian
 
-    # File manager
-    thunar
-
     # Containers
     podman-compose
 
