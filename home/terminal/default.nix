@@ -3,6 +3,7 @@
   imports = [
     ./git.nix
     ./tmux
+    ./herdr
     ./cli-tools.nix
     ./claude-code.nix
     ./gh.nix

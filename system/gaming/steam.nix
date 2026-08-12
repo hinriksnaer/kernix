@@ -82,4 +82,10 @@
   };
 
   programs.gamemode.enable = true;
+
+  # Valve/Proton recommended: raise vm.max_map_count for games with heavy
+  # memory-mapped allocations (shaders, textures, large worlds).
+  # NixOS default is 1048576; Proton requires 2147483642.
+  # https://github.com/ValveSoftware/Proton/wiki/Requirements
+  boot.kernel.sysctl."vm.max_map_count" = 2147483642;
 }
