@@ -1,3 +1,48 @@
+# Herdr configuration -- unified navigation grammar (consistent with tmux + Hyprland + neovim).
+#
+# Concept mapping (tmux → herdr):
+#   pane    → pane
+#   window  → tab
+#   session → workspace
+#
+#   Direction keys define the LEVEL:
+#     hjkl  = View   (panes)
+#     [/]   = Task   (tabs)
+#
+#   Modifiers define the ACTION (consistent across both levels):
+#     bare  = Navigate
+#     Shift = Resize     (view) / Move pane to tab (task)
+#
+#   Additional:
+#     arrows = Create    (spawn split in direction)
+#     1-9    = Task      (indexed jump)
+#
+# Where Mod = Super (Hyprland) or Alt (tmux/herdr).
+#
+# ┌─ View (hjkl) ──────────────────────────────────────────────────────┐
+# │  Alt + hjkl            navigate panes                              │
+# │  Alt + Shift + hjkl    resize panes                                │
+# │  Alt + arrows          create split in direction                   │
+# │  Alt + z               zoom pane (fullscreen)                      │
+# │  Alt + r               resize mode                                 │
+# └────────────────────────────────────────────────────────────────────┘
+# ┌─ Task ([/] + 1-9) ────────────────────────────────────────────────┐
+# │  Alt + [ / ]           prev/next tab                               │
+# │  Alt + 1-9             switch to tab N                             │
+# │  Alt + Shift + [ / ]   move tab position                          │
+# │  Alt + Enter           new tab                                     │
+# │  Alt + q               close pane (view)                           │
+# └────────────────────────────────────────────────────────────────────┘
+# ┌─ Context (workspace) ─────────────────────────────────────────────┐
+# │  Alt + f               workspace picker                            │
+# │  Alt + n               rename workspace                            │
+# │  Alt + Shift + n       new workspace                               │
+# └────────────────────────────────────────────────────────────────────┘
+# ┌─ Prefix (Alt+Space) ──────────────────────────────────────────────┐
+# │  Space                 sessionizer (fzf project picker popup)      │
+# │  alt+g                 lazygit popup                               │
+# └────────────────────────────────────────────────────────────────────┘
+
 onboarding = false
 
 [theme]
@@ -6,10 +51,76 @@ name = "terminal"
 [keys]
 prefix = "alt+space"
 
+# ── View level: pane (hjkl) ──
+
+# Navigate panes: Alt + hjkl
+focus_pane_left  = "alt+h"
+focus_pane_down  = "alt+j"
+focus_pane_up    = "alt+k"
+focus_pane_right = "alt+l"
+
+# Resize panes: Alt + Shift + hjkl
+resize_pane_left  = "alt+shift+h"
+resize_pane_down  = "alt+shift+j"
+resize_pane_up    = "alt+shift+k"
+resize_pane_right = "alt+shift+l"
+
+# Create split in direction: Alt + arrows
+split_horizontal = "alt+down"
+split_vertical   = "alt+right"
+
+# Zoom pane: Alt + z
+zoom = "alt+z"
+
+# Resize mode: Alt + r
+resize_mode = "alt+r"
+
+# Close pane: Alt + q
+close_pane = "alt+q"
+
+# ── Task level: tab ([/] + 1-9) ──
+
+# Navigate tabs: Alt + 1-9
+switch_tab = "alt+1..9"
+
+# Cycle tabs: Alt + [ / ]
+previous_tab = "alt+["
+next_tab     = "alt+]"
+
+# Move tab position: Alt + Shift + [ / ]
+move_tab_previous = "alt+shift+["
+move_tab_next     = "alt+shift+]"
+
+# New tab: Alt + Enter
+new_tab = "alt+enter"
+
+# ── Context: workspace (special) ──
+
+# Workspace picker: Alt + f
+workspace_picker = "alt+f"
+
+# Rename workspace: Alt + n
+rename_workspace = "alt+n"
+
+# New workspace: Alt + Shift + n
+new_workspace = "alt+shift+n"
+
+# ── Prefix commands (Alt+Space, then key) ──
+
+# Lazygit popup: prefix + alt+g
 [[keys.command]]
 key = "prefix+alt+g"
 type = "popup"
 command = "lazygit"
 description = "lazygit"
+width = "80%"
+height = "80%"
+
+# Sessionizer: prefix + Space
+[[keys.command]]
+key = "prefix+space"
+type = "popup"
+command = "kernix-sessionizer"
+description = "sessionizer (project picker)"
 width = "80%"
 height = "80%"
