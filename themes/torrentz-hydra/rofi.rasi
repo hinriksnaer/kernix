@@ -12,7 +12,7 @@
 
     background-color:    transparent;
     text-color:          @fg-col;
-    font:                "JetBrainsMono Nerd Font 12";
+    font:                "Maple Mono NF SemiBold 14";
 }
 
 window {
