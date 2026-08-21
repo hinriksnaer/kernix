@@ -33,4 +33,5 @@ in
 
     # Expose username to scripts/dotfiles at runtime
     home.sessionVariables.KERNIX_USER = username;
+    home.sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
   }

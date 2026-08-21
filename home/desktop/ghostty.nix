@@ -1,12 +1,12 @@
 # Ghostty terminal emulator.
-{...}: {
+{config, ...}: {
   kernix.theme.hooks = ["terminal"];
 
   programs.ghostty = {
     enable = true;
     enableZshIntegration = true;
     settings = {
-      font-family = "JetBrainsMono Nerd Font";
+      font-family = "Maple Mono NF";
       font-size = 16;
       font-style = "SemiBold";
       font-thicken = false;
@@ -18,7 +18,7 @@
       confirm-close-surface = false;
       cursor-style = "block";
       mouse-hide-while-typing = true;
-      config-file = "theme";
+      config-file = "${config.home.homeDirectory}/.config/ghostty/theme";
       keybind = [
         "ctrl+insert=copy_to_clipboard"
         "shift+insert=paste_from_clipboard"

@@ -4,9 +4,9 @@
 * {
   border: none;
   border-radius: 0;
-  font-family: "FiraMono Nerd Font", monospace;
-  font-size: 11px;
-  font-weight: bold;
+  font-family: "Maple Mono NF", monospace;
+  font-size: 14px;
+  font-weight: 600;
   min-height: 0;
 }
 
@@ -67,13 +67,13 @@ window#waybar {
 }
 
 #custom-kernix {
-  font-size: 14px;
+  font-size: 17px;
   padding: 0 10px;
   margin-left: 8px;
 }
 
 #clock {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 #battery.charging {
@@ -125,7 +125,7 @@ window#waybar {
 }
 
 #custom-expand-icon {
-  font-size: 12px;
+  font-size: 15px;
   padding: 0 8px;
   color: @foreground;
 }
@@ -159,21 +159,21 @@ tooltip label {
 /* Hardware icons */
 #custom-cpu-icon {
   color: #62a0ea;
-  font-size: 13px;
+  font-size: 16px;
   padding: 0 8px 0 10px;
   margin: 0;
 }
 
 #custom-gpu-icon {
   color: #57e389;
-  font-size: 13px;
+  font-size: 16px;
   padding: 0 8px 0 10px;
   margin: 0;
 }
 
 #custom-ram-icon {
   color: #f6d32d;
-  font-size: 13px;
+  font-size: 16px;
   padding: 0 8px 0 10px;
   margin: 0;
 }
@@ -182,7 +182,7 @@ tooltip label {
 #cpu,
 #custom-gpu-usage,
 #memory {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 /* Temperature colors - only warn when critical */
@@ -195,7 +195,7 @@ tooltip label {
 #custom-cpu-freq,
 #custom-gpu-vram,
 #custom-swap {
-  font-size: 10px;
+  font-size: 12px;
   opacity: 0.9;
 }
 

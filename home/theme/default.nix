@@ -36,11 +36,15 @@
     builtins.concatStringsSep "\n" lines;
 
   # Build the stub activation script for a hook that has a target.
+  # Hook targets use ~ which must be expanded to $HOME at runtime.
   stubScript = def: let
     mkdirs = builtins.concatStringsSep "\n" (map (d: ''mkdir -p "${d}"'') (def.stubDirs or []));
   in ''
     ${mkdirs}
-    [ -e "${def.target}" ] || touch "${def.target}"
+    _stub_target="${def.target}"
+    _stub_target="''${_stub_target/#\~/$HOME}"
+    mkdir -p "$(dirname "$_stub_target")"
+    [ -e "$_stub_target" ] || touch "$_stub_target"
   '';
 
   # All enabled hook definitions (loaded from ./hooks/).

@@ -22,7 +22,7 @@
     enable = true;
     casks = [
       "ghostty"
-      "font-jetbrains-mono-nerd-font"
+      "font-maple-mono-nf"
     ];
     onActivation.cleanup = "zap";
   };

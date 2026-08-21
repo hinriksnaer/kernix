@@ -1,6 +1,6 @@
 # btop -- system monitor.
 # Theme switching creates a symlink at ~/.config/btop/themes/active.theme.
-{config, ...}: {
+{...}: {
   kernix.theme.hooks = ["btop"];
 
   programs.btop = {
@@ -40,9 +40,4 @@
       save_config_on_exit = false;
     };
   };
-
-  # Ensure themes directory exists for the theme engine
-  home.activation.btopThemesDir = config.lib.dag.entryAfter ["linkGeneration"] ''
-    mkdir -p "$HOME/.config/btop/themes"
-  '';
 }

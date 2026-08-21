@@ -12,7 +12,7 @@
       padding = 10;
       border-size = 2;
       border-radius = 8;
-      font = "JetBrainsMono Nerd Font 11";
+      font = "Maple Mono NF 11";
 
       anchor = "top-right";
       outer-margin = 20;

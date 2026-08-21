@@ -37,7 +37,7 @@
           outer_color = "$outer_color";
           outline_thickness = 3;
 
-          font_family = "JetBrainsMono Nerd Font";
+          font_family = "Maple Mono NF";
           font_color = "$font_color";
 
           placeholder_text = "Enter Password";
