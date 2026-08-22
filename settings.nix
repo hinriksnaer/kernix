@@ -27,6 +27,7 @@
       username = "softmax";
       gpu = "nvidia";
       layout = "master";
+      tvOutput = "HDMI-A-2";
       monitors = [
         {
           name = "HDMI-A-1";

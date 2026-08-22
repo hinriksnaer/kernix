@@ -16,6 +16,7 @@
   monitors = config.monitors;
   primaryMonitor = lib.findFirst (m: m.primary) (builtins.head monitors) monitors;
   layout = settings.hosts.${hostname}.layout or "dwindle";
+  tvOutput = settings.hosts.${hostname}.tvOutput or "";
   isDesktop = hostname == "desktop";
 
   # ── Sub-component defaults ──
@@ -75,7 +76,7 @@
 
     -- Disable TV output (used exclusively by gamescope on TTY3)
     -- Without this, Hyprland auto-configures any detected monitor.
-    ${lib.optionalString isDesktop ''hl.monitor({ output = "HDMI-A-2", disabled = true })''}
+    ${lib.optionalString (tvOutput != "") ''hl.monitor({ output = "${tvOutput}", disabled = true })''}
 
     -- Cursor default monitor
     ${lib.optionalString (primaryMonitor.name != "") ''hl.config({ cursor = { default_monitor = "${primaryMonitor.name}" } })''}

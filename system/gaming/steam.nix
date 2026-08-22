@@ -1,7 +1,15 @@
 # Steam -- system-level only.
 # User tools (mangohud, protonup-qt) are managed
 # by Home Manager (home/gaming/tools.nix).
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: let
+  # TV output connector for gamescope couch mode.
+  # Read from the desktop host config (gaming is only imported by desktop).
+  tvOutput = config.kernix.hosts.desktop.tvOutput;
+in {
   programs.steam = {
     enable = true;
     remotePlay.openFirewall = true;
@@ -19,7 +27,7 @@
         "--backend"
         "drm"
         "-O"
-        "HDMI-A-2"
+        tvOutput
         "-W"
         "3840"
         "-H"

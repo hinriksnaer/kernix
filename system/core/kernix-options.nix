@@ -37,6 +37,11 @@ with lib; let
         default = {};
         description = "Configuration passed directly to nixtorch.lib.mkDevShell.";
       };
+      tvOutput = mkOption {
+        type = types.str;
+        default = "";
+        description = "DRM connector name for the TV output (e.g. HDMI-A-2). Used by gamescope and Hyprland. Empty if no TV.";
+      };
       layout = mkOption {
         type = types.enum ["dwindle" "master"];
         default = "dwindle";
