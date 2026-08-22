@@ -18,6 +18,22 @@
   layout = settings.hosts.${hostname}.layout or "dwindle";
   tvOutput = settings.hosts.${hostname}.tvOutput or "";
   isDesktop = hostname == "desktop";
+  terminal = settings.terminal;
+
+  # Terminal metadata -- maps terminal name to Wayland app-id and exec flag.
+  terminalMeta = {
+    ghostty = {
+      class = "com.mitchellh.ghostty";
+      exec = "-e";
+    };
+  };
+  termMeta =
+    terminalMeta.${
+      terminal
+    } or {
+      class = terminal;
+      exec = "-e";
+    };
 
   # ── Sub-component defaults ──
   # These are the commands each sub-component provides.
@@ -52,9 +68,9 @@
     -- Do not edit directly -- modify the source .lua files in the kernix repo.
 
     -- Nix-injected globals
-    TERMINAL = "ghostty"
-    TERMINAL_CLASS = "com.mitchellh.ghostty"
-    TERMINAL_EXEC = "-e"
+    TERMINAL = "${terminal}"
+    TERMINAL_CLASS = "${termMeta.class}"
+    TERMINAL_EXEC = "${termMeta.exec}"
     IS_DESKTOP = ${lib.boolToString isDesktop}
     LAYOUT = "${layout}"
     PRIMARY_MONITOR = "${primaryMonitor.name}"

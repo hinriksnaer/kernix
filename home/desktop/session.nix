@@ -4,6 +4,7 @@
 {
   pkgs,
   config,
+  settings,
   ...
 }: {
   home.packages = with pkgs; [
@@ -37,6 +38,6 @@
 
   home.sessionVariables = {
     GTK_THEME = "Adwaita:dark";
-    TERMINAL = "ghostty";
+    TERMINAL = settings.terminal;
   };
 }

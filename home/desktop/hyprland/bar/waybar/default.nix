@@ -3,9 +3,11 @@
 {
   config,
   lib,
+  settings,
   ...
 }: let
   primaryMonitor = lib.findFirst (m: m.primary) (builtins.head config.monitors) config.monitors;
+  terminal = settings.terminal;
 in {
   kernix.theme.hooks = ["waybar"];
 
@@ -63,7 +65,7 @@ in {
       "custom/kernix" = {
         format = "";
         on-click = "rofi -show drun";
-        on-click-right = "ghostty";
+        on-click-right = terminal;
         tooltip-format = "Kernix Menu\n\nSuper + Space";
       };
 
@@ -154,7 +156,7 @@ in {
         interval = 2;
         format = "{usage}%";
         tooltip-format = "CPU Usage: {usage}%\nLoad: {load}";
-        on-click = "ghostty -e btop";
+        on-click = "${terminal} -e btop";
       };
       temperature = {
         interval = 2;
@@ -164,7 +166,7 @@ in {
         format = "{temperatureC}°";
         format-critical = " {temperatureC}°";
         tooltip-format = "CPU Temp: {temperatureC}°C";
-        on-click = "ghostty -e btop";
+        on-click = "${terminal} -e btop";
       };
 
       # GPU hardware group
@@ -181,14 +183,14 @@ in {
         interval = 2;
         format = "{}%";
         tooltip-format = "GPU Usage";
-        on-click = "ghostty -e btop";
+        on-click = "${terminal} -e btop";
       };
       "custom/gpu-temp" = {
         exec = "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits | head -n 1";
         interval = 2;
         format = "{}°";
         tooltip-format = "GPU Temperature";
-        on-click = "ghostty -e btop";
+        on-click = "${terminal} -e btop";
       };
 
       # RAM hardware group
@@ -204,7 +206,7 @@ in {
         interval = 2;
         format = "{percentage}%";
         tooltip-format = "RAM: {used:0.1f}G / {total:0.1f}G ({percentage}%)";
-        on-click = "ghostty -e btop";
+        on-click = "${terminal} -e btop";
       };
 
       "custom/power" = {
