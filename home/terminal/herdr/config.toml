@@ -35,8 +35,8 @@
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Context (workspace) ─────────────────────────────────────────────┐
 # │  Alt + f               workspace picker                            │
-# │  Alt + n               rename workspace                            │
-# │  Alt + Shift + n       new workspace                               │
+# │  Alt + n               rename pane                                 │
+# │  Alt + Shift + n       rename workspace                            │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Prefix (Alt+Space) ──────────────────────────────────────────────┐
 # │  Space                 sessionizer (fzf project picker popup)      │
@@ -99,11 +99,11 @@ new_tab = "alt+enter"
 # Workspace picker: Alt + f
 workspace_picker = "alt+f"
 
-# Rename workspace: Alt + n
-rename_workspace = "alt+n"
+# Rename pane: Alt + n
+rename_pane = "alt+n"
 
-# New workspace: Alt + Shift + n
-new_workspace = "alt+shift+n"
+# Rename workspace: Alt + Shift + n
+rename_workspace = "alt+shift+n"
 
 # ── Prefix commands (Alt+Space, then key) ──
 
