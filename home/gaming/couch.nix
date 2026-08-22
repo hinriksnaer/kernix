@@ -24,6 +24,15 @@
   ...
 }: let
   tvOutput = settings.hosts.${hostname}.tvOutput or "";
+  gsDefaults = import ../../system/gaming/gamescope-defaults.nix;
+
+  # Convert shared gamescope env attrset to shell VAR=val prefix lines.
+  gsEnvStr = lib.concatStringsSep " \\\n          " (
+    lib.mapAttrsToList (k: v: "${k}=${v}") gsDefaults.env
+  );
+
+  # Convert shared gamescope args list to shell arguments.
+  gsArgsStr = lib.concatStringsSep " " gsDefaults.args;
 in
   lib.mkIf (hostname == "desktop") {
     home.packages = with pkgs; [
@@ -136,35 +145,14 @@ in
           (sleep 3 && systemctl --user start sunshine.service) &
 
           # Gamescope session with mode-selected resolution.
-          # Env vars match steam.nix gamescopeSession.env exactly.
-          DXVK_ASYNC=1 \
-          DXVK_HDR=1 \
-          ENABLE_GAMESCOPE_WSI=1 \
-          ENABLE_HDR_WSI=1 \
-          GAMESCOPE_DISABLE_ASYNC_FLIPS=1 \
-          GAMESCOPE_NV12_COLORSPACE=k_EStreamColorspace_BT601 \
-          QT_QPA_PLATFORM=xcb \
-          SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS=0 \
-          VKD3D_SWAPCHAIN_LATENCY_FRAMES=3 \
-          __GL_CONSTANT_FRAME_RATE_HINT=3 \
-          mesa_glthread=true \
-          vk_xwayland_wait_ready=false \
+          # Env vars and common args from gamescope-defaults.nix (shared with steam.nix).
+          ${gsEnvStr} \
           gamescope \
               --steam \
-              --backend drm \
               -O ${tvOutput} \
               -W "$GS_WIDTH" -H "$GS_HEIGHT" \
               -r 60 \
-              --force-grab-cursor \
-              --xwayland-count 2 \
-              --hide-cursor-delay 3000 \
-              --fade-out-duration 200 \
-              --hdr-enabled \
-              --hdr-itm-enabled \
-              --hdr-sdr-content-nits 400 \
-              --hdr-itm-sdr-nits 400 \
-              --hdr-itm-target-nits 1000 \
-              --mangoapp \
+              ${gsArgsStr} \
               -- steam -gamepadui -pipewire-dmabuf \
           || true
 
