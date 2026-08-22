@@ -13,6 +13,8 @@
   settings,
   ...
 }: let
+  themeLib = import ../../theme/lib.nix {inherit pkgs config;};
+  inherit (themeLib) kernixPath;
   monitors = config.monitors;
   primaryMonitor = lib.findFirst (m: m.primary) (builtins.head monitors) monitors;
   layout = settings.hosts.${hostname}.layout or "dwindle";
@@ -84,7 +86,7 @@
     NOTIFICATIONS_START = "${notifications.start}"
 
     -- Environment variables
-    hl.env("KERNIX_PATH", os.getenv("HOME") .. "/.local/share/kernix")
+    hl.env("KERNIX_PATH", "${kernixPath}")
     ${lib.optionalString isDesktop ''hl.env("SSH_AUTH_SOCK", os.getenv("HOME") .. "/.bitwarden-ssh-agent.sock")''}
 
     -- Monitors (from config.monitors)
@@ -139,7 +141,7 @@ in {
       name = "kernix-wallpaper-set";
       runtimeInputs = [swaybg coreutils findutils procps];
       text = ''
-        export KERNIX_PATH="''${KERNIX_PATH:-$HOME/.local/share/kernix}"
+        export KERNIX_PATH="${kernixPath}"
         ${builtins.readFile ../../theme/scripts/kernix-wallpaper-set.sh}
       '';
     })
@@ -147,7 +149,7 @@ in {
       name = "kernix-wallpaper-next";
       runtimeInputs = [swaybg coreutils findutils procps libnotify];
       text = ''
-        export KERNIX_PATH="''${KERNIX_PATH:-$HOME/.local/share/kernix}"
+        export KERNIX_PATH="${kernixPath}"
         ${builtins.readFile ../../theme/scripts/kernix-wallpaper-next.sh}
       '';
     })

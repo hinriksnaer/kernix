@@ -8,7 +8,8 @@
   ...
 }: let
   defaultTheme = settings.defaultTheme;
-  kernixPath = "${config.home.homeDirectory}/.local/share/kernix";
+  themeLib = import ../theme/lib.nix {inherit pkgs config;};
+  inherit (themeLib) kernixPath;
   ocDir = "${config.home.homeDirectory}/.config/opencode";
 in {
   kernix.theme.hooks = ["opencode"];

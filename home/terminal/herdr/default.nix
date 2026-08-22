@@ -4,7 +4,10 @@
   pkgs,
   config,
   ...
-}: {
+}: let
+  themeLib = import ../../theme/lib.nix {inherit pkgs config;};
+  inherit (themeLib) kernixPath;
+in {
   kernix.theme.hooks = ["herdr"];
 
   home.packages = [
@@ -15,7 +18,7 @@
       name = "kernix-theme-apply-herdr";
       runtimeInputs = with pkgs; [coreutils gnused];
       text = ''
-        export KERNIX_PATH="${config.home.homeDirectory}/.local/share/kernix"
+        export KERNIX_PATH="${kernixPath}"
         ${builtins.readFile ../../theme/scripts/kernix-theme-apply-herdr.sh}
       '';
     })

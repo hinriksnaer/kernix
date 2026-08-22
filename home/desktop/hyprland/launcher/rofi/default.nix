@@ -5,7 +5,10 @@
   pkgs,
   config,
   ...
-}: {
+}: let
+  themeLib = import ../../../../theme/lib.nix {inherit pkgs config;};
+  inherit (themeLib) kernixPath;
+in {
   kernix.theme.hooks = ["rofi"];
 
   programs.rofi = {
@@ -49,7 +52,7 @@
       name = "kernix-rofi-theme-select";
       runtimeInputs = [rofi coreutils gnused libnotify];
       text = ''
-        export KERNIX_PATH="''${KERNIX_PATH:-$HOME/.local/share/kernix}"
+        export KERNIX_PATH="${kernixPath}"
         ${builtins.readFile ./scripts/kernix-rofi-theme-select.sh}
       '';
     })
@@ -57,7 +60,7 @@
       name = "kernix-rofi-wallpaper-select";
       runtimeInputs = [rofi swaybg findutils coreutils];
       text = ''
-        export KERNIX_PATH="''${KERNIX_PATH:-$HOME/.local/share/kernix}"
+        export KERNIX_PATH="${kernixPath}"
         ${builtins.readFile ./scripts/kernix-rofi-wallpaper-select.sh}
       '';
     })
