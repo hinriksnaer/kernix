@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
@@ -23,7 +27,7 @@
         lcdfilter = "default";
       };
       defaultFonts = {
-        monospace = ["Maple Mono NF"];
+        monospace = [config.kernix.font.monospace];
         sansSerif = ["Noto Sans"];
         serif = ["Noto Serif"];
         emoji = ["Noto Color Emoji"];

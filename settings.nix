@@ -7,6 +7,10 @@
   terminal = "ghostty"; # ghostty | kitty
   defaultTheme = "ayu-dark";
 
+  font = {
+    monospace = "Maple Mono NF";
+  };
+
   git = {
     name = "hinriksnaer";
     email = "hgudmund@redhat.com";

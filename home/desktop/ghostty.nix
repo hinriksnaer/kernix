@@ -1,12 +1,16 @@
 # Ghostty terminal emulator.
-{config, ...}: {
+{
+  config,
+  settings,
+  ...
+}: {
   kernix.theme.hooks = ["terminal"];
 
   programs.ghostty = {
     enable = true;
     enableZshIntegration = true;
     settings = {
-      font-family = "Maple Mono NF";
+      font-family = settings.font.monospace;
       font-size = 16;
       font-style = "SemiBold";
       font-thicken = false;

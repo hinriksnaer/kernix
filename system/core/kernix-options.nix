@@ -77,6 +77,14 @@ in {
       description = "Default theme (from themes/). Consumed by Home Manager.";
     };
 
+    font = {
+      monospace = mkOption {
+        type = types.str;
+        default = "Maple Mono NF";
+        description = "Monospace font family. Used by terminal, lock screen, notifications, and system fontconfig.";
+      };
+    };
+
     git = {
       name = mkOption {
         type = types.str;
