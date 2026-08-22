@@ -43,12 +43,7 @@
   # Terminal emulator terminfo for SSH sessions (Linux only --
   # macOS terminal emulators ship their own terminfo).
   home.file.".terminfo" = lib.mkIf pkgs.stdenv.isLinux {
-    source = let
-      pkg =
-        if settings.terminal == "ghostty"
-        then pkgs.ghostty.terminfo
-        else pkgs.kitty.terminfo;
-    in "${pkg}/share/terminfo";
+    source = "${pkgs.ghostty.terminfo}/share/terminfo";
   };
 
   # Man pager via bat

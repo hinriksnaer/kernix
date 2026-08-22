@@ -9,11 +9,7 @@
 }: let
   hostCfg = settings.hosts.${hostname};
   hasNixtorch = hostCfg ? nixtorch && hostCfg.nixtorch != {};
-  username = hostCfg.username;
-  homeDir =
-    if username == "root"
-    then "/root"
-    else "/home/${username}";
+  homeDir = config.home.homeDirectory;
   kernixRoot = hostCfg.kernixRoot or "${homeDir}/kernix";
   workspaceDir = hostCfg.nixtorch.workspace or "${homeDir}/workspace";
 in {

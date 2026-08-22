@@ -22,15 +22,10 @@ with lib; let
         default = monitorType.default;
         description = "Monitor configurations for this host.";
       };
-      cudaVisibleDevices = mkOption {
+      homePrefix = mkOption {
         type = types.str;
-        default = "";
-        description = "CUDA_VISIBLE_DEVICES for remote dev hosts. Empty to use all.";
-      };
-      projects = mkOption {
-        type = types.attrsOf types.attrs;
-        default = {};
-        description = "Dev project configurations for this host.";
+        default = "/home";
+        description = "Home directory prefix (e.g. /home on Linux, /Users on macOS).";
       };
       nixtorch = mkOption {
         type = types.attrs;
@@ -71,7 +66,7 @@ in {
 
     # ── Global settings (shared across all hosts) ──
     terminal = mkOption {
-      type = types.enum ["ghostty" "kitty"];
+      type = types.enum ["ghostty"];
       default = "ghostty";
       description = "Terminal emulator. Configures desktop keybinds, theme hooks, and terminfo.";
     };
