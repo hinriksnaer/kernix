@@ -16,7 +16,7 @@
     ./vertex-auth.nix
     ./btop.nix
     ./lazygit.nix
-    ./yazi.nix
+    ./yazi
     ./ibmcloud.nix
     ./bitwarden.nix
   ];
