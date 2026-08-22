@@ -38,7 +38,7 @@ in {
   '';
 
   # Auto-activate devshell when cd-ing into workspace/repos
-  home.activation.setupDirenv = config.lib.dag.entryAfter ["linkGeneration"] ''
+  home.activation.setupWorkspaceDirenv = config.lib.dag.entryAfter ["linkGeneration"] ''
     mkdir -p "${homeDir}/workspace"
     envrc="${homeDir}/workspace/.envrc"
     if [ ! -f "$envrc" ] || ! grep -q "use flake ${kernixRoot}" "$envrc" 2>/dev/null; then

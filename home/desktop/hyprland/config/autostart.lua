@@ -1,5 +1,5 @@
 -- Autostart -- apps launched on compositor startup.
--- BAR_START, NOTIFICATIONS_START, IS_DESKTOP are injected by the Nix entry point.
+-- BAR_START, NOTIFICATIONS_START, HAS_TV are injected by the Nix entry point.
 
 hl.on("hyprland.start", function()
     hl.exec_cmd("dbus-update-activation-environment --systemd --all")
@@ -14,7 +14,7 @@ hl.on("hyprland.start", function()
         hl.exec_cmd("kernix-theme-refresh 2>/dev/null || true")
     end, { timeout = 2000, type = "oneshot" })
 
-    if IS_DESKTOP then
+    if HAS_TV then
         hl.exec_cmd("bitwarden")
     end
 end)

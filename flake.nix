@@ -96,7 +96,7 @@
     mkDarwinHost = hostname:
       nix-darwin.lib.darwinSystem {
         system = darwinSystem;
-        specialArgs = {inherit settings;};
+        specialArgs = {inherit settings hostname;};
         modules =
           commonModules
           ++ [

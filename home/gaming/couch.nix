@@ -34,7 +34,7 @@
   # Convert shared gamescope args list to shell arguments.
   gsArgsStr = lib.concatStringsSep " " gsDefaults.args;
 in
-  lib.mkIf (hostname == "desktop") {
+  lib.mkIf (tvOutput != "") {
     home.packages = with pkgs; [
       # ── Trigger: Couch mode ──
       # Usage: kernix-couch [tv|deck]   (default: tv)

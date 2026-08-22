@@ -19,7 +19,8 @@
   primaryMonitor = lib.findFirst (m: m.primary) (builtins.head monitors) monitors;
   layout = settings.hosts.${hostname}.layout or "dwindle";
   tvOutput = settings.hosts.${hostname}.tvOutput or "";
-  isDesktop = hostname == "desktop";
+  hdr = settings.hosts.${hostname}.hdr or false;
+  hasTv = tvOutput != "";
   terminal = settings.terminal;
 
   # Terminal metadata -- maps terminal name to Wayland app-id and exec flag.
@@ -58,7 +59,7 @@
   # content muddy. Games can still request HDR per-window via DXVK_HDR=1.
   monitorLines = builtins.concatStringsSep "\n" (map (
       m: let
-        extraFields = lib.optionalString (isDesktop && m.primary) '', bitdepth = 10, cm = "wide"'';
+        extraFields = lib.optionalString (hdr && m.primary) '', bitdepth = 10, cm = "wide"'';
       in ''hl.monitor({ output = "${m.name}", mode = "${m.resolution}", position = "${m.position}", scale = ${toString m.scale}${extraFields} })''
     )
     monitors);
@@ -73,7 +74,8 @@
     TERMINAL = "${terminal}"
     TERMINAL_CLASS = "${termMeta.class}"
     TERMINAL_EXEC = "${termMeta.exec}"
-    IS_DESKTOP = ${lib.boolToString isDesktop}
+    HAS_TV = ${lib.boolToString hasTv}
+    TV_OUTPUT = "${tvOutput}"
     LAYOUT = "${layout}"
     PRIMARY_MONITOR = "${primaryMonitor.name}"
     LAUNCHER_RUN = "${launcher.run}"
@@ -87,7 +89,7 @@
 
     -- Environment variables
     hl.env("KERNIX_PATH", "${kernixPath}")
-    ${lib.optionalString isDesktop ''hl.env("SSH_AUTH_SOCK", os.getenv("HOME") .. "/.bitwarden-ssh-agent.sock")''}
+    ${lib.optionalString hasTv ''hl.env("SSH_AUTH_SOCK", os.getenv("HOME") .. "/.bitwarden-ssh-agent.sock")''}
 
     -- Monitors (from config.monitors)
     ${monitorLines}
@@ -168,7 +170,7 @@ in {
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
       _JAVA_AWT_WM_NONREPARENTING = "1";
     }
-    // lib.optionalAttrs isDesktop {
+    // lib.optionalAttrs hdr {
       # HDR: tell DXVK/VKD3D and Vulkan WSI to use HDR output.
       # Games need these to output HDR to the compositor.
       DXVK_HDR = "1";

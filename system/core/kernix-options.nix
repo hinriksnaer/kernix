@@ -37,6 +37,11 @@ with lib; let
         default = "";
         description = "DRM connector name for the TV output (e.g. HDMI-A-2). Used by gamescope and Hyprland. Empty if no TV.";
       };
+      hdr = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Enable HDR/wide-gamut output. Sets 10-bit bitdepth on primary monitor and DXVK_HDR env vars.";
+      };
       layout = mkOption {
         type = types.enum ["dwindle" "master"];
         default = "dwindle";

@@ -103,24 +103,24 @@ hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("volume-control mute"), { repeat
 hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("brightness-control up"),   { repeating = true })
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightness-control down"), { repeating = true })
 
--- TV toggle (HDMI-A-2): enable/disable the TV as a second monitor.
+-- TV toggle: enable/disable the TV as a second monitor.
 -- When enabled: 3840x2160@60, 10-bit HDR, positioned to the left of the main display.
 -- Uses hl.get_monitors() to check if TV is currently active (disabled monitors
 -- are excluded from the list, so absent = disabled).
-if IS_DESKTOP then
+if HAS_TV then
     hl.bind(mainMod .. " + D", function()
         local monitors = hl.get_monitors()
         local tv_on = false
         for _, m in ipairs(monitors) do
-            if m.name == "HDMI-A-2" then
+            if m.name == TV_OUTPUT then
                 tv_on = true
                 break
             end
         end
         if tv_on then
-            hl.monitor({ output = "HDMI-A-2", disabled = true })
+            hl.monitor({ output = TV_OUTPUT, disabled = true })
         else
-            hl.monitor({ output = "HDMI-A-2", disabled = false, mode = "3840x2160@60", position = "auto-left", bitdepth = 10, cm = "hdr" })
+            hl.monitor({ output = TV_OUTPUT, disabled = false, mode = "3840x2160@60", position = "auto-left", bitdepth = 10, cm = "hdr" })
         end
     end)
 end

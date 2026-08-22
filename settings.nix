@@ -28,6 +28,7 @@
       gpu = "nvidia";
       layout = "master";
       tvOutput = "HDMI-A-2";
+      hdr = true;
       monitors = [
         {
           name = "HDMI-A-1";
