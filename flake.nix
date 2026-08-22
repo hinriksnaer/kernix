@@ -55,8 +55,13 @@
     # ── Shared modules ──
 
     commonModules = [
-      {kernix = settings;}
       {nixpkgs.overlays = builtins.attrValues self.overlays;}
+    ];
+
+    # NixOS-only: wire settings into the kernix option namespace
+    # (declared by system/core/kernix-options.nix, which Darwin doesn't import).
+    nixosModules = [
+      {kernix = settings;}
     ];
 
     # Home Manager integration (works for both NixOS and Darwin).
@@ -76,6 +81,7 @@
         specialArgs = {inherit inputs;};
         modules =
           commonModules
+          ++ nixosModules
           ++ [
             ./hosts/${hostname}/system.nix
             (mkHmModule home-manager.nixosModules.home-manager hostname)
