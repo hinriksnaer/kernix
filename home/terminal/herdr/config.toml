@@ -16,7 +16,8 @@
 #
 #   Additional:
 #     arrows = Create    (spawn split in direction)
-#     1-9    = Task      (indexed jump)
+#     1-9    = Context   (indexed workspace jump)
+#     Shift+1-9 = Agent  (indexed agent focus)
 #
 # Where Mod = Super (Hyprland) or Alt (tmux/herdr).
 #
@@ -25,19 +26,21 @@
 # │  Alt + Shift + hjkl    resize panes                                │
 # │  Alt + Ctrl + hjkl     swap panes                                  │
 # │  Alt + arrows          create split in direction (all 4)           │
+# │  Alt + Shift + ← / →   move pane to prev/next tab                 │
 # │  Alt + z               zoom pane (fullscreen)                      │
 # │  Alt + q               close pane                                  │
 # │  Alt + Ctrl + Enter    break pane to new tab                       │
 # │  Alt+Ctrl+Shift+Enter  break pane to new workspace                 │
 # └────────────────────────────────────────────────────────────────────┘
-# ┌─ Task ([/] + 1-9) ────────────────────────────────────────────────┐
+# ┌─ Task ([/]) ───────────────────────────────────────────────────────┐
 # │  Alt + [ / ]           prev/next tab                               │
-# │  Alt + 1-9             switch to tab N                             │
 # │  Alt + Shift + [ / ]   move tab position                          │
 # │  Alt + Enter           new tab                                     │
 # │  Alt + n               rename tab                                  │
 # └────────────────────────────────────────────────────────────────────┘
-# ┌─ Context (workspace) ─────────────────────────────────────────────┐
+# ┌─ Context (workspace + agents) ───────────────────────────────────┐
+# │  Alt + 1-9             switch to workspace N                       │
+# │  Alt + Shift + 1-9     focus agent N                               │
 # │  Alt + f               workspace picker                            │
 # │  Alt + s               session navigator (goto)                    │
 # │  Alt + Shift + n       rename workspace                            │
@@ -91,10 +94,7 @@ swap_pane_right = "alt+ctrl+l"
 # Close pane: Alt + q
 close_pane = "alt+q"
 
-# ── Task level: tab ([/] + 1-9) ──
-
-# Navigate tabs: Alt + 1-9
-switch_tab = "alt+1..9"
+# ── Task level: tab ([/]) ──
 
 # Cycle tabs: Alt + [ / ]
 previous_tab = "alt+["
@@ -108,6 +108,12 @@ move_tab_next     = "alt+shift+]"
 new_tab = "alt+enter"
 
 # ── Context: workspace (special) ──
+
+# Switch workspace: Alt + 1-9
+switch_workspace = "alt+1..9"
+
+# Focus agent: Alt + Shift + 1-9
+focus_agent = "alt+shift+1..9"
 
 # Workspace picker: Alt + f
 workspace_picker = "alt+f"
@@ -144,6 +150,20 @@ command = "herdr pane split $HERDR_ACTIVE_PANE_ID --direction down && sleep 0.05
 description = "split up"
 
 # ── Custom commands: break/move pane (tmux join-pane / break-pane) ──
+
+# Move pane to previous tab: Alt + Shift + { (Alt+Shift+[)
+[[keys.command]]
+key = "alt+shift+left"
+type = "shell"
+command = "TAB=$(herdr tab list --workspace $HERDR_ACTIVE_WORKSPACE_ID 2>/dev/null | jq -r '[.result.tabs[] | select(.workspace_id == env.HERDR_ACTIVE_WORKSPACE_ID)] | sort_by(.number) as $tabs | ($tabs | map(select(.tab_id == env.HERDR_ACTIVE_TAB_ID)) | .[0].number) as $n | ($tabs | map(select(.number < $n)) | last.tab_id) // empty') && [ -n \"$TAB\" ] && herdr pane move $HERDR_ACTIVE_PANE_ID --tab $TAB --split right --focus"
+description = "move pane to previous tab"
+
+# Move pane to next tab: Alt + Shift + } (Alt+Shift+])
+[[keys.command]]
+key = "alt+shift+right"
+type = "shell"
+command = "TAB=$(herdr tab list --workspace $HERDR_ACTIVE_WORKSPACE_ID 2>/dev/null | jq -r '[.result.tabs[] | select(.workspace_id == env.HERDR_ACTIVE_WORKSPACE_ID)] | sort_by(.number) as $tabs | ($tabs | map(select(.tab_id == env.HERDR_ACTIVE_TAB_ID)) | .[0].number) as $n | ($tabs | map(select(.number > $n)) | first.tab_id) // empty') && [ -n \"$TAB\" ] && herdr pane move $HERDR_ACTIVE_PANE_ID --tab $TAB --split right --focus"
+description = "move pane to next tab"
 
 # Break pane to new tab: Alt + Ctrl + Enter
 [[keys.command]]
