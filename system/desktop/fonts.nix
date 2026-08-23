@@ -22,7 +22,7 @@ lib.mkIf config.kernix.desktop.enable {
       antialias = true;
       hinting = {
         enable = true;
-        style = "slight";
+        style = "full";
       };
       subpixel = {
         rgba = "rgb";
