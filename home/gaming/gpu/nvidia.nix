@@ -3,11 +3,10 @@
 # system/hardware/gpu/nvidia.nix.
 {
   lib,
-  settings,
-  hostname,
+  host,
   ...
 }: let
-  hasNvidia = (settings.hosts.${hostname}.gpu or "none") == "nvidia";
+  hasNvidia = host.gpu == "nvidia";
 in {
   home.sessionVariables = lib.optionalAttrs hasNvidia {
     __GL_GSYNC_ALLOWED = "1";

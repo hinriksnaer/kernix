@@ -1,7 +1,13 @@
 # Hardware user tools -- brightness, bluetooth, sensors.
 # System-level parts (user groups, hardware.bluetooth, services.blueman)
 # stay in their respective NixOS modules.
-{pkgs, ...}: {
+{
+  pkgs,
+  host,
+  lib,
+  ...
+}:
+lib.mkIf host.desktop.enable {
   home.packages = with pkgs; [
     bluetui
     brightnessctl

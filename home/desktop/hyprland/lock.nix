@@ -1,6 +1,11 @@
 # Hyprlock screen locker.
 # Theme colors loaded at runtime via source (swapped by kernix-theme-set).
-{settings, ...}: {
+{
+  host,
+  lib,
+  ...
+}:
+lib.mkIf host.desktop.enable {
   kernix.theme.hooks = ["hyprlock"];
 
   programs.hyprlock = {
@@ -37,7 +42,7 @@
           outer_color = "$outer_color";
           outline_thickness = 3;
 
-          font_family = settings.font.monospace;
+          font_family = host.font.monospace;
           font_color = "$font_color";
 
           placeholder_text = "Enter Password";

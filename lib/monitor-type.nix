@@ -1,4 +1,4 @@
-# Monitor submodule type -- shared between system/core/kernix-options.nix
+# Monitor submodule type -- shared between lib/kernix-options.nix
 # and home/desktop/monitors.nix to keep the types in sync.
 {lib}:
 with lib; {

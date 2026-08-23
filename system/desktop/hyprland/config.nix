@@ -1,7 +1,13 @@
 # Hyprland -- system-level only.
 # User configuration (keybinds, appearance, env vars, packages) is managed
-# by Home Manager (home/desktop/hyprland.nix).
-{pkgs, ...}: {
+# by Home Manager (home/desktop/hyprland/).
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+lib.mkIf config.kernix.desktop.enable {
   programs.hyprland = {
     enable = true;
     withUWSM = true;

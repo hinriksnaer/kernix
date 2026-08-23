@@ -1,7 +1,7 @@
 # Interactive theme selector using rofi dmenu
 # Usage: kernix-rofi-theme-select
 
-themes_dir="$HOME/.local/share/kernix/themes"
+themes_dir="${KERNIX_PATH:-$HOME/.local/share/kernix}/themes"
 
 if [[ ! -d "$themes_dir" ]]; then
     notify-send "Theme Selector" "Themes directory not found" -t 3000

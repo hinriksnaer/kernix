@@ -1,8 +1,10 @@
 {
   pkgs,
   config,
+  lib,
   ...
-}: {
+}:
+lib.mkIf config.kernix.desktop.enable {
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [

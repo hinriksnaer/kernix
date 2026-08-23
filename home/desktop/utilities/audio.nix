@@ -2,7 +2,13 @@
 # System-level parts (PipeWire, rtkit, user groups) stay in
 # system/hardware/audio.nix.
 # Note: rofi-audio-select moved to hyprland/launcher/rofi/ since it's launcher-specific.
-{pkgs, ...}: {
+{
+  pkgs,
+  host,
+  lib,
+  ...
+}:
+lib.mkIf host.desktop.enable {
   home.packages = with pkgs; [
     pavucontrol
     pamixer

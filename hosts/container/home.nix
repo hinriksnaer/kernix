@@ -1,24 +1,22 @@
 # Container profile -- Kubernetes/OpenShift pods running as root.
-# Apply with: nix run home-manager/master -- switch --flake ~/workspace/settings#root@container
 {
   pkgs,
   config,
-  settings,
+  host,
   hostname,
   ...
 }: let
-  username = settings.hosts.${hostname}.username;
+  username = host.username;
   homeDir = config.home.homeDirectory;
-  kernixRoot = settings.hosts.${hostname}.kernixRoot or "${homeDir}/kernix";
+  kernixRoot =
+    if host.kernixRoot != ""
+    then host.kernixRoot
+    else "${homeDir}/kernix";
   cli = import ../../cli {
     inherit pkgs;
     hmProfile = "${username}@${hostname}";
   };
 in {
-  imports = [
-    ../../home/terminal
-  ];
-
   # Terminal settings that oc exec doesn't propagate
   home.sessionVariables = {
     USER = username;

@@ -1,6 +1,12 @@
 # Desktop applications and utilities.
 # Single-package apps that don't need NixOS-level configuration.
-{pkgs, ...}: {
+{
+  pkgs,
+  host,
+  lib,
+  ...
+}:
+lib.mkIf host.apps.enable {
   home.packages = with pkgs; [
     # Applications
     discord

@@ -3,15 +3,17 @@
   lib,
   pkgs,
   config,
-  settings,
+  host,
   hostname,
   ...
 }: let
-  hostCfg = settings.hosts.${hostname};
-  hasNixtorch = hostCfg ? nixtorch && hostCfg.nixtorch != {};
+  hasNixtorch = host.nixtorch != {};
   homeDir = config.home.homeDirectory;
-  kernixRoot = hostCfg.kernixRoot or "${homeDir}/kernix";
-  workspaceDir = hostCfg.nixtorch.workspace or "${homeDir}/workspace";
+  kernixRoot =
+    if host.kernixRoot != ""
+    then host.kernixRoot
+    else "${homeDir}/kernix";
+  workspaceDir = host.nixtorch.workspace or "${homeDir}/workspace";
 in {
   config = lib.mkIf hasNixtorch {
     home.activation.setupDirenv = config.lib.dag.entryAfter ["linkGeneration"] ''

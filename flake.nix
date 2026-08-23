@@ -33,7 +33,6 @@
     ...
   } @ inputs: let
     lib = nixpkgs.lib;
-    settings = import ./settings.nix;
 
     # ── Package sets ──
 
@@ -52,58 +51,88 @@
       overlays = builtins.attrValues self.overlays;
     };
 
-    # ── Shared modules ──
-
-    commonModules = [
-      {nixpkgs.overlays = builtins.attrValues self.overlays;}
-    ];
-
-    # NixOS-only: wire settings into the kernix option namespace
-    # (declared by system/core/kernix-options.nix, which Darwin doesn't import).
-    nixosModules = [
-      {kernix = settings;}
-    ];
-
-    # Home Manager integration (works for both NixOS and Darwin).
-    mkHmModule = hmModule: hostname: {
-      imports = [hmModule];
-      home-manager.useGlobalPkgs = true;
-      home-manager.useUserPackages = true;
-      home-manager.backupFileExtension = "hm-backup";
-      home-manager.users.${settings.hosts.${hostname}.username} =
-        import ./home {inherit hostname settings;};
-    };
-
     # ── Host builders ──
 
     mkHost = hostname:
       nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
-        modules =
-          commonModules
-          ++ nixosModules
-          ++ [
-            ./hosts/${hostname}/system.nix
-            (mkHmModule home-manager.nixosModules.home-manager hostname)
-            ({config, ...}: {
-              kernix.username = config.kernix.hosts.${hostname}.username;
-              kernix.gpu = config.kernix.hosts.${hostname}.gpu;
-              networking.hostName = "kernix-${hostname}";
-            })
-          ];
+        modules = [
+          # Host declaration (sets kernix.* options)
+          ./hosts/${hostname}
+
+          # System modules (gate themselves via kernix.*.enable)
+          ./system/core
+          ./system/desktop
+          ./system/hardware
+          ./system/apps
+          ./system/gaming
+
+          # Home Manager integration
+          home-manager.nixosModules.home-manager
+          ({config, ...}: {
+            nixpkgs.overlays = builtins.attrValues self.overlays;
+            networking.hostName = "kernix-${hostname}";
+
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "hm-backup";
+              extraSpecialArgs = {
+                host = config.kernix;
+                inherit hostname;
+              };
+              users.${config.kernix.username} =
+                import ./home {inherit hostname;};
+            };
+          })
+        ];
       };
 
     mkDarwinHost = hostname:
       nix-darwin.lib.darwinSystem {
         system = darwinSystem;
-        specialArgs = {inherit settings hostname;};
-        modules =
-          commonModules
-          ++ [
-            ./hosts/${hostname}/system.nix
-            (mkHmModule home-manager.darwinModules.home-manager hostname)
-          ];
+        modules = [
+          # Kernix options (Darwin doesn't import system/core)
+          ./system/options.nix
+
+          # Host declaration
+          ./hosts/${hostname}
+
+          # Home Manager integration
+          home-manager.darwinModules.home-manager
+          ({config, ...}: {
+            nixpkgs.overlays = builtins.attrValues self.overlays;
+
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "hm-backup";
+              extraSpecialArgs = {
+                host = config.kernix;
+                inherit hostname;
+              };
+              users.${config.kernix.username} =
+                import ./home {inherit hostname;};
+            };
+          })
+        ];
       };
+
+    # Evaluate a host module through the option schema to extract config.
+    # Works for any host that doesn't import NixOS-only modules
+    # (hardware-configuration.nix, etc.).
+    evalHost = hostName: let
+      evaluated = lib.evalModules {
+        modules = [
+          ./system/options.nix
+          (import ./hosts/${hostName})
+        ];
+      };
+    in
+      evaluated.config.kernix;
+
+    # Standalone HM hosts (no NixOS/Darwin system config).
+    hmOnlyHostNames = ["remote" "container"];
   in {
     # ── Formatter (nix fmt) ──
     formatter.${system} = pkgs.alejandra;
@@ -128,29 +157,39 @@
     };
 
     # ── Home Manager (standalone, user@host convention) ──
-    homeConfigurations =
-      lib.mapAttrs'
-      (
-        hostName: hostCfg:
-          lib.nameValuePair
-          "${hostCfg.username}@${hostName}"
-          (home-manager.lib.homeManagerConfiguration {
-            pkgs = pkgsUnfree;
-            modules = [
-              (import ./home {
-                hostname = hostName;
-                inherit settings;
-              })
-            ];
-          })
-      )
-      settings.hosts;
+    homeConfigurations = builtins.listToAttrs (map (hostName: let
+      hostCfg = evalHost hostName;
+    in
+      lib.nameValuePair
+      "${hostCfg.username}@${hostName}"
+      (home-manager.lib.homeManagerConfiguration {
+        pkgs = pkgsUnfree;
+        extraSpecialArgs = {
+          host = hostCfg;
+          hostname = hostName;
+        };
+        modules = [
+          (import ./home {hostname = hostName;})
+        ];
+      }))
+    hmOnlyHostNames);
 
     # ── Development shells ──
-    devShells.${system} =
+    devShells.${system} = let
+      # NixOS hosts: extract kernix config from the already-built system.
+      nixosHostConfigs =
+        lib.mapAttrs
+        (_: sys: sys.config.kernix)
+        self.nixosConfigurations;
+      # Standalone hosts: evaluate through the option schema.
+      hmHostConfigs = lib.genAttrs hmOnlyHostNames evalHost;
+      # Merge and filter to hosts with nixtorch config.
+      allConfigs = nixosHostConfigs // hmHostConfigs;
+      withNixtorch = lib.filterAttrs (_: cfg: cfg.nixtorch != {}) allConfigs;
+    in
       lib.mapAttrs
       (_: cfg: nixtorch.lib.mkDevShell cfg.nixtorch)
-      (lib.filterAttrs (_: cfg: cfg ? nixtorch) settings.hosts);
+      withNixtorch;
     devShells.${darwinSystem}.default =
       import ./hosts/macbook/devshell.nix {pkgs = pkgsDarwin;};
   };

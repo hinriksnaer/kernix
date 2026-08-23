@@ -9,19 +9,18 @@
   config,
   lib,
   pkgs,
-  hostname,
-  settings,
+  host,
   ...
 }: let
-  themeLib = import ../../theme/lib.nix {inherit pkgs config;};
+  themeLib = import ../../../lib/theme.nix {inherit pkgs config;};
   inherit (themeLib) kernixPath;
-  monitors = config.monitors;
+  monitors = host.desktop.monitors;
   primaryMonitor = lib.findFirst (m: m.primary) (builtins.head monitors) monitors;
-  layout = settings.hosts.${hostname}.layout or "dwindle";
-  tvOutput = settings.hosts.${hostname}.tvOutput or "";
-  hdr = settings.hosts.${hostname}.hdr or false;
+  layout = host.desktop.hyprland.layout;
+  tvOutput = host.desktop.hyprland.tvOutput;
+  hdr = host.desktop.hyprland.hdr;
   hasTv = tvOutput != "";
-  terminal = settings.terminal;
+  terminal = host.terminal;
 
   # Terminal metadata -- maps terminal name to Wayland app-id and exec flag.
   terminalMeta = {
@@ -127,87 +126,89 @@ in {
     ./idle.nix
   ];
 
-  kernix.theme.hooks = ["hyprland"];
+  config = lib.mkIf host.desktop.enable {
+    kernix.theme.hooks = ["hyprland"];
 
-  # ── Wayland packages ──
-  home.packages = with pkgs; [
-    swaybg
-    qt5.qtwayland
-    qt6.qtwayland
-    hyprland-qtutils
-    wlr-randr
-    wlogout
+    # ── Wayland packages ──
+    home.packages = with pkgs; [
+      swaybg
+      qt5.qtwayland
+      qt6.qtwayland
+      hyprland-qtutils
+      wlr-randr
+      wlogout
 
-    # Wallpaper management (uses swaybg, called from keybinds)
-    (writeShellApplication {
-      name = "kernix-wallpaper-set";
-      runtimeInputs = [swaybg coreutils findutils procps];
-      text = ''
-        export KERNIX_PATH="${kernixPath}"
-        ${builtins.readFile ../../theme/scripts/kernix-wallpaper-set.sh}
-      '';
-    })
-    (writeShellApplication {
-      name = "kernix-wallpaper-next";
-      runtimeInputs = [swaybg coreutils findutils procps libnotify];
-      text = ''
-        export KERNIX_PATH="${kernixPath}"
-        ${builtins.readFile ../../theme/scripts/kernix-wallpaper-next.sh}
-      '';
-    })
-  ];
+      # Wallpaper management (uses swaybg, called from keybinds)
+      (writeShellApplication {
+        name = "kernix-wallpaper-set";
+        runtimeInputs = [swaybg coreutils findutils procps];
+        text = ''
+          export KERNIX_PATH="${kernixPath}"
+          ${builtins.readFile ../../theme/scripts/kernix-wallpaper-set.sh}
+        '';
+      })
+      (writeShellApplication {
+        name = "kernix-wallpaper-next";
+        runtimeInputs = [swaybg coreutils findutils procps libnotify];
+        text = ''
+          export KERNIX_PATH="${kernixPath}"
+          ${builtins.readFile ../../theme/scripts/kernix-wallpaper-next.sh}
+        '';
+      })
+    ];
 
-  # ── Wayland session variables ──
-  home.sessionVariables =
-    {
-      NIXOS_OZONE_WL = "1";
-      XDG_SESSION_TYPE = "wayland";
-      QT_QPA_PLATFORM = "wayland";
-      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-      QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-      MOZ_ENABLE_WAYLAND = "1";
-      CLUTTER_BACKEND = "wayland";
-      ELECTRON_OZONE_PLATFORM_HINT = "auto";
-      _JAVA_AWT_WM_NONREPARENTING = "1";
-    }
-    // lib.optionalAttrs hdr {
-      # HDR: tell DXVK/VKD3D and Vulkan WSI to use HDR output.
-      # Games need these to output HDR to the compositor.
-      DXVK_HDR = "1";
-      ENABLE_HDR_WSI = "1";
+    # ── Wayland session variables ──
+    home.sessionVariables =
+      {
+        NIXOS_OZONE_WL = "1";
+        XDG_SESSION_TYPE = "wayland";
+        QT_QPA_PLATFORM = "wayland";
+        QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+        QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+        MOZ_ENABLE_WAYLAND = "1";
+        CLUTTER_BACKEND = "wayland";
+        ELECTRON_OZONE_PLATFORM_HINT = "auto";
+        _JAVA_AWT_WM_NONREPARENTING = "1";
+      }
+      // lib.optionalAttrs hdr {
+        # HDR: tell DXVK/VKD3D and Vulkan WSI to use HDR output.
+        # Games need these to output HDR to the compositor.
+        DXVK_HDR = "1";
+        ENABLE_HDR_WSI = "1";
+      };
+
+    # ── UWSM auto-start (TTY1 login only) ──
+    # Only start Hyprland on TTY1. TTY3 is reserved for gamescope couch mode.
+    programs.zsh.initContent = lib.mkOrder 100 ''
+      if [[ "$(tty)" == "/dev/tty1" && -z "$DISPLAY" && -z "$WAYLAND_DISPLAY" ]] && uwsm check may-start 2>/dev/null; then
+          exec uwsm start hyprland-uwsm.desktop
+      fi
+    '';
+
+    # XDG portals are configured at the system level in system/desktop/hyprland.nix
+
+    # ── Deploy Lua config files ──
+    xdg.configFile = {
+      "hypr/hyprland.lua".text = hyprlandEntryPoint;
+      "hypr/appearance.lua".source = ./config/appearance.lua;
+      "hypr/animations.lua".source = ./config/animations.lua;
+      "hypr/input.lua".source = ./config/input.lua;
+      "hypr/layout.lua".source = ./config/layout.lua;
+      "hypr/rules.lua".source = ./config/rules.lua;
+      "hypr/binds.lua".source = ./config/binds.lua;
+      "hypr/autostart.lua".source = ./config/autostart.lua;
     };
 
-  # ── UWSM auto-start (TTY1 login only) ──
-  # Only start Hyprland on TTY1. TTY3 is reserved for gamescope couch mode.
-  programs.zsh.initContent = lib.mkOrder 100 ''
-    if [[ "$(tty)" == "/dev/tty1" && -z "$DISPLAY" && -z "$WAYLAND_DISPLAY" ]] && uwsm check may-start 2>/dev/null; then
-        exec uwsm start hyprland-uwsm.desktop
-    fi
-  '';
+    # ── Activation hooks ──
+    home.activation.hyprlandThemeStubs = config.lib.dag.entryAfter ["linkGeneration"] ''
+      mkdir -p "$HOME/.config/hypr/wallpapers"
+      [ -e "$HOME/.config/hypr/active-theme.lua" ] || printf '-- no theme loaded yet\n' > "$HOME/.config/hypr/active-theme.lua"
+    '';
 
-  # XDG portals are configured at the system level in system/desktop/hyprland.nix
-
-  # ── Deploy Lua config files ──
-  xdg.configFile = {
-    "hypr/hyprland.lua".text = hyprlandEntryPoint;
-    "hypr/appearance.lua".source = ./config/appearance.lua;
-    "hypr/animations.lua".source = ./config/animations.lua;
-    "hypr/input.lua".source = ./config/input.lua;
-    "hypr/layout.lua".source = ./config/layout.lua;
-    "hypr/rules.lua".source = ./config/rules.lua;
-    "hypr/binds.lua".source = ./config/binds.lua;
-    "hypr/autostart.lua".source = ./config/autostart.lua;
+    home.activation.hyprlandReload = lib.hm.dag.entryAfter ["linkGeneration"] ''
+      if command -v hyprctl &>/dev/null && hyprctl monitors &>/dev/null 2>&1; then
+        hyprctl reload &>/dev/null || true
+      fi
+    '';
   };
-
-  # ── Activation hooks ──
-  home.activation.hyprlandThemeStubs = config.lib.dag.entryAfter ["linkGeneration"] ''
-    mkdir -p "$HOME/.config/hypr/wallpapers"
-    [ -e "$HOME/.config/hypr/active-theme.lua" ] || printf '-- no theme loaded yet\n' > "$HOME/.config/hypr/active-theme.lua"
-  '';
-
-  home.activation.hyprlandReload = lib.hm.dag.entryAfter ["linkGeneration"] ''
-    if command -v hyprctl &>/dev/null && hyprctl monitors &>/dev/null 2>&1; then
-      hyprctl reload &>/dev/null || true
-    fi
-  '';
 }

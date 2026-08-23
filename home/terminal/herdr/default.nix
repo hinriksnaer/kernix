@@ -5,7 +5,7 @@
   config,
   ...
 }: let
-  themeLib = import ../../theme/lib.nix {inherit pkgs config;};
+  themeLib = import ../../../lib/theme.nix {inherit pkgs config;};
   inherit (themeLib) kernixPath;
 in {
   kernix.theme.hooks = ["herdr"];

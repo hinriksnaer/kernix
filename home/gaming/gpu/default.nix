@@ -2,13 +2,20 @@
 # Vendor-specific config lives in nvidia.nix (others added as needed).
 # System-level parts (hardware.graphics.enable32Bit) stay in
 # system/gaming/gpu-extra.nix.
-{pkgs, ...}: {
+{
+  pkgs,
+  host,
+  lib,
+  ...
+}: {
   imports = [
     ./nvidia.nix
   ];
 
   # ── Common (all GPUs) ──
-  home.packages = with pkgs; [
-    vulkan-tools
-  ];
+  config = lib.mkIf host.gaming.enable {
+    home.packages = with pkgs; [
+      vulkan-tools
+    ];
+  };
 }

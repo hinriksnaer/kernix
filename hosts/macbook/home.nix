@@ -3,11 +3,11 @@
 {
   pkgs,
   config,
-  settings,
+  host,
   hostname,
   ...
 }: let
-  username = settings.hosts.${hostname}.username;
+  username = host.username;
   homeDir = config.home.homeDirectory;
   kernixRoot = "${homeDir}/kernix";
   cli = import ../../cli {
@@ -16,10 +16,6 @@
     darwinHost = hostname;
   };
 in {
-  imports = [
-    ../../home/terminal
-  ];
-
   # CLI helpers: pull + rebuild
   home.packages = [
     cli.kernix-darwin-switch

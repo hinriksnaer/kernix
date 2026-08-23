@@ -1,12 +1,12 @@
 # Git configuration -- shared across all profiles.
-# Reads user identity from settings.nix.
-{settings, ...}: {
+# Reads user identity from kernix config.
+{host, ...}: {
   programs.git = {
     enable = true;
     signing.format = "openpgp";
     settings = {
-      user.name = settings.git.name;
-      user.email = settings.git.email;
+      user.name = host.git.name;
+      user.email = host.git.email;
       core.editor = "nvim";
       init.defaultBranch = "main";
       pull.rebase = false;

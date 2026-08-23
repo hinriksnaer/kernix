@@ -1,5 +1,11 @@
 # Hypridle -- idle daemon for screen dimming, locking, and suspend.
-{pkgs, ...}: {
+{
+  pkgs,
+  host,
+  lib,
+  ...
+}:
+lib.mkIf host.desktop.enable {
   services.hypridle = {
     enable = true;
 

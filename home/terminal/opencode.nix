@@ -4,11 +4,11 @@
 {
   pkgs,
   config,
-  settings,
+  host,
   ...
 }: let
-  defaultTheme = settings.defaultTheme;
-  themeLib = import ../theme/lib.nix {inherit pkgs config;};
+  defaultTheme = host.defaultTheme;
+  themeLib = import ../../lib/theme.nix {inherit pkgs config;};
   inherit (themeLib) kernixPath;
   ocDir = "${config.home.homeDirectory}/.config/opencode";
 in {

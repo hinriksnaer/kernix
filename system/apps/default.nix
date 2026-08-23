@@ -1,5 +1,6 @@
 {...}: {
   imports = [
-    ./podman.nix
+    ./options.nix
+    ./podman
   ];
 }

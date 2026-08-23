@@ -1,10 +1,10 @@
 {...}: {
   imports = [
     ./audio.nix
-    ./bluetooth.nix
+    ./bluetooth
     ./boot.nix
     ./gpu
-    ./networking.nix
+    ./networking
     ./printing.nix
   ];
 }

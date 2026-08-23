@@ -4,7 +4,7 @@
   config,
 }: let
   kernixPath = "${config.home.homeDirectory}/.local/share/kernix";
-  scripts = ./scripts;
+  scripts = ../home/theme/scripts;
 in {
   inherit kernixPath scripts;
 

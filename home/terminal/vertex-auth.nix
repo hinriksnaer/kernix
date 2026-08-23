@@ -4,11 +4,11 @@
 {
   pkgs,
   lib,
-  settings,
+  host,
   ...
 }: let
-  oc = settings.opencode or {};
-  hasVertex = (oc.vertexProject or "") != "";
+  oc = host.opencode;
+  hasVertex = oc.vertexProject != "";
 in {
   # Install Google Cloud SDK only if Vertex AI is configured
   home.packages = lib.optionals hasVertex [pkgs.google-cloud-sdk];

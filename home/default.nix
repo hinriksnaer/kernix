@@ -1,37 +1,37 @@
 # Home Manager entry point.
-# Receives hostname and settings from flake.nix, imports the
-# matching host profile which opts into shared modules.
-{
-  hostname,
-  settings,
+# Receives hostname from flake.nix. The host config attrset is passed
+# via extraSpecialArgs and available to all modules as the `host` arg.
+{hostname}: {
+  host,
+  lib,
+  ...
 }: let
-  hostCfg = settings.hosts.${hostname};
-  username = hostCfg.username;
-  homePrefix = hostCfg.homePrefix or "/home";
+  username = host.username;
+  homePrefix = host.homePrefix;
   homeDirectory =
     if username == "root"
     then "/root"
     else "${homePrefix}/${username}";
-in
-  {...}: {
-    imports = [
-      ../hosts/${hostname}/home.nix
-      ./nixtorch.nix
-    ];
+in {
+  imports = [
+    # All modules imported -- leaf modules gate themselves via lib.mkIf host.*
+    ./terminal
+    ./desktop
+    ./apps
+    ./gaming
+    ./nixtorch.nix
+    ./theme
+    ../hosts/${hostname}/home.nix
+  ];
 
-    # Make settings available to all modules
-    _module.args = {
-      inherit settings hostname;
-    };
+  programs.home-manager.enable = true;
 
-    programs.home-manager.enable = true;
+  # ── Common user identity ──
+  home.username = username;
+  home.homeDirectory = homeDirectory;
+  home.stateVersion = "24.11";
 
-    # ── Common user identity ──
-    home.username = username;
-    home.homeDirectory = homeDirectory;
-    home.stateVersion = "24.11";
-
-    # Expose username to scripts/dotfiles at runtime
-    home.sessionVariables.KERNIX_USER = username;
-    home.sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
-  }
+  # Expose username to scripts/dotfiles at runtime
+  home.sessionVariables.KERNIX_USER = username;
+  home.sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
+}

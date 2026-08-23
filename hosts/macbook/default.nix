@@ -1,20 +1,28 @@
 # macOS (nix-darwin) host configuration.
 # Apply with: sudo darwin-rebuild switch --flake ~/kernix#macbook
-{
-  settings,
-  hostname,
-  ...
-}: let
-  hostCfg = settings.hosts.${hostname};
-in {
+{config, ...}: {
+  kernix = {
+    username = "dev";
+    homePrefix = "/Users";
+
+    git = {
+      name = "hinriksnaer";
+      email = "hgudmund@redhat.com";
+    };
+
+    opencode = {
+      vertexProject = "itpc-gcp-ai-eng-claude";
+    };
+  };
+
   # ── Nix settings ──
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # ── Primary user (required by nix-darwin for root activation) ──
-  system.primaryUser = hostCfg.username;
+  system.primaryUser = config.kernix.username;
 
   # ── User (home directory must be declared for home-manager integration) ──
-  users.users.${hostCfg.username}.home = "${hostCfg.homePrefix or "/Users"}/${hostCfg.username}";
+  users.users.${config.kernix.username}.home = "${config.kernix.homePrefix}/${config.kernix.username}";
 
   # ── Zsh (disable system compinit -- HM handles it with -u for Nix dirs) ──
   programs.zsh.enableCompletion = false;

@@ -1,6 +1,11 @@
 # Mako notification daemon.
 # Theme colors loaded at runtime via include (swapped by kernix-theme-set).
-{settings, ...}: {
+{
+  host,
+  lib,
+  ...
+}:
+lib.mkIf host.desktop.enable {
   kernix.theme.hooks = ["mako"];
 
   services.mako = {
@@ -12,7 +17,7 @@
       padding = 10;
       border-size = 2;
       border-radius = 8;
-      font = "${settings.font.monospace} SemiBold 11";
+      font = "${host.font.monospace} SemiBold 11";
 
       anchor = "top-right";
       outer-margin = 20;

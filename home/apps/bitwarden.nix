@@ -1,6 +1,12 @@
 # Bitwarden -- desktop app and SSH agent.
 # CLI (bw) is in home/terminal/bitwarden.nix for all hosts.
-{pkgs, ...}: {
+{
+  pkgs,
+  host,
+  lib,
+  ...
+}:
+lib.mkIf host.apps.enable {
   home.packages = with pkgs; [
     bitwarden-desktop
   ];

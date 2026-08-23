@@ -2,20 +2,16 @@
 # Apply with: home-manager switch --flake ~/kernix#<user>@remote
 {
   pkgs,
-  settings,
+  host,
   hostname,
   ...
 }: let
-  username = settings.hosts.${hostname}.username;
+  username = host.username;
   cli = import ../../cli {
     inherit pkgs;
     hmProfile = "${username}@${hostname}";
   };
 in {
-  imports = [
-    ../../home/terminal
-  ];
-
   # kernix-hm-switch: pull latest + home-manager switch
   home.packages = [cli.kernix-hm-switch];
 }

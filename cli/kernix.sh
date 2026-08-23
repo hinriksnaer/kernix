@@ -13,16 +13,15 @@
 
 HOST=$(hostname)
 
-# Map hostname -> flake configuration name
-case "${HOST}" in
-    kernix-desktop) CONF="desktop" ;;
-    kernix-laptop)  CONF="laptop"  ;;
-    *)
-        echo "Error: unknown host '${HOST}'" >&2
-        echo "Add a mapping in kernix.sh" >&2
-        exit 1
-        ;;
-esac
+# Derive flake configuration name from hostname.
+# Hosts are named "kernix-<config>" by flake.nix.
+if [[ "${HOST}" == kernix-* ]]; then
+    CONF="${HOST#kernix-}"
+else
+    echo "Error: hostname '${HOST}' doesn't match kernix-<config> pattern" >&2
+    echo "Expected a hostname like 'kernix-desktop' or 'kernix-laptop'" >&2
+    exit 1
+fi
 
 # ── Notification wrapper ──
 # Tracks hyprland window focus. Only notifies if user switched away.

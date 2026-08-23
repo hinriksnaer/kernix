@@ -4,9 +4,11 @@
 {
   pkgs,
   config,
-  settings,
+  host,
+  lib,
   ...
-}: {
+}:
+lib.mkIf host.desktop.enable {
   home.packages = with pkgs; [
     polkit_gnome
     adwaita-icon-theme
@@ -38,6 +40,6 @@
 
   home.sessionVariables = {
     GTK_THEME = "Adwaita:dark";
-    TERMINAL = settings.terminal;
+    TERMINAL = host.terminal;
   };
 }

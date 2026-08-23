@@ -19,12 +19,12 @@
 {
   lib,
   pkgs,
-  hostname,
-  settings,
+  host,
   ...
 }: let
-  tvOutput = settings.hosts.${hostname}.tvOutput or "";
-  gsDefaults = import ../../system/gaming/gamescope-defaults.nix;
+  tvOutput = host.desktop.hyprland.tvOutput;
+  hasCouchMode = host.gaming.enable && host.gaming.couch.enable && tvOutput != "";
+  gsDefaults = import ../../lib/gamescope.nix {inherit host lib;};
 
   # Convert shared gamescope env attrset to shell VAR=val prefix lines.
   gsEnvStr = lib.concatStringsSep " \\\n          " (
@@ -34,7 +34,7 @@
   # Convert shared gamescope args list to shell arguments.
   gsArgsStr = lib.concatStringsSep " " gsDefaults.args;
 in
-  lib.mkIf (tvOutput != "") {
+  lib.mkIf hasCouchMode {
     home.packages = with pkgs; [
       # ── Trigger: Couch mode ──
       # Usage: kernix-couch [tv|deck]   (default: tv)

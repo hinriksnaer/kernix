@@ -1,5 +1,11 @@
 # Dolphin -- KDE file manager.
-{pkgs, ...}: {
+{
+  pkgs,
+  host,
+  lib,
+  ...
+}:
+lib.mkIf host.desktop.enable {
   home.packages = with pkgs.kdePackages; [
     dolphin
     qtsvg # SVG icon support

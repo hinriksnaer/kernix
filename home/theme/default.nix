@@ -11,10 +11,10 @@
   pkgs,
   config,
   lib,
-  settings,
+  host,
   ...
 }: let
-  themeLib = import ./lib.nix {inherit pkgs config;};
+  themeLib = import ../../lib/theme.nix {inherit pkgs config;};
   inherit (themeLib) kernixPath scripts mkScript;
 
   cfg = config.kernix.theme;
@@ -82,7 +82,7 @@ in {
         kernixConfig = config.lib.dag.entryAfter ["linkGeneration"] ''
           mkdir -p "$HOME/.config/kernix"
           if [ ! -f "$HOME/.config/kernix/current-theme" ]; then
-            echo "${settings.defaultTheme}" > "$HOME/.config/kernix/current-theme"
+            echo "${host.defaultTheme}" > "$HOME/.config/kernix/current-theme"
           fi
         '';
       };

@@ -3,6 +3,8 @@
 {
   pkgs,
   config,
+  host,
+  lib,
   ...
 }: let
   # Minimal builder for Firefox XPI addons (avoids NUR dependency).
@@ -49,41 +51,42 @@
     url = "https://addons.mozilla.org/firefox/downloads/file/3972754/ayu_dark_theme-1.0.xpi";
     hash = "sha256-3Wz8TY2pd/K6HEP1T3f5iszCZRB15G69Gxotm5hPVQA=";
   };
-in {
-  programs.firefox = {
-    enable = true;
-    configPath = "${config.xdg.configHome}/mozilla/firefox";
+in
+  lib.mkIf host.apps.enable {
+    programs.firefox = {
+      enable = true;
+      configPath = "${config.xdg.configHome}/mozilla/firefox";
 
-    profiles.default = {
-      isDefault = true;
+      profiles.default = {
+        isDefault = true;
 
-      extensions.force = true;
-      extensions.packages = [
-        vimium
-        proton-pass
-        ayu-dark
-      ];
+        extensions.force = true;
+        extensions.packages = [
+          vimium
+          proton-pass
+          ayu-dark
+        ];
 
-      settings = {
-        # Unblock Vimium on Mozilla domains (addons.mozilla.org, etc.)
-        # about:* pages remain blocked -- that's hardcoded in Firefox.
-        "extensions.webextensions.restrictedDomains" = "";
+        settings = {
+          # Unblock Vimium on Mozilla domains (addons.mozilla.org, etc.)
+          # about:* pages remain blocked -- that's hardcoded in Firefox.
+          "extensions.webextensions.restrictedDomains" = "";
 
-        # Blank new tab & homepage so Vimium is active immediately.
-        "browser.startup.homepage" = "about:blank";
-        "browser.newtabpage.enabled" = false;
+          # Blank new tab & homepage so Vimium is active immediately.
+          "browser.startup.homepage" = "about:blank";
+          "browser.newtabpage.enabled" = false;
 
-        # Disable built-in password manager (use Proton Pass instead).
-        "signon.rememberSignons" = false;
-        "signon.autofillForms" = false;
-        "signon.formlessCapture.enabled" = false;
+          # Disable built-in password manager (use Proton Pass instead).
+          "signon.rememberSignons" = false;
+          "signon.autofillForms" = false;
+          "signon.formlessCapture.enabled" = false;
 
-        # Disable clutter.
-        "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
-        "browser.newtabpage.activity-stream.feeds.topsites" = false;
-        "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
-        "browser.tabs.firefox-view" = false;
+          # Disable clutter.
+          "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
+          "browser.newtabpage.activity-stream.feeds.topsites" = false;
+          "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+          "browser.tabs.firefox-view" = false;
+        };
       };
     };
-  };
-}
+  }

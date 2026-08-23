@@ -3,7 +3,6 @@
 {
   pkgs,
   lib,
-  settings,
   ...
 }: {
   programs.starship = {
