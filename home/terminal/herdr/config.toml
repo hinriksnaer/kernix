@@ -12,6 +12,7 @@
 #   Modifiers define the ACTION (consistent across both levels):
 #     bare  = Navigate
 #     Shift = Resize     (view) / Move pane to tab (task)
+#     Ctrl  = Swap       (view)
 #
 #   Additional:
 #     arrows = Create    (spawn split in direction)
@@ -22,21 +23,27 @@
 # ┌─ View (hjkl) ──────────────────────────────────────────────────────┐
 # │  Alt + hjkl            navigate panes                              │
 # │  Alt + Shift + hjkl    resize panes                                │
-# │  Alt + arrows          create split in direction                   │
+# │  Alt + Ctrl + hjkl     swap panes                                  │
+# │  Alt + arrows          create split in direction (all 4)           │
 # │  Alt + z               zoom pane (fullscreen)                      │
-# │  Alt + r               resize mode                                 │
+# │  Alt + q               close pane                                  │
+# │  Alt + Ctrl + Enter    break pane to new tab                       │
+# │  Alt+Ctrl+Shift+Enter  break pane to new workspace                 │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Task ([/] + 1-9) ────────────────────────────────────────────────┐
 # │  Alt + [ / ]           prev/next tab                               │
 # │  Alt + 1-9             switch to tab N                             │
 # │  Alt + Shift + [ / ]   move tab position                          │
 # │  Alt + Enter           new tab                                     │
-# │  Alt + q               close pane (view)                           │
+# │  Alt + n               rename tab                                  │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Context (workspace) ─────────────────────────────────────────────┐
 # │  Alt + f               workspace picker                            │
-# │  Alt + n               rename pane                                 │
+# │  Alt + s               session navigator (goto)                    │
 # │  Alt + Shift + n       rename workspace                            │
+# │  Alt + Shift + Enter   new workspace                               │
+# │  Alt + Tab             last pane (across workspaces/tabs)          │
+# │  Alt + r               reload config                               │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Prefix (Alt+Space) ──────────────────────────────────────────────┐
 # │  Space                 sessionizer (fzf project picker popup)      │
@@ -72,8 +79,14 @@ split_vertical   = "alt+right"
 # Zoom pane: Alt + z
 zoom = "alt+z"
 
-# Resize mode: Alt + r
-resize_mode = "alt+r"
+# Reload config: Alt + r
+reload_config = "alt+r"
+
+# Swap panes: Alt + Ctrl + hjkl
+swap_pane_left  = "alt+ctrl+h"
+swap_pane_down  = "alt+ctrl+j"
+swap_pane_up    = "alt+ctrl+k"
+swap_pane_right = "alt+ctrl+l"
 
 # Close pane: Alt + q
 close_pane = "alt+q"
@@ -99,11 +112,52 @@ new_tab = "alt+enter"
 # Workspace picker: Alt + f
 workspace_picker = "alt+f"
 
-# Rename pane: Alt + n
-rename_pane = "alt+n"
+# Session navigator: Alt + s
+goto = "alt+s"
+
+# Rename tab: Alt + n
+rename_tab = "alt+n"
 
 # Rename workspace: Alt + Shift + n
 rename_workspace = "alt+shift+n"
+
+# New workspace: Alt + Shift + Enter
+new_workspace = "alt+shift+enter"
+
+# Last pane (across workspaces/tabs): Alt + Tab
+last_pane = "alt+tab"
+
+# ── Custom commands: split left/up (split + swap workaround) ──
+
+# Split left: Alt + Left
+[[keys.command]]
+key = "alt+left"
+type = "shell"
+command = "herdr pane split $HERDR_ACTIVE_PANE_ID --direction right && sleep 0.05 && herdr pane swap --direction left"
+description = "split left"
+
+# Split up: Alt + Up
+[[keys.command]]
+key = "alt+up"
+type = "shell"
+command = "herdr pane split $HERDR_ACTIVE_PANE_ID --direction down && sleep 0.05 && herdr pane swap --direction up"
+description = "split up"
+
+# ── Custom commands: break/move pane (tmux join-pane / break-pane) ──
+
+# Break pane to new tab: Alt + Ctrl + Enter
+[[keys.command]]
+key = "alt+ctrl+enter"
+type = "shell"
+command = "herdr pane move $HERDR_ACTIVE_PANE_ID --new-tab --focus"
+description = "break pane to new tab"
+
+# Move pane to new workspace: Alt + Ctrl + Shift + Enter
+[[keys.command]]
+key = "alt+ctrl+shift+enter"
+type = "shell"
+command = "herdr pane move $HERDR_ACTIVE_PANE_ID --new-workspace --focus"
+description = "break pane to new workspace"
 
 # ── Prefix commands (Alt+Space, then key) ──
 
