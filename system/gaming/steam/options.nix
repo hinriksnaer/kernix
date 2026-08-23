@@ -14,12 +14,12 @@
       sdrContentNits = lib.mkOption {
         type = lib.types.int;
         default = 400;
-        description = "SDR content brightness in HDR mode.";
+        description = "How bright SDR content appears on screen in HDR mode (gamescope default: 400).";
       };
       itmSdrNits = lib.mkOption {
         type = lib.types.int;
-        default = 400;
-        description = "SDR input luminance for inverse tone mapping.";
+        default = 100;
+        description = "Assumed input luminance of SDR content for inverse tone mapping (gamescope default: 100).";
       };
       itmTargetNits = lib.mkOption {
         type = lib.types.int;

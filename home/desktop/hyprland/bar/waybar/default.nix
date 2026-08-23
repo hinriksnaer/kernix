@@ -6,7 +6,8 @@
   host,
   ...
 }: let
-  primaryMonitor = lib.findFirst (m: m.primary) (builtins.head host.desktop.monitors) host.desktop.monitors;
+  enabledMonitors = builtins.filter (m: m.enabled) host.desktop.monitors;
+  primaryMonitor = lib.findFirst (m: m.primary) (builtins.head enabledMonitors) enabledMonitors;
   terminal = host.terminal;
   gpu = host.gpu;
   isNvidia = gpu == "nvidia";

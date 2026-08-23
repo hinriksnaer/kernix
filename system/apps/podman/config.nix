@@ -13,7 +13,5 @@ lib.mkIf (config.kernix.apps.enable && config.kernix.apps.podman.enable) {
     defaultNetwork.settings.dns_enabled = true;
   };
 
-  security.unprivilegedUsernsClone = true;
-
   users.users.${config.kernix.username}.extraGroups = ["podman"];
 }

@@ -21,15 +21,17 @@ in {
       # -- Shader compilation --
       DXVK_ASYNC = "1";
 
-      # -- HDR --
-      ENABLE_HDR_WSI = "1";
-      DXVK_HDR = "1";
-
       # -- Game compatibility --
+      PROTON_NO_FSYNC = "1";
       SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
       VKD3D_SWAPCHAIN_LATENCY_FRAMES = "3";
       GAMESCOPE_NV12_COLORSPACE = "k_EStreamColorspace_BT601";
       QT_QPA_PLATFORM = "xcb";
+    }
+    // lib.optionalAttrs hasHdr {
+      # -- HDR (only when HDR output is enabled) --
+      ENABLE_HDR_WSI = "1";
+      DXVK_HDR = "1";
     }
     // lib.optionalAttrs isNvidia {
       __GL_CONSTANT_FRAME_RATE_HINT = "3";
@@ -47,7 +49,6 @@ in {
       "3000"
       "--fade-out-duration"
       "200"
-      "--mangoapp"
     ]
     ++ lib.optionals hasHdr [
       "--hdr-enabled"

@@ -22,10 +22,14 @@
       enable = true;
       monitors = [
         {
-          name = "HDMI-A-1";
+          name = "DP-2";
           resolution = "7680x2160@120";
           scale = 1.0;
           primary = true;
+        }
+        {
+          name = "HDMI-A-1";
+          enabled = false;
         }
       ];
       hyprland = {

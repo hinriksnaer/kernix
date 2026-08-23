@@ -41,7 +41,7 @@
 
   # Terminal emulator terminfo for SSH sessions (Linux only --
   # macOS terminal emulators ship their own terminfo).
-  home.file.".terminfo" = lib.mkIf pkgs.stdenv.isLinux {
+  home.file.".terminfo" = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     source = "${pkgs.ghostty.terminfo}/share/terminfo";
   };
 

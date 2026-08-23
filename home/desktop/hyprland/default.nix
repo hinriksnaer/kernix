@@ -15,7 +15,7 @@
   themeLib = import ../../../lib/theme.nix {inherit pkgs config;};
   inherit (themeLib) kernixPath;
   monitors = host.desktop.monitors;
-  primaryMonitor = lib.findFirst (m: m.primary) (builtins.head monitors) monitors;
+  primaryMonitor = lib.findFirst (m: m.primary && m.enabled) (builtins.head (builtins.filter (m: m.enabled) monitors)) monitors;
   layout = host.desktop.hyprland.layout;
   tvOutput = host.desktop.hyprland.tvOutput;
   hdr = host.desktop.hyprland.hdr;
@@ -52,16 +52,25 @@
   notifications.start = "mako";
 
   # Generate hl.monitor() calls from config.monitors.
+  # Enabled monitors get full config; disabled monitors get { disabled = true }.
   # On desktop, the primary monitor gets 10-bit wide gamut output
   # (Samsung Odyssey G95NC -> XBGR2101010). Using "wide" instead of "hdr"
   # because Hyprland lacks SDR-to-HDR tone mapping -- "hdr" makes desktop
   # content muddy. Games can still request HDR per-window via DXVK_HDR=1.
-  monitorLines = builtins.concatStringsSep "\n" (map (
-      m: let
-        extraFields = lib.optionalString (hdr && m.primary) '', cm = "wide"'';
-      in ''hl.monitor({ output = "${m.name}", mode = "${m.resolution}", position = "${m.position}", scale = ${toString m.scale}${extraFields} })''
-    )
-    monitors);
+  enabledMonitors = builtins.filter (m: m.enabled) monitors;
+  disabledMonitors = builtins.filter (m: !m.enabled) monitors;
+  monitorLines = builtins.concatStringsSep "\n" (
+    (map (
+        m: let
+          extraFields = lib.optionalString (hdr && m.primary) '', bitdepth = 10, cm = "wide"'';
+        in ''hl.monitor({ output = "${m.name}", mode = "${m.resolution}", position = "${m.position}", scale = ${toString m.scale}${extraFields} })''
+      )
+      enabledMonitors)
+    ++ (map (
+        m: ''hl.monitor({ output = "${m.name}", disabled = true })''
+      )
+      disabledMonitors)
+  );
 
   # Nix-templated entry point -- injects dynamic values as Lua globals,
   # then requires all sub-config files.
