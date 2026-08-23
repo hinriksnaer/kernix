@@ -6,7 +6,7 @@
   pkgs,
   ...
 }:
-lib.mkIf (config.kernix.gpu == "amd") {
+lib.mkIf (config.kernix.hardware.enable && config.kernix.gpu == "amd") {
   services.xserver.videoDrivers = ["amdgpu"];
 
   boot.initrd.kernelModules = ["amdgpu"];

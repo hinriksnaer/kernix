@@ -11,7 +11,6 @@
     ./direnv.nix
     ./neovim
     ./build-tools.nix
-    ../theme
     ./opencode.nix
     ./vertex-auth.nix
     ./btop.nix

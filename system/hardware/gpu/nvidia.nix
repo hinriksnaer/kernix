@@ -7,7 +7,7 @@
   pkgs,
   ...
 }:
-lib.mkIf (config.kernix.gpu == "nvidia") {
+lib.mkIf (config.kernix.hardware.enable && config.kernix.gpu == "nvidia") {
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = false;

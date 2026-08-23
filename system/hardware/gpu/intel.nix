@@ -6,7 +6,7 @@
   pkgs,
   ...
 }:
-lib.mkIf (config.kernix.gpu == "intel") {
+lib.mkIf (config.kernix.hardware.enable && config.kernix.gpu == "intel") {
   services.xserver.videoDrivers = ["modesetting"];
 
   boot.initrd.kernelModules = ["i915"];

@@ -1,7 +1,12 @@
 # Printing -- system-level only.
 # Enables CUPS with driverless IPP printing and Avahi for
 # network printer discovery (Canon MF650C @ 192.168.1.212).
-{config, ...}: {
+{
+  config,
+  lib,
+  ...
+}:
+lib.mkIf config.kernix.hardware.enable {
   services.printing = {
     enable = true;
     browsing = true;

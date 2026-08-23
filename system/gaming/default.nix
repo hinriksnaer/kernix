@@ -6,14 +6,16 @@
 }: {
   imports = [
     ./options.nix
-    ./gpu-extra.nix
     ./steam
     ./couch
     ./sunshine
   ];
 
-  # Gaming implies desktop
   config = lib.mkIf config.kernix.gaming.enable {
+    # Gaming implies desktop
     kernix.desktop.enable = lib.mkDefault true;
+
+    # 32-bit graphics libraries for Steam/Proton
+    hardware.graphics.enable32Bit = true;
   };
 }

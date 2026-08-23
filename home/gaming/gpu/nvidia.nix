@@ -5,10 +5,9 @@
   lib,
   host,
   ...
-}: let
-  hasNvidia = host.gpu == "nvidia";
-in {
-  home.sessionVariables = lib.optionalAttrs hasNvidia {
+}:
+lib.mkIf (host.gaming.enable && host.gpu == "nvidia") {
+  home.sessionVariables = {
     __GL_GSYNC_ALLOWED = "1";
     __GL_VRR_ALLOWED = "1";
   };

@@ -1,6 +1,10 @@
 # Bare-metal boot and system service configuration.
-# Only imported by physical hosts (desktop, laptop), not containers.
-{lib, ...}: {
+{
+  config,
+  lib,
+  ...
+}:
+lib.mkIf config.kernix.hardware.enable {
   boot.loader.systemd-boot.enable = lib.mkDefault true;
   boot.loader.efi.canTouchEfiVariables = lib.mkDefault true;
 

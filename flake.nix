@@ -92,8 +92,8 @@
       nix-darwin.lib.darwinSystem {
         system = darwinSystem;
         modules = [
-          # Kernix options (Darwin doesn't import system/core)
-          ./system/options.nix
+          # Kernix options (Darwin doesn't import the full system module tree)
+          ./lib/options.nix
 
           # Host declaration
           ./hosts/${hostname}
@@ -124,7 +124,7 @@
     evalHost = hostName: let
       evaluated = lib.evalModules {
         modules = [
-          ./system/options.nix
+          ./lib/options.nix
           (import ./hosts/${hostName})
         ];
       };

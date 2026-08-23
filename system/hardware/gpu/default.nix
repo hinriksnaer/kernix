@@ -7,6 +7,7 @@
   ...
 }: let
   cfg = config.kernix;
+  hasGpu = cfg.gpu != "none";
   hasNvidia = cfg.gpu == "nvidia";
   hasIntel = cfg.gpu == "intel";
   hasAmd = cfg.gpu == "amd";
@@ -17,10 +18,12 @@ in {
     ./amd.nix
   ];
 
-  # ── Common (all GPUs) ──
-  users.users.${cfg.username}.extraGroups =
-    ["video"] ++ lib.optional (hasIntel || hasAmd) "render";
+  config = lib.mkIf (cfg.hardware.enable && hasGpu) {
+    # ── Common (all GPUs) ──
+    users.users.${cfg.username}.extraGroups =
+      ["video"] ++ lib.optional (hasIntel || hasAmd) "render";
 
-  # Suppress nvidia-container-toolkit assertion on non-nvidia hosts
-  hardware.nvidia-container-toolkit.suppressNvidiaDriverAssertion = !hasNvidia;
+    # Suppress nvidia-container-toolkit assertion on non-nvidia hosts
+    hardware.nvidia-container-toolkit.suppressNvidiaDriverAssertion = !hasNvidia;
+  };
 }

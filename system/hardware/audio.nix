@@ -1,7 +1,12 @@
 # Audio -- system-level only.
 # User tools (pavucontrol, pamixer, volume-control) are managed
 # by Home Manager (home/desktop/audio.nix).
-{config, ...}: {
+{
+  config,
+  lib,
+  ...
+}:
+lib.mkIf config.kernix.hardware.enable {
   services.pipewire = {
     enable = true;
     alsa.enable = true;
