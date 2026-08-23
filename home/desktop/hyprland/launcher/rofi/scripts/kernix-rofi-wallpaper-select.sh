@@ -45,7 +45,7 @@ if [[ -z "$SELECTED" ]]; then
 fi
 
 SELECTED_CLEAN="${SELECTED#\* }"
-SELECTED_CLEAN="${SELECTED_CLEAN# }"
+SELECTED_CLEAN="${SELECTED_CLEAN#"${SELECTED_CLEAN%%[![:space:]]*}"}"
 
 SELECTED_PATH=""
 for wp in "${WALLPAPERS[@]}"; do
