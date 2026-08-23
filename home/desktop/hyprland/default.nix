@@ -58,7 +58,7 @@
   # content muddy. Games can still request HDR per-window via DXVK_HDR=1.
   monitorLines = builtins.concatStringsSep "\n" (map (
       m: let
-        extraFields = lib.optionalString (hdr && m.primary) '', bitdepth = 10, cm = "wide"'';
+        extraFields = lib.optionalString (hdr && m.primary) '', cm = "wide"'';
       in ''hl.monitor({ output = "${m.name}", mode = "${m.resolution}", position = "${m.position}", scale = ${toString m.scale}${extraFields} })''
     )
     monitors);
