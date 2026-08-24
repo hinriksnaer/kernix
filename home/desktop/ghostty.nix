@@ -14,8 +14,8 @@ lib.mkIf host.desktop.enable {
     settings = {
       font-family = host.font.monospace;
       font-size = 16;
-      font-style = "SemiBold";
-      font-thicken = true;
+      font-style = "Regular";
+      font-thicken = false;
       freetype-load-flags = "hinting,no-force-autohint,no-monochrome,no-autohint";
       adjust-cell-height = 2;
       window-padding-x = 14;
