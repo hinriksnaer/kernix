@@ -10,7 +10,6 @@ set -euo pipefail
 
 KERNIX_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 HM_PROFILE="hgudmund@fedora"
-SM_CONFIG="fedora"
 
 echo "==> kernix: fedora bootstrap"
 echo "    root: $KERNIX_ROOT"
@@ -43,11 +42,7 @@ else
     echo ":: GPU drivers already configured"
 fi
 
-# ── 4. System-manager (sudo: installs fonts to /etc, /run) ──
-echo ":: applying system-manager ($SM_CONFIG)"
-nix run 'github:numtide/system-manager' -- switch --flake "$KERNIX_ROOT#$SM_CONFIG" --sudo
-
-# ── 5. Login shell (sudo: chsh modifies /etc/passwd) ──
+# ── 4. Login shell (sudo: chsh modifies /etc/passwd) ──
 ZSH="$HM_BIN/zsh"
 if [ "$(getent passwd "$USER" | cut -d: -f7)" != "$ZSH" ]; then
     echo ":: switching login shell to zsh"

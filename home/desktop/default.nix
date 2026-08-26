@@ -3,6 +3,7 @@
 {...}: {
   imports = [
     ./dolphin.nix
+    ./fonts.nix
     ./hyprland
     ./ghostty.nix
     ./session.nix
