@@ -2,16 +2,13 @@
 # consistent shellcheck validation, set -euo pipefail, and runtimeInputs.
 #
 # hmProfile: the homeConfigurations key (e.g. "hgudmund@remote").
-#            Required for kernix-hm-switch. Pass null when not needed.
+#            Required for kernix-hm-switch and kernix-fedora-switch.
 # darwinHost: the darwinConfigurations key (e.g. "macbook").
 #             Required for kernix-darwin-switch. Pass null when not needed.
-# systemManagerConfig: the systemConfigs key (e.g. "fedora").
-#                      Required for kernix-fedora-switch. Pass null when not needed.
 {
   pkgs,
   hmProfile ? null,
   darwinHost ? null,
-  systemManagerConfig ? null,
 }: {
   # NixOS hosts: rebuild with subcommands (rebuild/boot/test/update/cleanup/list-gens)
   kernix = pkgs.writeShellApplication {
@@ -53,9 +50,8 @@
       '';
     };
 
-  # Fedora hosts: git pull + system-manager switch + home-manager switch
+  # Fedora hosts: git pull + home-manager switch
   kernix-fedora-switch = assert hmProfile != null;
-  assert systemManagerConfig != null;
     pkgs.writeShellApplication {
       name = "kernix-fedora-switch";
       runtimeInputs = with pkgs; [git nix];
@@ -65,8 +61,6 @@
         git -C "$KERNIX_ROOT" pull --ff-only
         echo ":: updating flake inputs"
         nix flake update --flake "$KERNIX_ROOT"
-        echo ":: applying system config (${systemManagerConfig})"
-        nix run 'github:numtide/system-manager' -- switch --flake "$KERNIX_ROOT#${systemManagerConfig}" --sudo
         echo ":: applying Home Manager (${hmProfile})"
         home-manager switch --flake "$KERNIX_ROOT#${hmProfile}" "$@"
         echo ":: done"

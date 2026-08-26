@@ -13,7 +13,6 @@
   cli = import ../../cli {
     inherit pkgs;
     hmProfile = "${username}@${hostname}";
-    systemManagerConfig = "fedora";
   };
 in {
   # ── Non-NixOS Linux integration ──

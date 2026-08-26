@@ -13,6 +13,8 @@
       vertexProject = "itpc-ca-f56dba0f61";
     };
 
+    apps.enable = true;
+
     desktop = {
       enable = true;
       monitors = [

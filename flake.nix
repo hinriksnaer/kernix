@@ -20,10 +20,6 @@
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    system-manager = {
-      url = "github:numtide/system-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = {
@@ -34,7 +30,6 @@
     herdr,
     llm-agents,
     nixtorch,
-    system-manager,
     ...
   } @ inputs: let
     lib = nixpkgs.lib;
@@ -159,11 +154,6 @@
     # ── Darwin (macOS) configurations ──
     darwinConfigurations = {
       macbook = mkDarwinHost "macbook";
-    };
-
-    # ── System Manager (non-NixOS system-level config) ──
-    systemConfigs.fedora = system-manager.lib.makeSystemConfig {
-      modules = [./hosts/fedora/system.nix];
     };
 
     # ── Home Manager (standalone, user@host convention) ──
