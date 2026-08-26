@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # First-time setup for Fedora CSB + Nix.
 # Handles only what Nix cannot manage for itself:
+#   0. Nix daemon (Fedora multi-user install requires it)
 #   1. Enabling flakes (chicken-and-egg for first home-manager switch)
 #   2. Initial home-manager apply
 #   3. GPU driver symlink (requires root)
@@ -18,6 +19,14 @@ SM_CONFIG="fedora"
 
 echo "==> kernix: fedora bootstrap"
 echo "    root: $KERNIX_ROOT"
+
+# ── 0. Ensure nix daemon is running ──
+# Fedora's multi-user Nix install requires the daemon for store access.
+# Without it, user-level nix commands hit /nix/store/.links permission errors.
+if ! systemctl is-active --quiet nix-daemon; then
+    echo ":: enabling nix daemon"
+    sudo systemctl enable --now nix-daemon
+fi
 
 # ── 1. Enable flakes ──
 mkdir -p "$HOME/.config/nix"
