@@ -3,10 +3,13 @@
 # Run as: sudo bash hosts/fedora/cleanup-system-manager.sh
 set -euo pipefail
 
+RM=/usr/bin/rm
+SYSTEMCTL=/usr/bin/systemctl
+
 echo ":: removing system-manager /etc leftovers"
 
 # /etc files
-rm -f \
+$RM -f \
   /etc/fonts/local.conf \
   /etc/profile.d/system-manager-path.sh \
   /etc/environment.d/10-system-manager.conf \
@@ -14,7 +17,7 @@ rm -f \
   /etc/tmpfiles.d/home-directories.conf
 
 # systemd unit symlinks
-rm -f \
+$RM -f \
   /etc/systemd/system/run-wrappers.mount \
   /etc/systemd/system/suid-sgid-wrappers.service \
   /etc/systemd/system/sysinit-reactivation.target \
@@ -24,13 +27,12 @@ rm -f \
   /etc/systemd/system/userborn.service
 
 # systemd dependency dirs
-rm -rf \
+$RM -rf \
   /etc/systemd/system/sysinit-reactivation.target.requires \
   /etc/systemd/system/system-manager.target.wants \
   /etc/systemd/system/userborn.service.requires
 
 # reload systemd so it forgets the removed units
-systemctl daemon-reload
+$SYSTEMCTL daemon-reload
 
-# nix-collect-garbage removes the now-unused system-manager store paths
 echo ":: done -- run 'nix-collect-garbage' to free store space"
