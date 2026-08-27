@@ -13,16 +13,18 @@
     then "/root"
     else "${homePrefix}/${username}";
 in {
-  imports = [
-    # All modules imported -- leaf modules gate themselves via lib.mkIf host.*
-    ./terminal
-    ./desktop
-    ./apps
-    ./gaming
-    ./nixtorch.nix
-    ./theme
-    ../hosts/${hostname}/home.nix
-  ];
+  imports =
+    [
+      # All modules imported -- leaf modules gate themselves via lib.mkIf host.*
+      ./terminal
+      ./desktop
+      ./apps
+      ./gaming
+      ./nixtorch.nix
+      ./theme
+    ]
+    ++ lib.optional (builtins.pathExists ../hosts/${hostname}/home.nix)
+    ../hosts/${hostname}/home.nix;
 
   programs.home-manager.enable = true;
 
