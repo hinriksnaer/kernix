@@ -1,4 +1,4 @@
-/* Import theme-specific colors */
+/* Default -- semi-transparent bar, flat text, colored stat icons. */
 @import "theme.css";
 
 * {
@@ -11,195 +11,67 @@
 }
 
 window#waybar {
-  background: rgba(31, 36, 48, 0.30);
+  background: rgba(16, 20, 28, 0.65);
   color: @foreground;
 }
 
-#workspaces {
-  margin: 0 4px;
-}
-
+/* ── Workspaces ── */
+#workspaces { margin: 0 4px; }
 #workspaces button {
-  padding: 0 8px;
+  padding: 0 10px;
   color: @foreground;
   background: transparent;
   border-bottom: 2px solid transparent;
 }
+#workspaces button.active { border-bottom-color: @foreground; }
+#workspaces button.urgent { color: #ff6b6b; }
+#workspaces button:hover { background: rgba(255, 255, 255, 0.1); }
 
-#workspaces button.active {
-  color: @foreground;
-  border-bottom: 2px solid @foreground;
-}
+/* ── Kernix ── */
+#custom-kernix { font-size: 17px; padding: 0 14px; margin-left: 8px; }
 
-#workspaces button.urgent {
-  color: #ff6b6b;
-}
+/* ── Clock ── */
+#clock { font-weight: 600; padding: 0 14px; }
 
-#workspaces button:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-#custom-kernix,
-#window,
-#clock,
-#battery,
-#cpu,
-#memory,
-#temperature,
-#custom-gpu,
-#custom-gpu-usage,
-#custom-gpu-temp,
-#custom-gpu-vram,
-#custom-cpu-freq,
-#custom-swap,
-#network,
-#pulseaudio,
-#custom-power,
-#bluetooth,
-#tray,
-#custom-expand-icon,
-#custom-cpu-icon,
-#custom-gpu-icon,
-#custom-ram-icon {
-  padding: 0 8px;
-  margin: 0 2px;
-  color: @foreground;
-}
-
-#custom-kernix {
-  font-size: 17px;
-  padding: 0 10px;
-  margin-left: 8px;
-}
-
-#clock {
-  font-weight: 600;
-}
-
-#battery.charging {
-  color: #26a269;
-}
-
-#battery.warning:not(.charging) {
-  color: #f6d32d;
-}
-
-#battery.critical:not(.charging) {
-  color: #ff6b6b;
-  animation: blink 1s linear infinite;
-}
-
-@keyframes blink {
-  to {
-    color: @foreground;
-  }
-}
-
-#cpu {
-  margin-right: 4px;
-}
-
-#network.disconnected,
-#pulseaudio.muted {
-  opacity: 0.6;
-}
-
-#tray {
-  padding: 0 6px;
-}
-
-#tray > .passive {
-  -gtk-icon-effect: dim;
-}
-
-#tray > .needs-attention {
-  -gtk-icon-effect: highlight;
-}
-
-#group-tray-expander {
-  margin-right: 8px;
-}
-
-.tray-group-item {
-  padding: 0 4px;
-}
-
-#custom-expand-icon {
-  font-size: 15px;
-  padding: 0 8px;
-  color: @foreground;
-}
-
-tooltip {
-  background: @background;
-  border: 1px solid @foreground;
-  border-radius: 4px;
-}
-
-tooltip label {
-  color: @foreground;
-  padding: 4px;
-}
-
-/* Hardware monitoring groups */
-#group-hardware-cpu,
-#group-hardware-gpu,
-#group-hardware-ram {
+/* ── Stats group ── */
+#group-stats {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
-  margin: 0 4px;
+  margin: 0 8px;
   padding: 0 4px;
 }
 
-.hardware-group-item {
-  padding: 0 6px;
-  margin: 0 2px;
-}
+#custom-cpu-icon  { color: #62a0ea; padding: 0 4px 0 8px; margin: 0; }
+#custom-temp-icon { color: #f07178; padding: 0 4px 0 10px; margin: 0; }
+#custom-mem-icon  { color: #e07845; padding: 0 4px 0 10px; margin: 0; }
+#custom-gpu-icon  { color: #c061cb; padding: 0 4px 0 10px; margin: 0; }
 
-/* Hardware icons */
-#custom-cpu-icon {
-  color: #62a0ea;
-  font-size: 16px;
-  padding: 0 8px 0 10px;
+#cpu, #temperature, #memory, #custom-gpu-usage, #custom-gpu-temp {
+  color: @foreground;
+  padding: 0 6px 0 2px;
   margin: 0;
 }
 
-#custom-gpu-icon {
-  color: #57e389;
-  font-size: 16px;
-  padding: 0 8px 0 10px;
-  margin: 0;
-}
+#custom-temp-icon.critical { color: #ff6b6b; }
+#temperature.critical { color: #ff6b6b; }
 
-#custom-ram-icon {
-  color: #f6d32d;
-  font-size: 16px;
-  padding: 0 8px 0 10px;
-  margin: 0;
-}
+/* ── Battery ── */
+#battery { padding: 0 10px; color: @foreground; }
+#battery.charging { color: #26a269; }
+#battery.warning:not(.charging) { color: #f6d32d; }
+#battery.critical:not(.charging) { color: #ff6b6b; animation: blink 1s linear infinite; }
+@keyframes blink { to { color: @foreground; } }
 
-/* Compact hardware stats */
-#cpu,
-#custom-gpu-usage,
-#memory {
-  font-weight: 600;
-}
+/* ── Tray drawer ── */
+#group-tray-drawer { margin: 0 4px; }
+#custom-tray-toggle { padding: 0 10px; font-size: 15px; color: @foreground; }
+#tray { padding: 0 8px; }
+#tray > .passive { -gtk-icon-effect: dim; }
+#tray > .needs-attention { -gtk-icon-effect: highlight; }
 
-/* Temperature colors - only warn when critical */
-#temperature.critical,
-#custom-gpu-temp.critical {
-  color: #ff6b6b;
-  animation: blink 1s linear infinite;
-}
+/* ── Power ── */
+#custom-power { padding: 0 10px; margin-right: 8px; }
 
-#custom-cpu-freq,
-#custom-gpu-vram,
-#custom-swap {
-  font-size: 12px;
-  opacity: 0.9;
-}
-
-#custom-power {
-  padding: 0 8px;
-  margin-right: 4px;
-}
+/* ── Tooltip ── */
+tooltip { background: @background; border: 1px solid @foreground; border-radius: 4px; }
+tooltip label { color: @foreground; padding: 4px; }
