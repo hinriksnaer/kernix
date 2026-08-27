@@ -1,3 +1,22 @@
 /* Ayu Mirage theme colors for Waybar */
 @define-color foreground #cccac2;
 @define-color background #1f2430;
+@define-color blue #73d0ff;
+@define-color green #d5ff80;
+@define-color yellow #ffd173;
+@define-color red #f28779;
+
+/* Stat icon colors */
+#custom-cpu-icon { color: @blue; }
+#custom-temp-icon { color: @red; }
+#custom-mem-icon { color: @yellow; }
+#custom-gpu-icon { color: @green; }
+
+/* Workspace active accent */
+#workspaces button.active { border-bottom-color: @blue; }
+
+/* Battery states */
+#battery.charging { color: @green; }
+#battery:not(.charging) { color: @yellow; }
+#battery.full { color: @green; }
+#battery.warning:not(.charging) { color: @red; }

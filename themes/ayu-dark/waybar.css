@@ -2,3 +2,22 @@
 /* Colors from ayu-theme/ayu-colors canonical palette */
 @define-color foreground #bfbdb6;
 @define-color background #10141c;
+@define-color blue #59c2ff;
+@define-color green #70bf56;
+@define-color yellow #ffb454;
+@define-color red #f07178;
+
+/* Stat icon colors */
+#custom-cpu-icon { color: @blue; }
+#custom-temp-icon { color: @red; }
+#custom-mem-icon { color: @yellow; }
+#custom-gpu-icon { color: @green; }
+
+/* Workspace active accent */
+#workspaces button.active { border-bottom-color: @blue; }
+
+/* Battery states */
+#battery.charging { color: @green; }
+#battery:not(.charging) { color: @yellow; }
+#battery.full { color: @green; }
+#battery.warning:not(.charging) { color: @red; }

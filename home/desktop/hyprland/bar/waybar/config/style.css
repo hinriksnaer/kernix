@@ -42,9 +42,9 @@ window#waybar {
 }
 
 #custom-cpu-icon  { color: #62a0ea; padding: 0 4px 0 8px; margin: 0; }
-#custom-temp-icon { color: #f07178; padding: 0 4px 0 10px; margin: 0; }
-#custom-mem-icon  { color: #e07845; padding: 0 4px 0 10px; margin: 0; }
-#custom-gpu-icon  { color: #c061cb; padding: 0 4px 0 10px; margin: 0; }
+#custom-temp-icon { color: #f6d32d; padding: 0 4px 0 10px; margin: 0; }
+#custom-mem-icon  { color: #57e389; padding: 0 4px 0 10px; margin: 0; }
+#custom-gpu-icon  { color: #57e389; padding: 0 4px 0 10px; margin: 0; }
 
 #cpu, #temperature, #memory, #custom-gpu-usage, #custom-gpu-temp {
   color: @foreground;
