@@ -11,7 +11,7 @@ in {
   kernix.theme.hooks = ["herdr"];
 
   home.packages = [
-    pkgs.inputs'.herdr.default
+    pkgs.herdr
 
     # Theme apply script (called by kernix-theme-apply hook engine)
     (pkgs.writeShellApplication {

@@ -54,27 +54,6 @@
         "type": "github"
       }
     },
-    "herdr": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay"
-      },
-      "locked": {
-        "lastModified": 1787690696,
-        "narHash": "sha256-ljbHQ3i8lkkC4sK3kZ+qOejCANVW7PpQmV6eWTxdMM8=",
-        "owner": "ogulcancelik",
-        "repo": "herdr",
-        "rev": "d79fd746a96ddb5642939c9727baefce642d78e6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ogulcancelik",
-        "repo": "herdr",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -82,11 +61,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787778830,
-        "narHash": "sha256-GnLPpDT727E6VpDlALP8JeP1BbSQ17H0HiEEYq6Ql4w=",
+        "lastModified": 1787797243,
+        "narHash": "sha256-8+Q7NOB7RPajRjA4pbCDLzqH+MTjnG9x6LUPLfL2joA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "6b449e35980e1b75dd17da2d6d9b66e757194f1c",
+        "rev": "99c9ec63390f1d8c14d95d9e8b17cc29cfbd4e11",
         "type": "github"
       },
       "original": {
@@ -106,11 +85,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1787786215,
-        "narHash": "sha256-W0TihsPeAc6TuApOJtreFt3JOaOmSP8gf7Pvtt21X6s=",
+        "lastModified": 1787801184,
+        "narHash": "sha256-5kNSIBFFcDTFbsm18NrgYl15FqPCYl1KaSOCEXKMHIg=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "4fbd839703b4b77b7bb66937ff10cd8a44a8ad6e",
+        "rev": "fa4b5ffa9007ef847df52351575c25b733da85f4",
         "type": "github"
       },
       "original": {
@@ -171,32 +150,10 @@
     },
     "root": {
       "inputs": {
-        "herdr": "herdr",
         "home-manager": "home-manager",
         "llm-agents": "llm-agents",
         "nixpkgs": "nixpkgs",
         "nixtorch": "nixtorch"
-      }
-    },
-    "rust-overlay": {
-      "inputs": {
-        "nixpkgs": [
-          "herdr",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1783577481,
-        "narHash": "sha256-EWMxOWrJ031f8f/lrcEmhTRs4npw1/5N3Hcjin846c8=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "4cdea398dc491b082dccdce0fad1ed0b75fa3394",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "type": "github"
       }
     },
     "systems": {

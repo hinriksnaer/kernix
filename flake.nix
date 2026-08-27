@@ -11,10 +11,6 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    herdr = {
-      url = "github:ogulcancelik/herdr";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixtorch.url = "github:hinriksnaer/nixtorch";
   };
 
@@ -22,7 +18,6 @@
     self,
     nixpkgs,
     home-manager,
-    herdr,
     llm-agents,
     nixtorch,
     ...
