@@ -156,8 +156,10 @@ in
             tooltip = false;
           };
           temperature = {
+            hwmon-path-abs = "/sys/devices/pci0000:00/0000:00:18.3/hwmon";
+            input-filename = "temp1_input"; # Tctl
             interval = 2;
-            critical-threshold = 75;
+            critical-threshold = 85;
             format = "{temperatureC}°";
             format-critical = "{temperatureC}°";
             tooltip-format = "CPU Temp: {temperatureC}°C";
