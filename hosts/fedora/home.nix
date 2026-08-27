@@ -11,6 +11,7 @@
   username = host.username;
   cli = import ../../cli {
     inherit pkgs;
+    hostType = "hm";
     hmProfile = "${username}@${hostname}";
   };
 in {
@@ -27,6 +28,6 @@ in {
     xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk
     xwayland
-    cli.kernix-fedora-switch
+    cli.kernix
   ];
 }

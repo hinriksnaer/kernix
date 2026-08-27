@@ -14,6 +14,7 @@
     else "${homeDir}/kernix";
   cli = import ../../cli {
     inherit pkgs;
+    hostType = "hm";
     hmProfile = "${username}@${hostname}";
   };
 in {
@@ -33,5 +34,5 @@ in {
     [ -f "${homeDir}/.nix-profile/etc/profile.d/hm-session-vars.sh" ] && . "${homeDir}/.nix-profile/etc/profile.d/hm-session-vars.sh"
   '';
 
-  home.packages = [cli.kernix-hm-switch];
+  home.packages = [cli.kernix];
 }

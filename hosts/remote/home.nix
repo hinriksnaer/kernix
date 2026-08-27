@@ -9,9 +9,9 @@
   username = host.username;
   cli = import ../../cli {
     inherit pkgs;
+    hostType = "hm";
     hmProfile = "${username}@${hostname}";
   };
 in {
-  # kernix-hm-switch: pull latest + home-manager switch
-  home.packages = [cli.kernix-hm-switch];
+  home.packages = [cli.kernix];
 }

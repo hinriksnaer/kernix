@@ -1,5 +1,5 @@
 # Fedora CSB host -- Hyprland desktop via Nix on Fedora.
-# Apply with: kernix-fedora-switch (or see bootstrap.sh for first-time setup)
+# Apply with: kernix rebuild (or see bootstrap.sh for first-time setup)
 {...}: {
   kernix = {
     username = "hgudmund";

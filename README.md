@@ -51,12 +51,12 @@ nix run home-manager/master -- switch --flake ~/kernix#root@container -b backup
 ## CLI
 
 ```
-kernix rebuild       rebuild and switch
-kernix boot          rebuild for next boot
-kernix test          activate without adding to boot menu
+kernix rebuild       rebuild and switch (default)
+kernix boot          rebuild for next boot (NixOS only)
+kernix test          activate without adding to boot menu (NixOS only)
 kernix update        update flake inputs + rebuild
 kernix cleanup [N]   remove old generations (keep N, default 5)
-kernix-hm-switch     pull + update + apply Home Manager (remote/container)
+kernix list-gens     list generations
 ```
 
 ## Structure
