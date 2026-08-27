@@ -1,6 +1,6 @@
 # kernix
 
-One Nix flake for every machine. Desktop, laptop, Mac, server, container -- same repo, same modules, one rebuild.
+One Nix flake for every machine. Desktop, laptop, server, container -- same repo, same modules, one rebuild.
 
 ## Why
 
@@ -12,7 +12,6 @@ Maintaining separate configs per machine drifts fast. Kernix keeps everything in
 |---|---|---|---|
 | `desktop` | NixOS x86_64 | NixOS + Home Manager | NVIDIA, multi-monitor workstation |
 | `laptop` | NixOS x86_64 | NixOS + Home Manager | Intel GPU, power management |
-| `macbook` | Darwin aarch64 | nix-darwin + Home Manager | Apple Silicon |
 | `remote` | Linux | Home Manager only | Headless server |
 | `container` | Linux | Home Manager only | Kubernetes/OpenShift, CUDA dev |
 | `fedora` | Fedora Linux | Home Manager only | Hyprland via Nix on Fedora |

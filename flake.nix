@@ -16,17 +16,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixtorch.url = "github:hinriksnaer/nixtorch";
-    nix-darwin = {
-      url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = {
     self,
     nixpkgs,
     home-manager,
-    nix-darwin,
     herdr,
     llm-agents,
     nixtorch,
@@ -40,13 +35,6 @@
     pkgs = nixpkgs.legacyPackages.${system};
     pkgsUnfree = import nixpkgs {
       inherit system;
-      config.allowUnfree = true;
-      overlays = builtins.attrValues self.overlays;
-    };
-
-    darwinSystem = "aarch64-darwin";
-    pkgsDarwin = import nixpkgs {
-      system = darwinSystem;
       config.allowUnfree = true;
       overlays = builtins.attrValues self.overlays;
     };
@@ -72,36 +60,6 @@
           ({config, ...}: {
             nixpkgs.overlays = builtins.attrValues self.overlays;
             networking.hostName = "kernix-${hostname}";
-
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "hm-backup";
-              extraSpecialArgs = {
-                host = config.kernix;
-                inherit hostname;
-              };
-              users.${config.kernix.username} =
-                import ./home {inherit hostname;};
-            };
-          })
-        ];
-      };
-
-    mkDarwinHost = hostname:
-      nix-darwin.lib.darwinSystem {
-        system = darwinSystem;
-        modules = [
-          # Kernix options (Darwin doesn't import the full system module tree)
-          ./lib/options.nix
-
-          # Host declaration
-          ./hosts/${hostname}
-
-          # Home Manager integration
-          home-manager.darwinModules.home-manager
-          ({config, ...}: {
-            nixpkgs.overlays = builtins.attrValues self.overlays;
 
             home-manager = {
               useGlobalPkgs = true;
@@ -151,11 +109,6 @@
       laptop = mkHost "laptop";
     };
 
-    # ── Darwin (macOS) configurations ──
-    darwinConfigurations = {
-      macbook = mkDarwinHost "macbook";
-    };
-
     # ── Home Manager (standalone, user@host convention) ──
     homeConfigurations = builtins.listToAttrs (map (hostName: let
       hostCfg = evalHost hostName;
@@ -190,7 +143,5 @@
       lib.mapAttrs
       (_: cfg: nixtorch.lib.mkDevShell cfg.nixtorch)
       withNixtorch;
-    devShells.${darwinSystem}.default =
-      import ./hosts/macbook/devshell.nix {pkgs = pkgsDarwin;};
   };
 }
