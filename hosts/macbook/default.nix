@@ -11,7 +11,7 @@
     };
 
     opencode = {
-      vertexProject = "itpc-gcp-ai-eng-claude";
+      vertexProject = "itpc-ca-f56dba0f61";
     };
   };
 
