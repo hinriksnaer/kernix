@@ -32,6 +32,7 @@ in
           modules-right =
             ["group/stats"]
             ++ [
+              "custom/battery-icon"
               "battery"
               "group/tray-drawer"
               "custom/power"
@@ -94,15 +95,39 @@ in
             spacing = 8;
           };
 
+          "custom/battery-icon" = {
+            exec = ''
+              while true; do
+                cap=$(cat /sys/class/power_supply/BAT*/capacity 2>/dev/null | head -1)
+                status=$(cat /sys/class/power_supply/BAT*/status 2>/dev/null | head -1)
+                if [ "$status" = "Charging" ]; then
+                  echo "󰂄"
+                elif [ -z "$cap" ]; then
+                  echo "󰁹"
+                elif [ "$cap" -le 10 ]; then
+                  echo "󰁺"
+                elif [ "$cap" -le 30 ]; then
+                  echo "󰁻"
+                elif [ "$cap" -le 60 ]; then
+                  echo "󰁽"
+                elif [ "$cap" -le 90 ]; then
+                  echo "󰁿"
+                else
+                  echo "󰁹"
+                fi
+                sleep 30
+              done
+            '';
+            tooltip = false;
+          };
           battery = {
             interval = 30;
             states = {
               warning = 30;
               critical = 15;
             };
-            format = "{icon} {capacity}%";
-            format-charging = "󰂄 {capacity}%";
-            format-icons = ["󰁺" "󰁻" "󰁽" "󰁿" "󰁹"];
+            format = "{capacity}%";
+            format-charging = "{capacity}%";
             tooltip-format = "{timeTo} ({capacity}%)";
           };
 
@@ -175,6 +200,10 @@ in
         };
 
       # Theme CSS imported at runtime (symlinked by kernix-theme-apply)
-      style = builtins.readFile ./config/style.css;
+      # Use absolute path so the @import resolves correctly from the nix store.
+      style = builtins.replaceStrings
+        ["@import \"theme.css\";"]
+        ["@import url(\"${config.home.homeDirectory}/.config/waybar/theme.css\");"]
+        (builtins.readFile ./config/style.css);
     };
   }

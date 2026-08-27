@@ -23,7 +23,7 @@ window#waybar {
   background: transparent;
   border-bottom: 2px solid transparent;
 }
-#workspaces button.active { border-bottom-color: @foreground; }
+
 #workspaces button.urgent { color: #ff6b6b; }
 #workspaces button:hover { background: rgba(255, 255, 255, 0.1); }
 
@@ -41,10 +41,10 @@ window#waybar {
   padding: 0 4px;
 }
 
-#custom-cpu-icon  { color: #62a0ea; padding: 0 4px 0 8px; margin: 0; }
-#custom-temp-icon { color: #f6d32d; padding: 0 4px 0 10px; margin: 0; }
-#custom-mem-icon  { color: #57e389; padding: 0 4px 0 10px; margin: 0; }
-#custom-gpu-icon  { color: #57e389; padding: 0 4px 0 10px; margin: 0; }
+#custom-cpu-icon  { padding: 0 4px 0 8px; margin: 0; }
+#custom-temp-icon { padding: 0 4px 0 10px; margin: 0; }
+#custom-mem-icon  { padding: 0 4px 0 10px; margin: 0; }
+#custom-gpu-icon  { padding: 0 4px 0 10px; margin: 0; }
 
 #cpu, #temperature, #memory, #custom-gpu-usage, #custom-gpu-temp {
   color: @foreground;
@@ -52,14 +52,12 @@ window#waybar {
   margin: 0;
 }
 
-#custom-temp-icon.critical { color: #ff6b6b; }
-#temperature.critical { color: #ff6b6b; }
+
 
 /* ── Battery ── */
-#battery { padding: 0 10px; color: @foreground; }
-#battery.charging { color: #26a269; }
-#battery.warning:not(.charging) { color: #f6d32d; }
-#battery.critical:not(.charging) { color: #ff6b6b; animation: blink 1s linear infinite; }
+#custom-battery-icon { padding: 0 4px 0 10px; margin: 0; }
+#battery { padding: 0 6px 0 2px; color: @foreground; }
+#battery.critical:not(.charging) { animation: blink 1s linear infinite; }
 @keyframes blink { to { color: @foreground; } }
 
 /* ── Tray drawer ── */
