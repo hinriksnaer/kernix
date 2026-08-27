@@ -1,23 +1,14 @@
 /* Ayu Dark theme colors for Waybar */
-/* Colors from ayu-theme/ayu-colors canonical palette */
 @define-color foreground #bfbdb6;
 @define-color background #10141c;
-@define-color blue #59c2ff;
-@define-color green #70bf56;
-@define-color yellow #ffb454;
-@define-color red #f07178;
+@define-color accent #59c2ff;
 
-/* Stat icon colors */
-#custom-cpu-icon { color: @blue; }
-#custom-temp-icon { color: @red; }
-#custom-mem-icon { color: @yellow; }
-#custom-gpu-icon { color: @green; }
+/* Accent color — all icons, workspace underline, kernix icon */
+#custom-kernix { color: @accent; }
+#custom-cpu-icon { color: @accent; }
+#custom-temp-icon { color: @accent; }
+#custom-mem-icon { color: @accent; }
+#custom-gpu-icon { color: @accent; }
+#workspaces button.active { color: @accent; border-bottom-color: @accent; }
 
-/* Workspace active accent */
-#workspaces button.active { border-bottom-color: @blue; }
-
-/* Battery states */
-#battery.charging { color: @green; }
-#battery:not(.charging) { color: @yellow; }
-#battery.full { color: @green; }
-#battery.warning:not(.charging) { color: @red; }
+#custom-battery-icon { color: @accent; }
