@@ -1,12 +1,11 @@
 # Fedora CSB -- non-NixOS desktop host.
 # Provides: genericLinux integration, GPU driver setup, Hyprland + Wayland
 # session via Nix (unavailable in Fedora repos without third-party COPR),
-# XDG portals, TTY1 session start, and CLI helper.
+# XDG portals, and CLI helper.
 {
   pkgs,
   host,
   hostname,
-  lib,
   ...
 }: let
   username = host.username;
@@ -30,14 +29,4 @@ in {
     xwayland
     cli.kernix-fedora-switch
   ];
-
-  # Start Hyprland on TTY1 login.
-  # mkOrder 99 fires before the existing UWSM block (mkOrder 100) in
-  # home/desktop/hyprland/default.nix. The `exec` replaces the shell so
-  # the UWSM block never runs.
-  programs.zsh.initContent = lib.mkOrder 99 ''
-    if [[ "$(tty)" == "/dev/tty1" && -z "$DISPLAY" && -z "$WAYLAND_DISPLAY" ]]; then
-        exec Hyprland
-    fi
-  '';
 }
