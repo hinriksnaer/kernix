@@ -100,10 +100,10 @@ in
               while true; do
                 cap=$(cat /sys/class/power_supply/BAT*/capacity 2>/dev/null | head -1)
                 status=$(cat /sys/class/power_supply/BAT*/status 2>/dev/null | head -1)
-                if [ "$status" = "Charging" ]; then
+                if [ -z "$cap" ]; then
+                  echo ""
+                elif [ "$status" = "Charging" ]; then
                   echo "󰂄"
-                elif [ -z "$cap" ]; then
-                  echo "󰁹"
                 elif [ "$cap" -le 10 ]; then
                   echo "󰁺"
                 elif [ "$cap" -le 30 ]; then
@@ -137,6 +137,7 @@ in
               ["custom/cpu-icon" "cpu" "custom/temp-icon" "temperature"]
               ++ lib.optional isNvidia "custom/gpu-icon"
               ++ lib.optional isNvidia "custom/gpu-usage"
+              ++ lib.optional isNvidia "custom/gpu-temp-icon"
               ++ lib.optional isNvidia "custom/gpu-temp"
               ++ ["custom/mem-icon" "memory"];
           };
@@ -190,6 +191,10 @@ in
             tooltip-format = "GPU Usage";
             on-click = "${terminal} -e btop";
           };
+          "custom/gpu-temp-icon" = {
+            format = "󰔏";
+            tooltip = false;
+          };
           "custom/gpu-temp" = {
             exec = "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits | head -n 1";
             interval = 2;
@@ -201,7 +206,8 @@ in
 
       # Theme CSS imported at runtime (symlinked by kernix-theme-apply)
       # Use absolute path so the @import resolves correctly from the nix store.
-      style = builtins.replaceStrings
+      style =
+        builtins.replaceStrings
         ["@import \"theme.css\";"]
         ["@import url(\"${config.home.homeDirectory}/.config/waybar/theme.css\");"]
         (builtins.readFile ./config/style.css);

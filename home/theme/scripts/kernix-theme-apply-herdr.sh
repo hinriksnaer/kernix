@@ -20,9 +20,7 @@ fi
 # Map kernix theme -> herdr built-in theme
 case "$theme_name" in
     catppuccin)       herdr_theme="catppuccin" ;;
-    catppuccin-latte) herdr_theme="catppuccin-latte" ;;
     nord)             herdr_theme="nord" ;;
-    rose-pine)        herdr_theme="rose-pine" ;;
     rose-pine-dark)   herdr_theme="rose-pine" ;;
     tokyo-night)      herdr_theme="tokyo-night" ;;
     *)                herdr_theme="terminal" ;;

@@ -9,6 +9,7 @@
 #custom-temp-icon { color: @accent; }
 #custom-mem-icon { color: @accent; }
 #custom-gpu-icon { color: @accent; }
+#custom-gpu-temp-icon { color: @accent; }
 #workspaces button.active { color: @accent; border-bottom-color: @accent; }
 
 #custom-battery-icon { color: @accent; }
