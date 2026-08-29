@@ -25,6 +25,23 @@ in
       };
     };
 
+    # Let gamescope/Steam handle the power button, not logind.
+    services.logind.settings.Login.HandlePowerKey = "ignore";
+
+    # Allow controller-driven Wi-Fi config in couch mode without a keyboard.
+    security.polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (
+          action.id.indexOf("org.freedesktop.NetworkManager") == 0 &&
+          subject.isInGroup("users") &&
+          subject.local &&
+          subject.active
+        ) {
+          return polkit.Result.YES;
+        }
+      });
+    '';
+
     # Passwordless chvt for the user (VT switching for couch mode)
     security.sudo.extraRules = [
       {

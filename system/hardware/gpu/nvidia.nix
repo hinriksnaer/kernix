@@ -1,4 +1,4 @@
-# NVIDIA proprietary driver -- discrete GPU.
+# NVIDIA open-source driver -- discrete GPU.
 # Kernel modules, modesetting, VAAPI (nvidia-vaapi-driver),
 # container toolkit, and session variables.
 {
@@ -10,8 +10,8 @@
 lib.mkIf (config.kernix.hardware.enable && config.kernix.gpu == "nvidia") {
   hardware.nvidia = {
     modesetting.enable = true;
-    powerManagement.enable = false;
-    open = false;
+    powerManagement.enable = true;
+    open = true;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };

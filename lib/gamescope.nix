@@ -22,7 +22,6 @@ in {
       DXVK_ASYNC = "1";
 
       # -- Game compatibility --
-      PROTON_NO_FSYNC = "1";
       SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
       VKD3D_SWAPCHAIN_LATENCY_FRAMES = "3";
       GAMESCOPE_NV12_COLORSPACE = "k_EStreamColorspace_BT601";
@@ -35,6 +34,11 @@ in {
     }
     // lib.optionalAttrs isNvidia {
       __GL_CONSTANT_FRAME_RATE_HINT = "3";
+
+      # -- NVAPI / raytracing (DLSS, DXR, RT cores) --
+      PROTON_ENABLE_NVAPI = "1";
+      DXVK_ENABLE_NVAPI = "true";
+      VKD3D_FEATURE_LEVEL = "12_2";
     };
 
   # Common gamescope CLI args (resolution/output added per-consumer).

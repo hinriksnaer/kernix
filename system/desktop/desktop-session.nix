@@ -22,6 +22,13 @@ lib.mkIf config.kernix.desktop.enable {
       type = "-";
       value = "unlimited";
     }
+    {
+      # Allow Proton/game processes to raise their scheduling priority.
+      domain = "*";
+      item = "nice";
+      type = "hard";
+      value = "-8";
+    }
   ];
 
   programs.dconf.enable = true;

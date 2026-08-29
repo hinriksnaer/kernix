@@ -52,7 +52,21 @@ in
 
     programs.gamemode.enable = true;
 
-    # Valve/Proton recommended: raise vm.max_map_count for games with heavy
-    # memory-mapped allocations (shaders, textures, large worlds).
-    boot.kernel.sysctl."vm.max_map_count" = 2147483642;
+    # ── Kernel modules ──
+    # ntsync: kernel-level NT synchronization for Wine/Proton (kernel 6.13+).
+    # hid_nintendo/hid_playstation: pre-load controller drivers for instant recognition.
+    boot.kernelModules = ["ntsync" "hid_nintendo" "hid_playstation"];
+
+    boot.kernel.sysctl = {
+      # Valve/Proton recommended: raise vm.max_map_count for games with heavy
+      # memory-mapped allocations (shaders, textures, large worlds).
+      "vm.max_map_count" = 2147483642;
+
+      # Recycle closed TCP sockets faster (default: 60s).
+      # Prevents "address already in use" when restarting games quickly.
+      "net.ipv4.tcp_fin_timeout" = 5;
+
+      # Fix connectivity with ISPs/routers that have broken PMTU discovery.
+      "net.ipv4.tcp_mtu_probing" = true;
+    };
   }

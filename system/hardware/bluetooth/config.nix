@@ -10,6 +10,11 @@ lib.mkIf config.kernix.hardware.enable {
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = config.kernix.hardware.bluetooth.powerOnBoot;
+    settings = {
+      General = {
+        FastConnectable = true;
+      };
+    };
   };
 
   services.blueman.enable = true;
