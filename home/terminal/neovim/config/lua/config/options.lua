@@ -67,6 +67,10 @@ vim.o.splitbelow = true
 vim.o.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
+-- Diff mode: better algorithm, word-level matching, diagonal filler lines
+vim.opt.diffopt = 'internal,filler,closeoff,algorithm:histogram,indent-heuristic,linematch:60'
+vim.opt.fillchars:append { diff = '╱' }
+
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
 

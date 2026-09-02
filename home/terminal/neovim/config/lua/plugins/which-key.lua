@@ -56,6 +56,8 @@ return {
       { '<leader>P', group = '󰁯 Persistence' }, -- Session management
       { '<leader>h', group = '󰛢 Harpoon' }, -- Harpoon file marks
       { '<leader>d', group = ' Debug' }, -- DAP debugging
+      { '<leader>dp', group = 'Python' }, -- Python-specific debug (test method/class, GDB/LLDB attach)
+      { '<leader>t', group = '󰙨 Test' }, -- Neotest (run, debug, output)
       { '<leader>\\', group = ' Toggle' }, -- mini.basics option toggles
 
       -- Git subgroups

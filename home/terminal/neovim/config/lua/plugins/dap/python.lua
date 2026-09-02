@@ -1,5 +1,6 @@
 -- Python Debug Configuration
--- Handles Python debugging with debugpy and C++ attachment (GDB/LLDB)
+-- Custom C++ attachment workflows (GDB/LLDB) for debugging native extensions.
+-- Python adapter registration and test debugging are handled by nvim-dap-python.
 
 local M = {}
 local which = require('plugins.dap.utils').which
@@ -26,26 +27,13 @@ function M.setup(dap)
     end
   end
 
-  -- Keymaps for Python debugging
-  vim.keymap.set('n', '<leader>dpy', function()
-    dap.run({
-      type = 'python',
-      request = 'launch',
-      name = 'Python: current file',
-      program = '${file}',
-      console = 'integratedTerminal',
-      subProcess = false,
-      -- Break on uncaught exceptions
-      exceptionOptions = {
-        {
-          path = {
-            { names = { 'Python Exceptions' } },
-          },
-          breakMode = 'unhandled',
-        },
-      },
-    })
-  end, { desc = 'Debug Python (debugpy)' })
+  -- Debug tests at cursor (via nvim-dap-python)
+  vim.keymap.set('n', '<leader>dpt', function() require('dap-python').test_method() end,
+    { desc = 'Debug test method' })
+  vim.keymap.set('n', '<leader>dpc', function() require('dap-python').test_class() end,
+    { desc = 'Debug test class' })
+  vim.keymap.set('v', '<leader>dps', function() require('dap-python').debug_selection() end,
+    { desc = 'Debug selection' })
 
   -- Attach GDB to Python process
   vim.keymap.set('n', '<leader>dpp', function()

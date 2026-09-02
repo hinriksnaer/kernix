@@ -1,19 +1,11 @@
 -- DAP Adapter Configurations
 -- Defines debug adapters for various languages/debuggers
+-- Note: Python adapter (debugpy) is registered by nvim-dap-python in init.lua
 
 local M = {}
-local which = require('plugins.dap.utils').which
 
 function M.setup(dap)
   local mason_bin = vim.fn.stdpath('data') .. '/mason/bin'
-  local py = which('python3') or which('python') or 'python'
-
-  -- Python debugger (debugpy)
-  dap.adapters.python = {
-    type = 'executable',
-    command = py,
-    args = { '-m', 'debugpy.adapter' },
-  }
 
   -- C++ debugger (GDB via cpptools)
   dap.adapters.cppdbg = {
