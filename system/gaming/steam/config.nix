@@ -31,6 +31,10 @@ in
         pulseaudio # pactl -- Steam's scripts use it for audio device management
       ];
 
+      # Translate X11 input events to uinput events so Steam Input's Desktop
+      # Layout (mouse/keyboard emulation from the controller) works on Wayland.
+      extest.enable = true;
+
       # Standalone gamescope session (Steam Deck game mode on the TV).
       # Creates `steam-gamescope` wrapper used by couch.nix on TTY3.
       gamescopeSession = {
@@ -51,6 +55,9 @@ in
     };
 
     programs.gamemode.enable = true;
+
+    # Udev rules for Steam hardware (Steam Controller, other controllers, HTC Vive).
+    hardware.steam-hardware.enable = true;
 
     # ── Kernel modules ──
     # ntsync: kernel-level NT synchronization for Wine/Proton (kernel 6.13+).
