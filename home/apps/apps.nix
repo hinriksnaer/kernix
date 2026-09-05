@@ -9,7 +9,7 @@
 lib.mkIf host.apps.enable {
   home.packages = with pkgs; [
     # Applications
-    discord
+    vesktop
     slack
     obsidian
 

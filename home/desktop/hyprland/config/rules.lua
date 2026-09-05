@@ -26,10 +26,4 @@ hl.window_rule({
     opacity = "0.95 0.85",
 })
 
-hl.window_rule({
-    name = "comms-workspace",
-    match = { class = "^(discord|Slack)$" },
-    workspace = "3",
-})
-
 -- Couch mode: not needed for standalone gamescope (runs on its own TTY).
