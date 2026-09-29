@@ -1,4 +1,4 @@
--- Input -- keyboard, mouse, cursor, xwayland.
+-- Input -- keyboard, mouse, cursor, touchpad, xwayland.
 
 hl.config({
     input = {
@@ -7,6 +7,10 @@ hl.config({
         follow_mouse = 1,
         mouse_refocus = false,
         sensitivity = 0,
+
+        touchpad = {
+            natural_scroll = true,
+        },
     },
 
     cursor = {
@@ -18,3 +22,6 @@ hl.config({
         force_zero_scaling = true,
     },
 })
+
+-- Gestures -- trackpad workspace swipe.
+hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
