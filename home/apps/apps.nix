@@ -12,6 +12,7 @@ lib.mkIf host.apps.enable {
     vesktop
     slack
     obsidian
+    spotify
 
     # Containers
     podman-compose

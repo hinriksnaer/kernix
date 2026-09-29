@@ -18,7 +18,7 @@ in
       enable = true;
       package = pkgs.rofi;
 
-      extraConfig = {
+      settings = {
         show-icons = true;
         icon-theme = "Papirus";
         display-drun = "Applications";

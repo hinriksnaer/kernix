@@ -32,4 +32,8 @@ lib.mkIf config.kernix.desktop.enable {
   ];
 
   programs.dconf.enable = true;
+
+  # Virtual filesystem -- provides trash, MTP, and remote mount support
+  # for GTK file managers (Thunar, Nautilus, etc.).
+  services.gvfs.enable = true;
 }

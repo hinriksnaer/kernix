@@ -22,6 +22,17 @@ in {
   # First-time setup requires: sudo non-nixos-gpu-setup
   targets.genericLinux.gpu.enable = true;
 
+  # ── Shell ──
+  # SSSD-managed accounts cannot use chsh; tell Ghostty to launch zsh
+  # directly and keep the bash exec as a fallback for other terminals.
+  programs.ghostty.settings.command = "${pkgs.zsh}/bin/zsh";
+  programs.bash.initExtra = ''
+    if [[ -x "${pkgs.zsh}/bin/zsh" && -z "$_ZSH_EXEC_GUARD" ]]; then
+      export _ZSH_EXEC_GUARD=1
+      exec "${pkgs.zsh}/bin/zsh" -l
+    fi
+  '';
+
   # ── Hyprland + Wayland session ──
   home.packages = with pkgs; [
     hyprland

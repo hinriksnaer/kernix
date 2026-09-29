@@ -24,7 +24,6 @@ hl.config({
         focus_on_activate = true,
         disable_autoreload = false,
         anr_missed_pings = 3,
-        enable_swallow = true,
-        swallow_regex = "^(" .. TERMINAL_CLASS .. ")$",
+        enable_swallow = false,
     },
 })

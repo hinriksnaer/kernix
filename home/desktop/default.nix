@@ -2,7 +2,7 @@
 # Sub-modules gate themselves via lib.mkIf host.desktop.enable.
 {...}: {
   imports = [
-    ./dolphin.nix
+    ./thunar.nix
     ./fonts.nix
     ./hyprland
     ./ghostty.nix
