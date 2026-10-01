@@ -51,8 +51,8 @@ with lib; {
 
     defaultTheme = mkOption {
       type = types.str;
-      default = "ayu-dark";
-      description = "Default theme (from themes/).";
+      default = "ayu";
+      description = "Default theme (from themes/ or a built-in OpenCode theme).";
     };
 
     font = {
