@@ -27,14 +27,10 @@
           scale = 1.0;
           primary = true;
         }
-        {
-          name = "HDMI-A-1";
-          enabled = false;
-        }
       ];
       hyprland = {
         layout = "master";
-        tvOutput = "HDMI-A-2";
+        tvOutput = "HDMI-A-1";
         hdr = true;
       };
     };
