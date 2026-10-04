@@ -57,12 +57,15 @@
   # (Samsung Odyssey G95NC -> XBGR2101010). Using "wide" instead of "hdr"
   # because Hyprland lacks SDR-to-HDR tone mapping -- "hdr" makes desktop
   # content muddy. Games can still request HDR per-window via DXVK_HDR=1.
+  # supports_wide_color = 1 forces Hyprland to treat the monitor as
+  # wide-gamut capable; without it, cm="wide" sets the DRM colorspace
+  # property but the compositor still renders as sRGB.
   enabledMonitors = builtins.filter (m: m.enabled) monitors;
   disabledMonitors = builtins.filter (m: !m.enabled) monitors;
   monitorLines = builtins.concatStringsSep "\n" (
     (map (
         m: let
-          extraFields = lib.optionalString (hdr && m.primary) '', bitdepth = 10, cm = "wide"'';
+          extraFields = lib.optionalString (hdr && m.primary) '', bitdepth = 10, cm = "wide", supports_wide_color = 1'';
         in ''hl.monitor({ output = "${m.name}", mode = "${m.resolution}", position = "${m.position}", scale = ${toString m.scale}${extraFields} })''
       )
       enabledMonitors)
