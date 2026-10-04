@@ -24,8 +24,12 @@ in {
       # -- Game compatibility --
       SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
       VKD3D_SWAPCHAIN_LATENCY_FRAMES = "3";
-      GAMESCOPE_NV12_COLORSPACE = "k_EStreamColorspace_BT601";
       QT_QPA_PLATFORM = "xcb";
+
+      # NV12 color space for Remote Play Together / Wayland.
+      # Upstream uses BT601 but that causes glitches and artifacts on
+      # this NVIDIA + HDMI-A-1 TV setup. BT709 is stable here.
+      GAMESCOPE_NV12_COLORSPACE = "k_EStreamColorspace_BT709";
     }
     // lib.optionalAttrs hasHdr {
       # -- HDR (only when HDR output is enabled) --
@@ -33,6 +37,7 @@ in {
       DXVK_HDR = "1";
     }
     // lib.optionalAttrs isNvidia {
+      # Hint the GL driver to smooth frame pacing (value 3 = auto).
       __GL_CONSTANT_FRAME_RATE_HINT = "3";
 
       # -- NVAPI / raytracing (DLSS, DXR, RT cores) --

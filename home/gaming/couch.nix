@@ -72,8 +72,16 @@ in
           # Stops Hyprland, waits for full exit, then switches to TTY3.
           uwsm stop
 
+          WAIT=0
           while pgrep -x Hyprland >/dev/null 2>&1 || pgrep -x .Hyprland-wrapp >/dev/null 2>&1; do
               sleep 0.2
+              WAIT=$((WAIT + 1))
+              if [ "$WAIT" -ge 50 ]; then  # 10s timeout
+                  pkill -9 -x Hyprland 2>/dev/null || true
+                  pkill -9 -x .Hyprland-wrapp 2>/dev/null || true
+                  sleep 0.5
+                  break
+              fi
           done
 
           pkill -HUP -t tty3 2>/dev/null || true
@@ -141,8 +149,23 @@ in
 
           ulimit -n 524288
 
+          # Gamescope limiter file for callback-based frame limiter.
+          GAMESCOPE_LIMITER_FILE=$(mktemp /tmp/gamescope-limiter.XXXXXXXX)
+          export GAMESCOPE_LIMITER_FILE
+
           # Start Sunshine for Moonlight streaming
           (sleep 3 && systemctl --user start sunshine.service) &
+
+          # ── Input stability ──
+          # NixOS extest.enable hardcodes LD_PRELOAD=libextest.so into Steam's
+          # FHS profile. Extest translates X11 input events to uinput events
+          # for controller-as-mouse on the desktop (Hyprland). Inside gamescope
+          # --steam, Steam Input handles controllers natively and extest is not
+          # needed. The preloaded library intercepts back-grip button events
+          # and injects synthetic input that crashes gamescope's compositor.
+          # Unsetting LD_PRELOAD here prevents extest from loading in game mode
+          # while keeping it active for desktop Steam sessions.
+          unset LD_PRELOAD
 
           # Gamescope session with mode-selected resolution.
           # Env vars and common args from gamescope-defaults.nix (shared with steam.nix).
@@ -156,6 +179,8 @@ in
               -- steam -gamepadui -pipewire-dmabuf \
           || true
 
+          rm -f "$GAMESCOPE_LIMITER_FILE"
+
           # ── Cleanup: orderly teardown before returning to desktop ──
 
           # 1. Stop Sunshine first (releases KMS capture handle)
@@ -163,8 +188,15 @@ in
 
           # 2. Wait for gamescope to fully exit and release DRM resources.
           #    Without this, Hyprland can't claim DRM master on TTY1.
+          WAIT=0
           while pgrep -x gamescope >/dev/null 2>&1; do
               sleep 0.2
+              WAIT=$((WAIT + 1))
+              if [ "$WAIT" -ge 50 ]; then  # 10s timeout
+                  pkill -9 -x gamescope 2>/dev/null || true
+                  sleep 0.5
+                  break
+              fi
           done
 
           # 3. Re-enable desktop portals
@@ -205,8 +237,15 @@ in
           if ${pkgs.procps}/bin/pgrep -x gamescope >/dev/null 2>&1; then
             systemctl --user stop sunshine.service 2>/dev/null || true
             ${pkgs.procps}/bin/pkill -x gamescope 2>/dev/null || true
+            WAIT=0
             while ${pkgs.procps}/bin/pgrep -x gamescope >/dev/null 2>&1; do
               sleep 0.2
+              WAIT=$((WAIT + 1))
+              if [ "$WAIT" -ge 50 ]; then  # 10s timeout
+                ${pkgs.procps}/bin/pkill -9 -x gamescope 2>/dev/null || true
+                sleep 0.5
+                break
+              fi
             done
           fi
           # Clear stale UWSM session state so may-start succeeds
