@@ -10,10 +10,6 @@
       email = "hgudmund@redhat.com";
     };
 
-    opencode = {
-      vertexProject = "itpc-ca-f56dba0f61";
-    };
-
     nixtorch = {
       cudaVisibleDevices = "";
       cudaVersion = "13";

@@ -14,10 +14,6 @@
       email = "hgudmund@redhat.com";
     };
 
-    opencode = {
-      vertexProject = "itpc-ca-f56dba0f61";
-    };
-
     desktop = {
       enable = true;
       monitors = [

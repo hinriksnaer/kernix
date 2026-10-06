@@ -12,7 +12,6 @@
     ./neovim
     ./build-tools.nix
     ./opencode.nix
-    ./vertex-auth.nix
     ./btop.nix
     ./lazygit.nix
     ./yazi

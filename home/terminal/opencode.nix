@@ -1,6 +1,6 @@
-# OpenCode -- AI coding assistant with Vertex AI support.
+# OpenCode -- AI coding assistant.
 # Installs the package and sets up theme integration.
-# Vertex AI auth is handled by vertex-auth.nix module.
+# Model/provider config lives in ~/.config/opencode/opencode.jsonc.
 {
   pkgs,
   config,

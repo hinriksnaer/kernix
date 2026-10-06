@@ -76,19 +76,6 @@ with lib; {
       };
     };
 
-    opencode = {
-      vertexProject = mkOption {
-        type = types.str;
-        default = "";
-        description = "GCP project ID for Vertex AI. Empty to disable.";
-      };
-      cloudMlRegion = mkOption {
-        type = types.str;
-        default = "global";
-        description = "Cloud ML region for OpenCode.";
-      };
-    };
-
     # ── Passthrough ──
     nixtorch = mkOption {
       type = types.attrs;

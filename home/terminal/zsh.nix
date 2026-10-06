@@ -36,6 +36,17 @@
     '';
 
     initContent = lib.mkMerge [
+      # Refresh SSH_AUTH_SOCK on every shell so herdr panes inherit the live
+      # Bitwarden agent socket rather than the stale value the herdr server
+      # captured at startup.
+      (lib.mkOrder 400 ''
+        _bw_sock="$HOME/.bitwarden-ssh-agent.sock"
+        if [ -S "$_bw_sock" ]; then
+          export SSH_AUTH_SOCK="$_bw_sock"
+        fi
+        unset _bw_sock
+      '')
+
       # zsh-vi-mode config (must be set before plugin loads)
       (lib.mkOrder 500 ''
         ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BEAM
