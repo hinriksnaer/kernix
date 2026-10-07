@@ -11,10 +11,13 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Local git submodules (submodules/): uncommitted edits apply via
-    # --override-input (or after `nix flake update` once committed locally).
-    nixtorch.url = "git+file:./submodules/nixtorch";
-    kernix-theme.url = "git+file:./submodules/kernix-theme";
+    # Self: fetch this repo with its Git submodules populated, so the
+    # relative path inputs below resolve to live working trees (Nix >= 2.27).
+    self.submodules = true;
+    # Local git submodules (submodules/): resolved through the self source tree,
+    # so uncommitted edits apply natively (Nix >= 2.26 path inputs).
+    nixtorch.url = ./submodules/nixtorch;
+    kernix-theme.url = ./submodules/kernix-theme;
   };
 
   outputs = {

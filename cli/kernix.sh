@@ -73,16 +73,6 @@ if [[ "$HOST_TYPE" == "nixos" ]]; then
     fi
 fi
 
-# ── Submodule inputs: read working trees so uncommitted edits apply ──
-# The submodules are locked flake inputs; --override-input points nix at the
-# live working trees. When clean this is a no-op; when dirty, edits apply
-# without a commit. (nh forwards these; home-manager doesn't, so HM paths
-# are lock-driven.)
-SUB_OVERRIDES=(
-    --override-input kernix-theme "git+file:${KERNIX_ROOT}/submodules/kernix-theme"
-    --override-input nixtorch "git+file:${KERNIX_ROOT}/submodules/nixtorch"
-)
-
 # ── HM: pull latest before rebuild ──
 hm_pull() {
     echo ":: pulling latest config"
@@ -97,7 +87,7 @@ case "$subcmd" in
     rebuild)
         if [[ "$HOST_TYPE" == "nixos" ]]; then
             echo "==> Rebuilding ${HOST} (${CONF})..."
-            run_with_notify "rebuild" nh os switch --hostname "${CONF}" "${SUB_OVERRIDES[@]}" "$@"
+            run_with_notify "rebuild" nh os switch --hostname "${CONF}" "$@"
         else
             hm_pull
             echo ":: applying Home Manager (${HM_PROFILE})"
@@ -110,7 +100,7 @@ case "$subcmd" in
             exit 1
         fi
         echo "==> Rebuilding ${HOST} (${CONF}) for next boot..."
-        run_with_notify "rebuild-boot" nh os boot --hostname "${CONF}" "${SUB_OVERRIDES[@]}" "$@"
+        run_with_notify "rebuild-boot" nh os boot --hostname "${CONF}" "$@"
         ;;
     test)
         if [[ "$HOST_TYPE" != "nixos" ]]; then
@@ -118,12 +108,12 @@ case "$subcmd" in
             exit 1
         fi
         echo "==> Test-activating ${HOST} (${CONF})..."
-        run_with_notify "test" nh os test --hostname "${CONF}" "${SUB_OVERRIDES[@]}" "$@"
+        run_with_notify "test" nh os test --hostname "${CONF}" "$@"
         ;;
     update)
         if [[ "$HOST_TYPE" == "nixos" ]]; then
             echo "==> Updating flake inputs and rebuilding ${HOST} (${CONF})..."
-            run_with_notify "update" nh os switch --hostname "${CONF}" --update "${SUB_OVERRIDES[@]}" "$@"
+            run_with_notify "update" nh os switch --hostname "${CONF}" --update "$@"
         else
             hm_pull
             echo ":: updating flake inputs"

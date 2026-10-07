@@ -80,18 +80,14 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1791345796,
-        "narHash": "sha256-f+lexZyd+6oGtltANw43qQmeoUdXhEAvT2vYQBILmC0=",
-        "ref": "refs/heads/main",
-        "rev": "5837924577a05df9b9df0e183bc2efc229fd8c3f",
-        "revCount": 6,
-        "type": "git",
-        "url": "file:./submodules/kernix-theme"
+        "path": "submodules/kernix-theme",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "file:./submodules/kernix-theme"
-      }
+        "path": "submodules/kernix-theme",
+        "type": "path"
+      },
+      "parent": []
     },
     "llm-agents": {
       "inputs": {
@@ -170,18 +166,14 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1786655663,
-        "narHash": "sha256-/I/DWk1QnUD97sBnUA7JXqTPFL9BnTWVUV8zlIFnJVw=",
-        "ref": "refs/heads/main",
-        "rev": "c79680d3ae2fc79aa993c9e5b9131ba466e7bd86",
-        "revCount": 33,
-        "type": "git",
-        "url": "file:./submodules/nixtorch"
+        "path": "submodules/nixtorch",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "file:./submodules/nixtorch"
-      }
+        "path": "submodules/nixtorch",
+        "type": "path"
+      },
+      "parent": []
     },
     "root": {
       "inputs": {

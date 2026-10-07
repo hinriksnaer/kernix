@@ -73,7 +73,9 @@ lib/               shared options and helpers
 ```
 
 The runtime theme engine and theme pack live in the separate
-[kernix-theme](https://github.com/hinriksnaer/kernix-theme) flake, consumed
-here as a local submodule (inputs are `git+file:./submodules/...`, so
-uncommitted edits apply after `nix flake update` + rebuild). Theme wiring:
+[kernix-theme](https://github.com/hinriksnaer/kernix-theme) flake (plus
+`nixtorch`), consumed here as git submodules: `inputs.self.submodules = true`
+fetches them with the repo, and the inputs are relative `path:` references
+(`./submodules/...`), so uncommitted edits in a submodule apply directly on
+rebuild -- no lock update, no commit (requires Nix >= 2.27). Theme wiring:
 `home/theme/default.nix` (`kernix-theme.homeManagerModules.theme`).
