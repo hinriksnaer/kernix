@@ -17,7 +17,7 @@ in {
   # Pin flake registry + nixPath to match this system's inputs.
   # Ensures `nix run nixpkgs#foo` uses the same nixpkgs as the system.
   nix.registry = lib.mapAttrs (_: flake: {inherit flake;}) inputs;
-  nix.nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
+  nix.settings.nix-path = lib.mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
 
   nixpkgs.config.allowUnfree = true;
 
