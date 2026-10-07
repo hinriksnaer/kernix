@@ -1,4 +1,0 @@
--- Torrentz Hydra theme
-hl.config({
-    general = { col = { active_border = "rgba(ff6a1fee)" } },
-})
