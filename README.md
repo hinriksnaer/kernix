@@ -35,8 +35,8 @@ Full hosts get OS-level config (boot, GPU drivers, networking). Headless hosts g
 ## Quick Start
 
 ```sh
-git clone git@github.com:hinriksnaer/kernix.git ~/kernix
-# Edit settings.nix -- set username, git identity, GPU, monitors
+git clone --recurse-submodules git@github.com:hinriksnaer/kernix.git ~/kernix
+# Edit hosts/<hostname>/ -- set username, git identity, GPU, monitors
 kernix rebuild
 ```
 
@@ -44,7 +44,7 @@ For containers:
 
 ```sh
 export USER=root
-git clone git@github.com:hinriksnaer/kernix.git ~/kernix
+git clone --recurse-submodules git@github.com:hinriksnaer/kernix.git ~/kernix
 nix run home-manager/master -- switch --flake ~/kernix#root@container -b backup
 ```
 
@@ -74,7 +74,9 @@ lib/               shared options and helpers
 
 The runtime theme engine and theme pack live in the separate
 [kernix-theme](https://github.com/hinriksnaer/kernix-theme) flake (plus
-`nixtorch`), consumed here as git submodules: `inputs.self.submodules = true`
+`nixtorch`), consumed here as git submodules (clone with
+`--recurse-submodules`, or run `git submodule update --init` in an existing
+clone): `inputs.self.submodules = true`
 fetches them with the repo, and the inputs are relative `path:` references
 (`./submodules/...`), so uncommitted edits in a submodule apply directly on
 rebuild -- no lock update, no commit (requires Nix >= 2.27). Theme wiring:
