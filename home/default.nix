@@ -19,6 +19,7 @@ in {
       ./terminal
       ./desktop
       ./apps
+      ./agents
       ./gaming
       ./nixtorch.nix
       ./theme
