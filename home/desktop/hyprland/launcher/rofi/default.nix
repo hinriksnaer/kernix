@@ -1,6 +1,8 @@
 # Rofi application launcher -- Wayland-native.
 # Theme loaded at runtime via @theme directive (swapped by kernix-theme-set).
-# Provides: launcher commands, audio/power/theme/wallpaper picker scripts.
+# Provides: launcher commands plus audio/power/theme/wallpaper picker scripts.
+# The theme/wallpaper pickers are orchestration -- they drive the kernix-theme
+# engine (config.kernix.theme.packages.engine) from rofi.
 {
   pkgs,
   config,
@@ -47,6 +49,16 @@ lib.mkIf host.desktop.enable {
       runtimeInputs = [rofi systemd];
       text = builtins.readFile ./scripts/power-menu.sh;
       excludeShellChecks = ["SC2029" "SC2016"];
+    })
+    (writeShellApplication {
+      name = "rofi-theme-select";
+      runtimeInputs = [rofi coreutils gnused libnotify] ++ config.kernix.theme.packages.engine;
+      text = builtins.readFile ./scripts/rofi-theme-select.sh;
+    })
+    (writeShellApplication {
+      name = "rofi-wallpaper-select";
+      runtimeInputs = [rofi swaybg findutils coreutils gnugrep gnused procps libnotify] ++ config.kernix.theme.packages.engine;
+      text = builtins.readFile ./scripts/rofi-wallpaper-select.sh;
     })
   ];
 }

@@ -45,8 +45,8 @@
     clipboard = ''cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy'';
     audio = "rofi-audio-select";
     power = "power-menu";
-    theme = "kernix-rofi-theme-select";
-    wallpaper = "kernix-rofi-wallpaper-select";
+    theme = "rofi-theme-select";
+    wallpaper = "rofi-wallpaper-select";
   };
   bar.start = "waybar";
   notifications.start = "mako";
