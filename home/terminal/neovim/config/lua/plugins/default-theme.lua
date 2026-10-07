@@ -16,7 +16,8 @@ local function load_kernix_theme()
   theme_name = theme_name:gsub('%s+', '')
 
   -- Find the theme's neovim.lua in the themes directory
-  local themes_dir = vim.fn.expand('~/.local/share/kernix/themes')
+  local kernix_path = os.getenv('KERNIX_PATH') or vim.fn.expand('~/.local/share/kernix')
+  local themes_dir = kernix_path .. '/themes'
   local nvim_lua = themes_dir .. '/' .. theme_name .. '/neovim.lua'
 
   if vim.fn.filereadable(nvim_lua) ~= 1 then return false end

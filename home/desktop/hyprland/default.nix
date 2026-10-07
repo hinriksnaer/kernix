@@ -140,6 +140,7 @@ in {
 
   config = lib.mkIf host.desktop.enable {
     kernix.theme.hooks = ["hyprland"];
+    kernix.theme.wallpaper.enable = true;
 
     # ── Wayland packages ──
     home.packages = with pkgs; [
@@ -149,24 +150,6 @@ in {
       hyprland-qtutils
       wlr-randr
       wlogout
-
-      # Wallpaper management (uses swaybg, called from keybinds)
-      (writeShellApplication {
-        name = "kernix-wallpaper-set";
-        runtimeInputs = [swaybg coreutils findutils procps];
-        text = ''
-          export KERNIX_PATH="${kernixPath}"
-          ${builtins.readFile ../../theme/scripts/kernix-wallpaper-set.sh}
-        '';
-      })
-      (writeShellApplication {
-        name = "kernix-wallpaper-next";
-        runtimeInputs = [swaybg coreutils findutils procps libnotify];
-        text = ''
-          export KERNIX_PATH="${kernixPath}"
-          ${builtins.readFile ../../theme/scripts/kernix-wallpaper-next.sh}
-        '';
-      })
     ];
 
     # ── Wayland session variables ──
@@ -212,11 +195,8 @@ in {
     };
 
     # ── Activation hooks ──
-    home.activation.hyprlandThemeStubs = config.lib.dag.entryAfter ["linkGeneration"] ''
-      mkdir -p "$HOME/.config/hypr/wallpapers"
-      [ -e "$HOME/.config/hypr/active-theme.lua" ] || printf '-- no theme loaded yet\n' > "$HOME/.config/hypr/active-theme.lua"
-    '';
-
+    # Wallpaper dir + active-theme.lua stubs are handled by the kernix-theme
+    # module (apps.sh stub generation).
     home.activation.hyprlandReload = lib.hm.dag.entryAfter ["linkGeneration"] ''
       if command -v hyprctl &>/dev/null && hyprctl monitors &>/dev/null 2>&1; then
         hyprctl reload &>/dev/null || true

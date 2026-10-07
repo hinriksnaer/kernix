@@ -33,7 +33,4 @@
     poppler-utils # PDF preview
     imagemagick # image preview
   ];
-
-  # Kernix theme-map.conf (not standard yazi config, used by kernix-theme-set)
-  xdg.configFile."yazi/theme-map.conf".source = ../../theme/theme-map.conf;
 }

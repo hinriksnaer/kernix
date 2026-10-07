@@ -5,8 +5,8 @@
   lib,
   ...
 }:
-lib.mkIf host.desktop.enable {
-  kernix.theme.hooks = ["terminal"];
+lib.mkIf (host.desktop.enable && host.terminal == "ghostty") {
+  kernix.theme.hooks = ["ghostty"];
 
   programs.ghostty = {
     enable = true;

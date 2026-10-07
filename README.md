@@ -65,9 +65,13 @@ kernix list-gens     list generations
 flake.nix          host definitions, overlays, dev shells
 hosts/             per-machine entry points
 system/            OS-level modules (hardware, boot, GPU, desktop, services)
-home/              user-level modules (terminal, desktop, apps, themes)
-themes/            color themes with per-app configs + wallpapers
+home/              user-level modules (terminal, desktop, apps)
 overlays/          nixpkgs patches
 cli/               rebuild scripts
 lib/               shared options and helpers
 ```
+
+The runtime theme engine and theme pack live in the separate
+[kernix-theme](https://github.com/hinriksnaer/kernix-theme) flake, consumed
+here as the `kernix-theme` input (a git submodule at `./kernix-theme`) via
+`home/theme/default.nix` (`kernix-theme.homeManagerModules.theme`).

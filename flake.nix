@@ -12,6 +12,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixtorch.url = "github:hinriksnaer/nixtorch";
+    # Local checkout of the theme engine (switch to github:hinriksnaer/kernix-theme once pushed).
+    kernix-theme.url = "git+file:./kernix-theme";
   };
 
   outputs = {
@@ -20,6 +22,7 @@
     home-manager,
     llm-agents,
     nixtorch,
+    kernix-theme,
     ...
   } @ inputs: let
     lib = nixpkgs.lib;
@@ -63,6 +66,7 @@
               extraSpecialArgs = {
                 host = config.kernix;
                 inherit hostname;
+                inherit kernix-theme;
               };
               users.${config.kernix.username} =
                 import ./home {inherit hostname;};
@@ -115,6 +119,7 @@
         extraSpecialArgs = {
           host = hostCfg;
           hostname = hostName;
+          inherit kernix-theme;
         };
         modules = [
           (import ./home {hostname = hostName;})

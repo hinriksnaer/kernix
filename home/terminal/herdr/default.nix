@@ -4,25 +4,10 @@
   pkgs,
   config,
   ...
-}: let
-  themeLib = import ../../../lib/theme.nix {inherit pkgs config;};
-  inherit (themeLib) kernixPath;
-in {
+}: {
   kernix.theme.hooks = ["herdr"];
 
-  home.packages = [
-    pkgs.herdr
-
-    # Theme apply script (called by kernix-theme-apply hook engine)
-    (pkgs.writeShellApplication {
-      name = "kernix-theme-apply-herdr";
-      runtimeInputs = with pkgs; [coreutils gnused];
-      text = ''
-        export KERNIX_PATH="${kernixPath}"
-        ${builtins.readFile ../../theme/scripts/kernix-theme-apply-herdr.sh}
-      '';
-    })
-  ];
+  home.packages = [pkgs.herdr];
 
   xdg.configFile."herdr/config.toml".source = ./config.toml;
 

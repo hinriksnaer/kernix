@@ -1,0 +1,3 @@
+[submodule "kernix-theme"]
+	path = kernix-theme
+	url = git@github.com:hinriksnaer/kernix-theme.git

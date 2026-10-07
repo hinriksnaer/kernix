@@ -75,6 +75,24 @@
         "type": "github"
       }
     },
+    "kernix-theme": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1791345796,
+        "narHash": "sha256-f+lexZyd+6oGtltANw43qQmeoUdXhEAvT2vYQBILmC0=",
+        "ref": "refs/heads/main",
+        "rev": "5837924577a05df9b9df0e183bc2efc229fd8c3f",
+        "revCount": 6,
+        "type": "git",
+        "url": "file:./kernix-theme"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:./kernix-theme"
+      }
+    },
     "llm-agents": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -101,6 +119,22 @@
     },
     "nixpkgs": {
       "locked": {
+        "lastModified": 1791260994,
+        "narHash": "sha256-Miqqk/ammqnTUxaoCyvtwoPeLbI1ksFyLxi/CazZpWY=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "151fa4e8ddfdd8dd25d945ad94ed54a13de9f6e4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
         "lastModified": 1791048980,
         "narHash": "sha256-KgItSKML8Xvte0B7/uGnBDsYzSnnKHcOaiUbgWBXLXw=",
         "owner": "NixOS",
@@ -115,7 +149,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_2": {
+    "nixpkgs_3": {
       "locked": {
         "lastModified": 1777954456,
         "narHash": "sha256-hGdgeU2Nk87RAuZyYjyDjFL6LK7dAZN5RE9+hrDTkDU=",
@@ -133,7 +167,7 @@
     },
     "nixtorch": {
       "inputs": {
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_3"
       },
       "locked": {
         "lastModified": 1786655663,
@@ -152,8 +186,9 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
+        "kernix-theme": "kernix-theme",
         "llm-agents": "llm-agents",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "nixtorch": "nixtorch"
       }
     },
