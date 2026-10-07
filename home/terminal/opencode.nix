@@ -8,8 +8,7 @@
   ...
 }: let
   defaultTheme = host.defaultTheme;
-  themeLib = import ../../lib/theme.nix {inherit pkgs config;};
-  inherit (themeLib) kernixPath;
+  themesDir = "${config.kernix.theme.dataDir}/themes";
   ocDir = "${config.home.homeDirectory}/.config/opencode";
 in {
   kernix.theme.hooks = ["opencode"];
@@ -23,7 +22,7 @@ in {
     mkdir -p "${ocDir}/themes"
 
     # Symlink each theme's opencode.json
-    for theme_dir in "${kernixPath}/themes"/*/; do
+    for theme_dir in "${themesDir}"/*/; do
       theme=$(basename "$theme_dir")
       if [ -f "$theme_dir/opencode.json" ]; then
         ln -sf "$theme_dir/opencode.json" "${ocDir}/themes/$theme.json"

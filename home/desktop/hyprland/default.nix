@@ -12,8 +12,6 @@
   host,
   ...
 }: let
-  themeLib = import ../../../lib/theme.nix {inherit pkgs config;};
-  inherit (themeLib) kernixPath;
   monitors = host.desktop.monitors;
   primaryMonitor = lib.findFirst (m: m.primary && m.enabled) (builtins.head (builtins.filter (m: m.enabled) monitors)) monitors;
   layout = host.desktop.hyprland.layout;
@@ -99,7 +97,7 @@
     NOTIFICATIONS_START = "${notifications.start}"
 
     -- Environment variables
-    hl.env("KERNIX_PATH", "${kernixPath}")
+    hl.env("KERNIX_PATH", "${config.kernix.theme.dataDir}")
     ${lib.optionalString hasTv ''hl.env("SSH_AUTH_SOCK", os.getenv("HOME") .. "/.bitwarden-ssh-agent.sock")''}
 
     -- Monitors (from config.monitors)

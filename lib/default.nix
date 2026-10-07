@@ -4,8 +4,8 @@
 # lib/monitor-type.nix    -- Shared monitor submodule type
 # lib/gamescope.nix       -- Gamescope session defaults (parameterized)
 #
-# Theme engine helpers moved to the kernix-theme flake
-# (inputs.kernix-theme.lib.theme).
+# Theme data path: read the kernix.theme.dataDir option exposed by the
+# kernix-theme Home Manager module.
 {
   # Gamescope defaults -- call with: gsDefaults = import <kernix>/lib/gamescope.nix {inherit kernix lib;};
   gamescope = import ./gamescope.nix;
