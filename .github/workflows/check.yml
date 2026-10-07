@@ -11,10 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Flake check
-        run: nix flake check
+        run: |
+          # Mark the tree dirty so Nix resolves the ./submodules/* path
+          # inputs from the checked-out working trees instead of fetching
+          # their ssh:// remotes (runners have no SSH keys). The trailing
+          # newline in .gitignore is semantically inert.
+          echo >> .gitignore
+          nix flake check
       - name: Format check
         run: nix fmt . -- --check
 
@@ -24,7 +32,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: DeterminateSystems/nix-installer-action@main
+      - name: Mark tree dirty (keep input resolution local, see check job)
+        run: echo >> .gitignore
       - uses: DeterminateSystems/update-flake-lock@main
         with:
           pr-title: "flake.lock: weekly update"
