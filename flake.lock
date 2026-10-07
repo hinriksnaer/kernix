@@ -86,11 +86,11 @@
         "rev": "5837924577a05df9b9df0e183bc2efc229fd8c3f",
         "revCount": 6,
         "type": "git",
-        "url": "file:./kernix-theme"
+        "url": "file:./submodules/kernix-theme"
       },
       "original": {
         "type": "git",
-        "url": "file:./kernix-theme"
+        "url": "file:./submodules/kernix-theme"
       }
     },
     "llm-agents": {
@@ -172,15 +172,15 @@
       "locked": {
         "lastModified": 1786655663,
         "narHash": "sha256-/I/DWk1QnUD97sBnUA7JXqTPFL9BnTWVUV8zlIFnJVw=",
-        "owner": "hinriksnaer",
-        "repo": "nixtorch",
+        "ref": "refs/heads/main",
         "rev": "c79680d3ae2fc79aa993c9e5b9131ba466e7bd86",
-        "type": "github"
+        "revCount": 33,
+        "type": "git",
+        "url": "file:./submodules/nixtorch"
       },
       "original": {
-        "owner": "hinriksnaer",
-        "repo": "nixtorch",
-        "type": "github"
+        "type": "git",
+        "url": "file:./submodules/nixtorch"
       }
     },
     "root": {

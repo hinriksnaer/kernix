@@ -66,6 +66,7 @@ flake.nix          host definitions, overlays, dev shells
 hosts/             per-machine entry points
 system/            OS-level modules (hardware, boot, GPU, desktop, services)
 home/              user-level modules (terminal, desktop, apps)
+submodules/        git submodules consumed as local flake inputs
 overlays/          nixpkgs patches
 cli/               rebuild scripts
 lib/               shared options and helpers
@@ -73,5 +74,6 @@ lib/               shared options and helpers
 
 The runtime theme engine and theme pack live in the separate
 [kernix-theme](https://github.com/hinriksnaer/kernix-theme) flake, consumed
-here as the `kernix-theme` input (a git submodule at `./kernix-theme`) via
+here as a local submodule (inputs are `git+file:./submodules/...`, so
+uncommitted edits apply after `nix flake update` + rebuild). Theme wiring:
 `home/theme/default.nix` (`kernix-theme.homeManagerModules.theme`).

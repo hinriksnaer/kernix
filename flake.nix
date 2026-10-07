@@ -11,9 +11,10 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixtorch.url = "github:hinriksnaer/nixtorch";
-    # Local checkout of the theme engine (switch to github:hinriksnaer/kernix-theme once pushed).
-    kernix-theme.url = "git+file:./kernix-theme";
+    # Local git submodules (submodules/): uncommitted edits apply via
+    # --override-input (or after `nix flake update` once committed locally).
+    nixtorch.url = "git+file:./submodules/nixtorch";
+    kernix-theme.url = "git+file:./submodules/kernix-theme";
   };
 
   outputs = {

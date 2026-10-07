@@ -1,3 +1,6 @@
 [submodule "kernix-theme"]
-	path = kernix-theme
+	path = submodules/kernix-theme
 	url = git@github.com:hinriksnaer/kernix-theme.git
+[submodule "nixtorch"]
+	path = submodules/nixtorch
+	url = git@github.com:hinriksnaer/nixtorch.git
