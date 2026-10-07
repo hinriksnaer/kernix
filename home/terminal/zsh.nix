@@ -9,6 +9,11 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
+    # Shared hosts can end up with non-root-owned store paths in the default
+    # Nix profile's fpath (e.g. a teammate-rebuilt nix), which makes compaudit
+    # abort compinit on every shell start and kill all completion. Skip the
+    # ownership check; -u loads insecure dirs instead of bailing.
+    completionInit = "autoload -Uz compinit && compinit -u";
     autosuggestion.enable = true;
     autosuggestion.strategy = ["history" "completion"];
     historySubstringSearch.enable = true;
