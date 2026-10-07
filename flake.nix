@@ -17,7 +17,10 @@
     # Local git submodules (submodules/): resolved through the self source tree,
     # so uncommitted edits apply natively (Nix >= 2.26 path inputs).
     nixtorch.url = ./submodules/nixtorch;
-    kernix-theme.url = ./submodules/kernix-theme;
+    kernix-theme = {
+      url = ./submodules/kernix-theme;
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
