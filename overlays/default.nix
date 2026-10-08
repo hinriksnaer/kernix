@@ -7,6 +7,9 @@
     kernix-cli = import ../cli {pkgs = final;};
   };
 
+  # Tmux half of smart-splits.nvim v3 (see smart-splits-tmux.nix)
+  smart-splits-tmux = import ./smart-splits-tmux.nix {inherit inputs;};
+
   # Make flake input packages available as pkgs.inputs'.<name>
   # Usage: pkgs.inputs'.home-manager.default, etc.
   flake-inputs = final: _: {

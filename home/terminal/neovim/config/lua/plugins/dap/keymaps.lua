@@ -36,7 +36,7 @@ function M.setup(dap)
   vim.keymap.set('n', '<leader>d]', dap.down, { desc = 'Down Stack' })
 
   -- Inspect
-  vim.keymap.set('n', '<leader>du', '<cmd>DapViewToggle<cr>', { desc = 'Toggle DAP View' })
+  vim.keymap.set('n', '<leader>du', function() require('dapui').toggle() end, { desc = 'Toggle DAP UI' })
   vim.keymap.set('n', '<leader>dh', function() require('dap.ui.widgets').hover() end, { desc = 'Hover' })
 
   -- Launch from .vscode/launch.json

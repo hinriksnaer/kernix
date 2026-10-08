@@ -1,20 +1,35 @@
 return {
   'mrjones2014/smart-splits.nvim',
   lazy = false, -- must load eagerly to set @pane-is-vim for tmux integration
+  dependencies = {
+    -- v3 moved multiplexer backends into separate plugins
+    {
+      'smart-splits-nvim/backend-tmux',
+      main = 'smart-splits-backend-tmux',
+    },
+  },
   opts = {
     -- Ignored buffer types (only while resizing)
     ignored_buftypes = { 'nofile', 'quickfix', 'prompt' },
     -- Ignored filetypes (only while resizing)
     ignored_filetypes = { 'NvimTree' },
     -- Resize amount (3 is faster than default 2)
-    default_amount = 3,
+    resize = {
+      amount = 3,
+    },
     -- Wrap to opposite side when at edge (or 'split' to create new split)
-    at_edge = 'wrap',
+    move = {
+      at_edge = 'wrap',
+    },
     -- Cursor follows buffer on swap (matches tmux swap-pane behavior)
-    cursor_follows_swapped_bufs = true,
+    swap = {
+      move_cursor = true,
+    },
     -- Enable tmux integration
     -- This allows seamless navigation between vim and tmux
-    multiplexer_integration = 'tmux',
+    mux = {
+      backend = 'smart-splits-backend-tmux',
+    },
   },
   config = function(_, opts)
     require('smart-splits').setup(opts)

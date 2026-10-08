@@ -11,6 +11,12 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Tmux half of smart-splits.nvim v3 (source only; packaged via overlay,
+    # Neovim half is a lazy.nvim dependency)
+    smart-splits-backend-tmux = {
+      url = "github:smart-splits-nvim/backend-tmux";
+      flake = false;
+    };
     # Self: fetch this repo with its Git submodules populated, so the
     # relative path inputs below resolve to live working trees (Nix >= 2.27).
     self.submodules = true;

@@ -53,19 +53,7 @@
   pkgs,
   config,
   ...
-}: let
-  smartSplits = pkgs.tmuxPlugins.mkTmuxPlugin {
-    pluginName = "smart-splits";
-    rtpFilePath = "smart-splits.tmux";
-    version = "2.1.0";
-    src = pkgs.fetchFromGitHub {
-      owner = "mrjones2014";
-      repo = "smart-splits.nvim";
-      rev = "v2.1.0";
-      hash = "sha256-IuJNQT0bN68K5lnw0ixyU/heG8V1+zUwlvm0mNvvHOw=";
-    };
-  };
-in {
+}: {
   imports = [
     ./cli.nix
   ];
@@ -92,7 +80,8 @@ in {
 
     plugins = with pkgs.tmuxPlugins; [
       {
-        plugin = smartSplits;
+        # Packaged from the smart-splits-backend-tmux flake input (see overlays/)
+        plugin = smart-splits;
         # Settings must be set BEFORE the plugin runs
         extraConfig = ''
           set -g @smart-splits_move_left_key  'M-h'
