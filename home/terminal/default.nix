@@ -5,13 +5,11 @@
     ./tmux
     ./herdr
     ./cli-tools.nix
-    ./claude-code.nix
     ./gh.nix
     ./zsh.nix
     ./direnv.nix
     ./neovim
     ./build-tools.nix
-    ./opencode.nix
     ./btop.nix
     ./lazygit.nix
     ./yazi

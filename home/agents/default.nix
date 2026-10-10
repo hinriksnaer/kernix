@@ -1,10 +1,16 @@
-# AI agents -- gateway auth and enablement CLIs.
+# AI agents -- agent CLIs, gateway auth, and enablement helpers.
 #
 # A CLI can't export into the parent shell, so these print export lines
 # for eval:
 #   eval "$(ai-auth)"        # ENMAAS_KEY from bitwarden
 #   eval "$(claude-enable)"  # ANTHROPIC_* gateway flags (reads $ENMAAS_KEY)
 {pkgs, ...}: {
+  imports = [
+    ./pi.nix
+    ./claude-code.nix
+    ./opencode.nix
+  ];
+
   home.packages = [
     (pkgs.writeShellApplication {
       name = "ai-auth";

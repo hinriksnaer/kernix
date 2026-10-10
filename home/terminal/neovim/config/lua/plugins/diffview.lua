@@ -41,7 +41,15 @@ return {
       view_opened = function()
         -- Hide the file panel for a clean side-by-side view.
         -- Press <leader>b inside diffview to bring it back.
-        require('diffview.actions').toggle_files()
+        -- Schedule to avoid layout race conditions when toggling the panel.
+        vim.schedule(function()
+          require('diffview.actions').toggle_files()
+        end)
+      end,
+      diff_buf_win_enter = function(_, winid)
+        -- Open all diff folds so the full file is shown instead of squeezed
+        -- hunks. Use zM in a diff window to squeeze, zR to expand again.
+        vim.wo[winid].foldlevel = 99
       end,
       diff_buf_read = function()
         -- Reduce visual clutter in diff buffers
