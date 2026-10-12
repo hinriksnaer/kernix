@@ -24,14 +24,17 @@ return {
           mode = mode or 'n'
           vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
         end
-        -- Navigation (routed through fzf-lua for fuzzy multi-result handling)
+        -- Navigation (routed through fzf-lua for fuzzy multi-result handling).
         local fzf = require 'fzf-lua'
-        local jump1 = { jump_to_single_result = true }
-        map('gd', function() fzf.lsp_definitions(jump1) end, 'Go to Definition')
-        map('gD', function() fzf.lsp_declarations(jump1) end, 'Go to Declaration')
-        map('gr', function() fzf.lsp_references(jump1) end, 'Go to References')
-        map('gi', function() fzf.lsp_implementations(jump1) end, 'Go to Implementation')
-        map('<leader>cD', function() fzf.lsp_typedefs(jump1) end, 'Type Definition')
+        -- Auto-jumping on a single result (`jump1`) is on by default;
+        -- `unique_line_items` collapses results pointing at the same file+line
+        -- so duplicate locations from a single server still auto-jump.
+        local jump_opts = { unique_line_items = true }
+        map('gd', function() fzf.lsp_definitions(jump_opts) end, 'Go to Definition')
+        map('gD', function() fzf.lsp_declarations(jump_opts) end, 'Go to Declaration')
+        map('gr', function() fzf.lsp_references(jump_opts) end, 'Go to References')
+        map('gi', function() fzf.lsp_implementations(jump_opts) end, 'Go to Implementation')
+        map('<leader>cD', function() fzf.lsp_typedefs(jump_opts) end, 'Type Definition')
         map('<leader>cs', fzf.lsp_live_workspace_symbols, 'Workspace Symbols')
 
         -- Hover & Info
@@ -124,36 +127,36 @@ return {
     vim.lsp.config('pyrefly', { capabilities = capabilities })
     vim.lsp.enable('pyrefly')
 
-    -- Servers managed by Mason
-    local servers = {
-      lua_ls = {
-        settings = {
-          Lua = {
-            completion = {
-              callSnippet = 'Replace',
-            },
+    -- lua_ls binary comes from Mason (see ensure_installed below); mason.nvim
+    -- prepends mason/bin to PATH, so the default cmd resolves.
+    vim.lsp.config('lua_ls', {
+      capabilities = capabilities,
+      settings = {
+        Lua = {
+          completion = {
+            callSnippet = 'Replace',
           },
         },
       },
-    }
+    })
+    vim.lsp.enable('lua_ls')
 
     -- Tools for Mason to install (LSPs on $PATH are set up directly above).
     local ensure_installed = {
+      'lua-language-server', -- Lua LSP
       'stylua',   -- Lua formatter
       'codelldb', -- C/C++ debugger
     }
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+    -- Mason is only used to install tools -- never to enable servers.
+    -- `automatic_enable` (on by default) attaches EVERY package in mason's
+    -- data dir as an LSP, e.g. a stale pyright alongside pyrefly, which made
+    -- `gd` open the fzf picker with each result duplicated.
     require('mason-lspconfig').setup {
       ensure_installed = {},
       automatic_installation = false,
-      handlers = {
-        function(server_name)
-          local server = servers[server_name] or {}
-          server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          require('lspconfig')[server_name].setup(server)
-        end,
-      },
+      automatic_enable = false,
     }
   end,
 }
