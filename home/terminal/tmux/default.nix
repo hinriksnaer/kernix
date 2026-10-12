@@ -36,13 +36,14 @@
 # │  Alt + q               kill pane (view)                            │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Context (session) ───────────────────────────────────────────────┐
+# │  Alt + s               sesh session picker                         │
 # │  Alt + f               fzf session finder                          │
 # │  Alt + n               rename session (name)                       │
 # │  Alt + Shift + n       new session in current path                 │
+# │  Alt + Shift + q       kill session (confirm)                      │
 # │  Alt + Tab             previous session                            │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Prefix (Alt+Space) ──────────────────────────────────────────────┐
-# │  Space                 sessionizer (fzf project picker)            │
 # │  ,                     rename window          (tmux default)       │
 # │  $                     rename session          (tmux default)      │
 # │  d                     detach                  (tmux default)      │
@@ -55,7 +56,7 @@
   ...
 }: {
   imports = [
-    ./cli.nix
+    ./plugins/sesh
   ];
 
   # Reload tmux config after Home Manager switch (if server is running)

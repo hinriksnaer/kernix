@@ -30,7 +30,7 @@ Full hosts get OS-level config (boot, GPU drivers, networking). Headless hosts g
 
 **Gaming** -- Steam with Proton, Gamescope sessions, Sunshine remote play, couch mode with TV output.
 
-**Terminal stack** -- Zsh with vi-mode, tmux with sessionizer, Neovim with tree-sitter/LSP/Copilot, lazygit, yazi, fzf, zoxide, starship, and more.
+**Terminal stack** -- Zsh with vi-mode, tmux with sesh session management, Neovim with tree-sitter/LSP/Copilot, lazygit, yazi, fzf, zoxide, starship, and more.
 
 ## Quick Start
 

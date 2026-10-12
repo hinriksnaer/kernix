@@ -1,0 +1,34 @@
+#:schema https://github.com/joshmedeski/sesh/raw/main/sesh.schema.json
+# Sesh -- smart tmux session manager.
+# Replaces the old kernix-sessionizer: project sessions get the standard
+# 3-window layout (pi, nvim, shell).
+
+# ── Window layouts (reusable across sessions) ──
+[[window]]
+name = "pi"
+startup_script = "pi"
+
+[[window]]
+name = "nvim"
+startup_script = "nvim"
+
+[[window]]
+name = "shell"
+
+# ── Project sources ──
+
+# Project dirs: under repos/ (personal machines) or directly in workspace/
+# (remote hosts). First matching wildcard wins; both use the same layout.
+[[wildcard]]
+pattern = "~/workspace/repos/*"
+windows = ["pi", "nvim", "shell"]
+
+[[wildcard]]
+pattern = "~/workspace/*"
+windows = ["pi", "nvim", "shell"]
+
+# The flake itself
+[[session]]
+name = "kernix"
+path = "~/kernix"
+windows = ["pi", "nvim", "shell"]

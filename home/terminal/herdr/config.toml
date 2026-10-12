@@ -42,14 +42,12 @@
 # │  Alt + 1-9             switch to workspace N                       │
 # │  Alt + Shift + 1-9     focus agent N                               │
 # │  Alt + f               workspace picker                            │
-# │  Alt + s               session navigator (goto)                    │
 # │  Alt + Shift + n       rename workspace                            │
 # │  Alt + Shift + Enter   new workspace                               │
 # │  Alt + Tab             last pane (across workspaces/tabs)          │
 # │  Alt + r               reload config                               │
 # └────────────────────────────────────────────────────────────────────┘
 # ┌─ Prefix (Alt+Space) ──────────────────────────────────────────────┐
-# │  Space                 sessionizer (fzf project picker popup)      │
 # │  alt+g                 lazygit popup                               │
 # └────────────────────────────────────────────────────────────────────┘
 
@@ -118,8 +116,8 @@ focus_agent = "alt+shift+1..9"
 # Workspace picker: Alt + f
 workspace_picker = "alt+f"
 
-# Session navigator: Alt + s
-goto = "alt+s"
+# goto: herdr default (prefix+g) -- alt+s kept free to match tmux's
+# sesh session picker across tools
 
 # Rename tab: Alt + n
 rename_tab = "alt+n"
@@ -187,14 +185,5 @@ key = "prefix+alt+g"
 type = "popup"
 command = "lazygit"
 description = "lazygit"
-width = "80%"
-height = "80%"
-
-# Sessionizer: prefix + Space
-[[keys.command]]
-key = "prefix+space"
-type = "popup"
-command = "kernix-sessionizer"
-description = "sessionizer (project picker)"
 width = "80%"
 height = "80%"

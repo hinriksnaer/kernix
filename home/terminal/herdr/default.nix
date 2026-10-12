@@ -9,7 +9,12 @@
 
   home.packages = [pkgs.herdr];
 
-  xdg.configFile."herdr/config.toml".source = ./config.toml;
+  # Herdr replaces this file with its own copy at runtime (server snapshots),
+  # so each switch must re-assert the repo version -- force over the collision.
+  xdg.configFile."herdr/config.toml" = {
+    source = ./config.toml;
+    force = true;
+  };
 
   # Install agent integrations on activation (OpenCode + Claude Code).
   home.activation.herdrIntegrations = config.lib.dag.entryAfter ["linkGeneration"] ''
