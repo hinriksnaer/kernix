@@ -36,14 +36,6 @@
     hash = "sha256-Ex4qZ1gOeukSWrGXgRWeYUCfrEe0Qfwngqq3Y5bq0ZY=";
   };
 
-  proton-pass = buildFirefoxXpiAddon {
-    pname = "proton-pass";
-    version = "1.36.1";
-    addonId = "78272b6fa58f4a1abaac99321d503a20@proton.me";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4768005/proton_pass-1.36.1.xpi";
-    hash = "sha256-Tfog/GaYEU1ONqlkWU22577HS/1bh5QuM6V/JCtguwQ=";
-  };
-
   ayu-dark = buildFirefoxXpiAddon {
     pname = "ayu-dark-theme";
     version = "1.0";
@@ -63,7 +55,6 @@ in
         extensions.force = true;
         extensions.packages = [
           vimium
-          proton-pass
           ayu-dark
         ];
 

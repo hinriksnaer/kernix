@@ -13,13 +13,11 @@ in {
   env =
     {
       # -- Rendering stability --
+      # NOTE: gamescope forces vk_xwayland_wait_ready=false on its children
+      # itself, so it is intentionally not duplicated here.
       GAMESCOPE_DISABLE_ASYNC_FLIPS = "1";
-      vk_xwayland_wait_ready = "false";
       ENABLE_GAMESCOPE_WSI = "1";
       mesa_glthread = "true";
-
-      # -- Shader compilation --
-      DXVK_ASYNC = "1";
 
       # -- Game compatibility --
       SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
@@ -37,9 +35,6 @@ in {
       DXVK_HDR = "1";
     }
     // lib.optionalAttrs isNvidia {
-      # Hint the GL driver to smooth frame pacing (value 3 = auto).
-      __GL_CONSTANT_FRAME_RATE_HINT = "3";
-
       # -- NVAPI / raytracing (DLSS, DXR, RT cores) --
       PROTON_ENABLE_NVAPI = "1";
       DXVK_ENABLE_NVAPI = "true";
@@ -59,6 +54,7 @@ in {
       "--fade-out-duration"
       "200"
     ]
+    ++ lib.optional gs.adaptiveSync "--adaptive-sync"
     ++ lib.optionals hasHdr [
       "--hdr-enabled"
       "--hdr-itm-enabled"

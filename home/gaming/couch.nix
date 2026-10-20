@@ -24,6 +24,13 @@
 }: let
   tvOutput = host.desktop.hyprland.tvOutput;
   hasCouchMode = host.gaming.enable && host.gaming.couch.enable && tvOutput != "";
+  gsRefresh = toString host.gaming.gamescope.refreshRate;
+
+  # TV-mode output resolution comes from kernix.gaming.gamescope.resolution
+  # (e.g. "3840x2160"); deck mode stays at the Steam Deck's 1280x800.
+  gsTvRes = lib.splitString "x" host.gaming.gamescope.resolution;
+  gsTvWidth = builtins.elemAt gsTvRes 0;
+  gsTvHeight = builtins.elemAt gsTvRes 1;
   gsDefaults = import ../../lib/gamescope.nix {inherit host lib;};
 
   # Convert shared gamescope env attrset to shell VAR=val prefix lines.
@@ -123,8 +130,8 @@ in
               GS_WIDTH=1280
               GS_HEIGHT=800
           else
-              GS_WIDTH=3840
-              GS_HEIGHT=2160
+              GS_WIDTH=${gsTvWidth}
+              GS_HEIGHT=${gsTvHeight}
           fi
 
           systemctl --user set-environment XDG_DESKTOP_PORTAL_DIR=""
@@ -174,7 +181,7 @@ in
               --steam \
               -O ${tvOutput} \
               -W "$GS_WIDTH" -H "$GS_HEIGHT" \
-              -r 60 \
+              -r ${gsRefresh} \
               ${gsArgsStr} \
               -- steam -gamepadui -pipewire-dmabuf \
           || true

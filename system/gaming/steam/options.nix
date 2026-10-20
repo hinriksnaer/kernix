@@ -10,6 +10,11 @@
       default = 60;
       description = "Gamescope output refresh rate.";
     };
+    adaptiveSync = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Pass --adaptive-sync to gamescope (VRR). Only enable if the display supports it.";
+    };
     hdr = {
       sdrContentNits = lib.mkOption {
         type = lib.types.int;
