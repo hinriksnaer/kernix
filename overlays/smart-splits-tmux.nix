@@ -1,9 +1,7 @@
 # Tmux half of smart-splits.nvim v3 -- not in nixpkgs.
 # Source pinned by flake.lock; update with:
 #   nix flake update smart-splits-backend-tmux
-{
-  inputs,
-}: final: prev: {
+{inputs}: final: prev: {
   tmuxPlugins =
     prev.tmuxPlugins
     // {
