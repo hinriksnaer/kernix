@@ -4,6 +4,7 @@
 # XDG portals, and CLI helper.
 {
   pkgs,
+  lib,
   host,
   hostname,
   ...
@@ -32,6 +33,28 @@ in {
       export SHELL="${pkgs.zsh}/bin/zsh"
       exec "${pkgs.zsh}/bin/zsh" -l
     fi
+  '';
+
+  # ── SSSD / LDAP name resolution for Nix binaries ──
+  # Nix glibc reads the host's /etc/nsswitch.conf (`files sss ...`) but does
+  # not search /usr/lib64 for libnss_sss.so.2, so every Nix-built getpwuid()
+  # fails on this domain machine:
+  #   $ id -u -n        ->  id: cannot find name for user ID 4240723
+  # This is the same root cause as the nix-openssh Remote-SSH breakage above
+  # (hence vscodeFhs = false), and it also breaks VS Code's dev-containers
+  # extension, which probes the container with `id -u -n`.
+  # Collect the host's NSS modules in a private dir so it can be put on
+  # LD_LIBRARY_PATH without exposing the rest of /usr/lib64.
+  home.activation.linkNssModules = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    run mkdir -p "$HOME/.local/lib/nss"
+    for _m in libnss_sss.so.2 libnss_systemd.so.2 libnss_mdns4_minimal.so.2; do
+      for _d in /usr/lib64 /usr/lib/x86_64-linux-gnu; do
+        if [ -e "$_d/$_m" ]; then
+          run ln -sf "$_d/$_m" "$HOME/.local/lib/nss/$_m"
+        fi
+      done
+    done
+    unset _m _d
   '';
 
   # ── Hyprland + Wayland session ──

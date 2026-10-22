@@ -99,6 +99,14 @@
     -- Environment variables
     hl.env("KERNIX_PATH", "${config.kernix.theme.dataDir}")
     ${lib.optionalString hasTv ''hl.env("SSH_AUTH_SOCK", os.getenv("HOME") .. "/.bitwarden-ssh-agent.sock")''}
+    -- Foreign-distro hosts only: nix glibc does not search /usr/lib64 for
+    -- libnss_sss.so.2, so every nix-built getpwuid() fails on an sssd/LDAP
+    -- host -- e.g. VS Code's dev-containers `id -u -n` probe.
+    -- hosts/fedora links the host NSS modules into ~/.local/lib/nss; append it
+    -- without clobbering an existing value (genericLinux.gpu may set this).
+    -- Deliberately NOT set on NixOS: the dir does not exist there, and a global
+    -- LD_LIBRARY_PATH is the ambient-library-path pattern NixOS exists to avoid.
+    ${lib.optionalString config.targets.genericLinux.enable ''hl.env("LD_LIBRARY_PATH", ((os.getenv("LD_LIBRARY_PATH") or "") == "" and "" or (os.getenv("LD_LIBRARY_PATH") .. ":")) .. os.getenv("HOME") .. "/.local/lib/nss")''}
 
     -- Monitors (from config.monitors)
     ${monitorLines}

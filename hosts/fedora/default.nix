@@ -9,7 +9,11 @@
       email = "hgudmund@redhat.com";
     };
 
-    apps.enable = true;
+    apps = {
+      enable = true;
+      # Plain build: see kernix.apps.vscodeFhs (sssd/LDAP host).
+      vscodeFhs = false;
+    };
 
     desktop = {
       enable = true;
