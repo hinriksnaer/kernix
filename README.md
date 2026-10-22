@@ -60,11 +60,14 @@ kernix rebuild
 (`nix build .#container-image .#container-quadlet`), loads the image into
 podman, installs `~/.config/containers/systemd/kernix-dev.container`, and
 hands the lifecycle to systemd (`systemctl --user status kernix-dev`). The
-named volumes `kernix-nix` (/nix) and `kernix-home` (/root) seed from the
-image on first use and persist across redeploys, so `init` runs once per
-host: it generates a read-only GitHub deploy key inside the container (add
-the printed key at `github.com/<you>/kernix/settings/keys`), clones the repo
-with the locked home-manager, and applies the `root@container` profile.
+container runs as the unprivileged user `dev` (uid 1000), and nothing is
+bind-mounted from the host -- the unit references only the image and the
+named volumes `kernix-nix` (/nix) and `kernix-home` (/home/dev), which
+seed from the image on first use and persist across redeploys, so `init`
+runs once per host: it generates a read-only GitHub deploy key inside the
+container (add the printed key at `github.com/<you>/kernix/settings/keys`),
+clones the repo with the locked home-manager, and applies the
+`dev@container` profile.
 Thereafter config changes are `kernix rebuild` inside the container;
 toolchain updates are `kernix container deploy` again. The image carries
 only the bootstrap layer (nix, git, locked home-manager, bundled

@@ -1,4 +1,4 @@
-# Container profile -- Kubernetes/OpenShift pods running as root.
+# Container profile -- the dev container and Kubernetes/OpenShift pods.
 {
   pkgs,
   config,

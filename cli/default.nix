@@ -26,6 +26,8 @@
           KERNIX_ROOT="''${KERNIX_ROOT:-''${SETTINGS_DIR:-$HOME/kernix}}"
         ''
         + builtins.readFile ./kernix.sh;
-      excludeShellChecks = ["SC2086" "SC2229"];
+      # SC2016/SC2029: the container subcommand's ssh/base64 patterns
+      # deliberately expand (or deliberately don't) on the client side.
+      excludeShellChecks = ["SC2016" "SC2029" "SC2086" "SC2229"];
     };
 }

@@ -1,9 +1,10 @@
-# Container profile -- root inside OCI containers: Kubernetes/OpenShift
-# pods, or the flake-built image (nix build .#container-image).
-# Apply with: home-manager switch --flake ~/kernix#root@container
+# Container profile -- the flake-built dev container (nix build
+# .#container-image), which runs as the unprivileged user "dev" (uid
+# 1000, home /home/dev) so nothing inside runs as root.
+# Apply with: home-manager switch --flake ~/kernix#dev@container
 {...}: {
   kernix = {
-    username = "root";
+    username = "dev";
     kernixRoot = "$HOME/kernix";
 
     git = {

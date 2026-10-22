@@ -14,7 +14,7 @@
 # volume:
 #
 #   git clone --recurse-submodules <kernix> ~/kernix
-#   home-manager switch --flake ~/kernix#root@container -b backup
+#   home-manager switch --flake ~/kernix#dev@container -b backup
 #   kernix rebuild   # thereafter
 #
 # Build (on a machine with nix):  nix build .#container-image
@@ -31,6 +31,13 @@ in
     inherit pkgs;
     name = "kernix";
     tag = "container";
+    # Unprivileged runtime user: the container runs as uid 1000 "dev"
+    # with the whole store chowned to it (single-user nix, no daemon),
+    # keeping interactive and agent workflows off container-root.
+    uid = 1000;
+    gid = 1000;
+    uname = "dev";
+    gname = "dev";
     extraPkgs = [home-manager];
     # Bundle the locked nixpkgs as <nixpkgs>: nix-shell -p and
     # nix-build '<nixpkgs>' work offline, pinned to flake.lock like a

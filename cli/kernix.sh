@@ -233,15 +233,17 @@ ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519 -C kernix-dev >/dev/null'
 [ -d ~/kernix ] || git clone --recurse-submodules $repo_url ~/kernix"
                 # Free the baked bootstrap profile link for home-manager to own
                 # (otherwise git-minimal from the image collides with the profile).
-                kx_exec '[ "$(readlink -f ~/.nix-profile)" = /nix/var/nix/profiles/default ] && rm ~/.nix-profile || true'
-                kx_exec 'home-manager switch --flake ~/kernix#root@container -b backup'
+                # One level of readlink: -f resolves through to the store
+                # path and would never match the baked bootstrap link.
+                kx_exec '[ "$(readlink ~/.nix-profile)" = /nix/var/nix/profiles/default ] && rm ~/.nix-profile || true'
+                kx_exec 'home-manager switch --flake ~/kernix#dev@container -b backup'
                 echo ":: done -- jump in with: kernix container enter${kx_host:+ $kx_host}"
                 ;;
             enter)
                 if [[ -n "$kx_host" ]]; then
-                    exec ssh -t "$kx_host" podman exec -it kernix-dev zsh -l
+                    exec ssh -t "$kx_host" podman exec -it -w /home/dev kernix-dev zsh -l
                 else
-                    podman exec -it kernix-dev zsh -l || podman exec -it kernix-dev bash -l
+                    podman exec -it -w /home/dev kernix-dev zsh -l || podman exec -it -w /home/dev kernix-dev bash -l
                 fi
                 ;;
             *)
