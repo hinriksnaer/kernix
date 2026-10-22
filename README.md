@@ -37,43 +37,42 @@ Full hosts get OS-level config (boot, GPU drivers, networking). Headless hosts g
 ## Quick Start
 
 ```sh
-git clone --recurse-submodules git@github.com:hinriksnaer/kernix.git ~/kernix
+git clone git@github.com:hinriksnaer/kernix.git ~/kernix
 # Edit hosts/<hostname>/ -- set username, git identity, GPU, monitors
 kernix rebuild
 ```
 
-For containers (the host needs only podman + systemd, no nix) -- one flow for
-the local machine and bare ssh servers alike, the host is just a parameter:
+### In a container
+
+This repo ships no container tooling -- the flake is the interface. Any
+container with Nix can apply the `dev@container` profile (`hosts/container/`):
 
 ```sh
-kernix container deploy              # local host
-kernix container deploy user@server  # any ssh host, same image and unit
+podman run -d --restart=always --name kernix \
+  -e NIX_CONFIG='experimental-features = nix-command flakes' \
+  docker.io/nixos/nix:2.35.3
 
-kernix container init                # first run only: deploy key, clone, switch
-kernix container enter               # jump in (zsh once the profile is applied)
+# copy the working tree in (no mounts; it is ~1MB now) and apply it
+tar -c --exclude=.git --exclude=result . \
+  | podman exec -i kernix tar -x -C /root/kernix
+podman exec kernix nix run github:nix-community/home-manager -- \
+  switch --flake /root/kernix#dev@container
 
-# inside the container, the usual workflow
-kernix rebuild
+podman exec -it kernix zsh -l      # thereafter `kernix rebuild` works inside
 ```
 
-`deploy` builds the image and the quadlet unit from the flake
-(`nix build .#container-image .#container-quadlet`), loads the image into
-podman, installs `~/.config/containers/systemd/kernix-dev.container`, and
-hands the lifecycle to systemd (`systemctl --user status kernix-dev`). The
-container runs as the unprivileged user `dev` (uid 1000), and nothing is
-bind-mounted from the host -- the unit references only the image and the
-named volumes `kernix-nix` (/nix) and `kernix-home` (/home/dev), which
-seed from the image on first use and persist across redeploys, so `init`
-runs once per host: it generates a read-only GitHub deploy key inside the
-container (add the printed key at `github.com/<you>/kernix/settings/keys`),
-clones the repo with the locked home-manager, and applies the
-`dev@container` profile.
-Thereafter config changes are `kernix rebuild` inside the container;
-toolchain updates are `kernix container deploy` again. The image carries
-only the bootstrap layer (nix, git, locked home-manager, bundled
-`<nixpkgs>`), built with the Nix project's own `docker.nix` against kernix's
-locked nixpkgs. For Kubernetes/OpenShift pods where the image is fixed,
-install nix in the pod and apply the same profile with `home-manager switch`.
+No volume over `/nix`: state lives in the container's writable layer and
+survives stop/start/reboot. The flake is consumed from the working tree, so
+uncommitted edits apply; point the same command at
+`github:hinriksnaer/kernix#dev@container` instead to consume the published
+version.
+
+`dev@container` declares `home.username = "dev"`, so it must run as `dev`,
+while the stock image runs as root. Either set `kernix.username = "root"` in
+`hosts/container/default.nix` (simplest -- under rootless podman
+container-root is your host uid, not host root), or bootstrap the user:
+writable copies of `/etc/{passwd,group,shadow}`, a `dev` uid-1000 entry, and
+`chown -R 1000:1000 /nix /home/dev`.
 
 ## CLI
 
@@ -84,8 +83,6 @@ kernix test          activate without adding to boot menu (NixOS only)
 kernix update        update flake inputs + rebuild
 kernix cleanup [N]   remove old generations (keep N, default 5)
 kernix list-gens     list generations
-kernix container     manage the dev container: deploy | init | enter
-                     (optional user@host; no host = local)
 ```
 
 ## Structure
@@ -95,7 +92,6 @@ flake.nix          host definitions, overlays, dev shells
 hosts/             per-machine entry points
 system/            OS-level modules (hardware, boot, GPU, desktop, services)
 home/              user-level modules (terminal, desktop, apps)
-submodules/        git submodules consumed as local flake inputs
 overlays/          nixpkgs patches
 cli/               rebuild scripts
 lib/               shared options and helpers
@@ -103,10 +99,10 @@ lib/               shared options and helpers
 
 The runtime theme engine and theme pack live in the separate
 [kernix-theme](https://github.com/hinriksnaer/kernix-theme) flake (plus
-`nixtorch`), consumed here as git submodules (clone with
-`--recurse-submodules`, or run `git submodule update --init` in an existing
-clone): `inputs.self.submodules = true`
-fetches them with the repo, and the inputs are relative `path:` references
-(`./submodules/...`), so uncommitted edits in a submodule apply directly on
-rebuild -- no lock update, no commit (requires Nix >= 2.27). Theme wiring:
+`nixtorch`), consumed here as ordinary `github:` flake inputs pinned by
+`flake.lock`. They used to be git submodules; the `github:` fetcher does not
+populate submodules, which made the flake unevaluatable for any consumer
+(`error: path '.../submodules/kernix-theme/flake.nix' does not exist`), so
+they are plain inputs now. To iterate on one locally, override it:
+`nix develop --override-input kernix-theme ../kernix-theme`. Theme wiring:
 `home/theme/default.nix` (`kernix-theme.homeManagerModules.theme`).

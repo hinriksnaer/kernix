@@ -1,6 +1,0 @@
-[submodule "kernix-theme"]
-	path = submodules/kernix-theme
-	url = ssh://git@github.com/hinriksnaer/kernix-theme.git
-[submodule "nixtorch"]
-	path = submodules/nixtorch
-	url = ssh://git@github.com/hinriksnaer/nixtorch.git

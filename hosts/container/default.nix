@@ -1,7 +1,11 @@
-# Container profile -- the flake-built dev container (nix build
-# .#container-image), which runs as the unprivileged user "dev" (uid
-# 1000, home /home/dev) so nothing inside runs as root.
-# Apply with: home-manager switch --flake ~/kernix#dev@container
+# Container profile -- consumed by any container with Nix; the repo ships no
+# image or container tooling of its own. Runs as "dev" (uid 1000, home
+# /home/dev), so the container must either run as that user or declare
+# kernix.username = "root" here (rootless podman maps container-root to the
+# host uid).
+# Apply with:
+#   nix run github:nix-community/home-manager -- \
+#     switch --flake ~/kernix#dev@container
 {...}: {
   kernix = {
     username = "dev";

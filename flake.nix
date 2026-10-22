@@ -17,17 +17,18 @@
       url = "github:smart-splits-nvim/backend-tmux";
       flake = false;
     };
-    # Self: fetch this repo with its Git submodules populated, so the
-    # relative path inputs below resolve to live working trees (Nix >= 2.27).
-    self.submodules = true;
-    # Local git submodules (submodules/): resolved through the self source tree,
-    # so uncommitted edits apply natively (Nix >= 2.26 path inputs).
+    # Ordinary flake inputs, NOT git submodules. The `github:` fetcher does
+    # not populate submodules, so the previous `url = ./submodules/...` form
+    # made this flake unevaluatable for any consumer:
+    #   error: path '.../submodules/kernix-theme/flake.nix' does not exist
+    # Both repos are public and pinned by flake.lock. To work on one locally:
+    #   nix develop --override-input kernix-theme ../kernix-theme
     nixtorch = {
-      url = ./submodules/nixtorch;
+      url = "github:hinriksnaer/nixtorch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     kernix-theme = {
-      url = ./submodules/kernix-theme;
+      url = "github:hinriksnaer/kernix-theme";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Nix project source -- provides docker.nix, the image builder behind
@@ -120,10 +121,6 @@
     # ── Custom packages (nix build .#<name>) ──
     packages.${system} = {
       inherit (pkgsUnfree.kernix-cli) kernix;
-      # Dev-container bootstrap image (hosts/container/image.nix)
-      container-image = pkgs.callPackage ./hosts/container/image.nix {inherit inputs;};
-      # Dev-container systemd unit (hosts/container/quadlet.nix)
-      container-quadlet = pkgs.writeText "kernix-dev.container" (import ./hosts/container/quadlet.nix {});
     };
 
     # ── Machine configurations ──

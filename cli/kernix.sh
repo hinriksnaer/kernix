@@ -7,8 +7,6 @@
 #   update       Update flake inputs and rebuild
 #   cleanup [N]  Remove old generations (keep N, default 5)
 #   list-gens    List generations
-#   container    Manage the dev container (deploy|init|enter [user@host]);
-#                no host = local. Same image, unit, and flow everywhere.
 #
 # Extra arguments are forwarded to the underlying tool.
 # Notifications are sent when the terminal loses focus during a build.
@@ -144,115 +142,6 @@ case "$subcmd" in
             home-manager generations
         fi
         ;;
-    container)
-        action="${1:-}"
-        kx_host="${2:-}"
-
-        if [[ -z "$action" ]]; then
-            echo "Usage: kernix container <deploy|init|enter> [user@host]" >&2
-            exit 1
-        fi
-        if ! command -v podman &>/dev/null; then
-            echo "Error: podman not found in PATH" >&2
-            exit 1
-        fi
-
-        # Run a command on the target host; empty host = local.
-        kx_run() {
-            if [[ -n "$kx_host" ]]; then
-                ssh "$kx_host" "$@"
-            else
-                "$@"
-            fi
-        }
-
-        # Run a bash script inside the container. Base64 keeps the
-        # script intact through local quoting, ssh re-parsing, and
-        # podman exec alike.
-        kx_exec() {
-            if [[ -n "$kx_host" ]]; then
-                local encoded
-                encoded=$(printf '%s' "$1" | base64 -w0)
-                ssh "$kx_host" "echo $encoded | base64 -d | podman exec -i kernix-dev bash -s"
-            else
-                printf '%s' "$1" | podman exec -i kernix-dev bash -s
-            fi
-        }
-
-        case "$action" in
-            deploy)
-                echo "==> Deploying kernix-dev${kx_host:+ to $kx_host}"
-                tmp=$(mktemp -d)
-                trap 'rm -rf "$tmp"' EXIT
-                echo ":: building image + unit from $KERNIX_ROOT"
-                nix build --out-link "$tmp/image" "$KERNIX_ROOT#container-image"
-                nix build --out-link "$tmp/unit" "$KERNIX_ROOT#container-quadlet"
-                echo ":: loading image"
-                kx_run podman load < "$tmp/image"
-                echo ":: installing quadlet unit"
-                if [[ -n "$kx_host" ]]; then
-                    ssh "$kx_host" mkdir -p .config/containers/systemd
-                    # rm first: scp cannot overwrite the read-only mode
-                    # inherited from the nix store source.
-                    ssh "$kx_host" rm -f .config/containers/systemd/kernix-dev.container
-                    scp "$tmp/unit" "$kx_host:.config/containers/systemd/kernix-dev.container"
-                    ssh "$kx_host" loginctl enable-linger || \
-                        echo "Note: lingering off; container starts at first login instead"
-                else
-                    mkdir -p "$HOME/.config/containers/systemd"
-                    # install (not cp): the store source is mode 444, which
-                    # cp would propagate and break later overwrites.
-                    install -m 0644 "$tmp/unit" "$HOME/.config/containers/systemd/kernix-dev.container"
-                fi
-                kx_run systemctl --user daemon-reload
-                # Replace any pre-systemd container; volumes persist.
-                kx_run podman rm -f kernix-dev >/dev/null 2>&1 || true
-                # Boot-start comes from the unit's [Install] section -- the
-                # quadlet generator wires default.target.wants itself
-                # (systemctl enable can't handle generated units).
-                kx_run systemctl --user restart kernix-dev.service
-                echo ":: done -- systemctl --user status kernix-dev"
-                echo "   first run? kernix container init${kx_host:+ $kx_host}"
-                ;;
-            init)
-                echo "==> Initializing kernix-dev${kx_host:+ on $kx_host}"
-                repo_url=$(git -C "$KERNIX_ROOT" remote get-url origin)
-                if ! kx_exec '[ -f ~/.ssh/id_ed25519 ]'; then
-                    kx_exec 'mkdir -p ~/.ssh && chmod 700 ~/.ssh
-ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519 -C kernix-dev >/dev/null'
-                    echo ":: generated deploy key -- add it as a READ-ONLY deploy key:"
-                    echo "   https://github.com/hinriksnaer/kernix/settings/keys"
-                    kx_exec 'cat ~/.ssh/id_ed25519.pub'
-                    if [[ -t 0 ]]; then
-                        read -r -p ":: press enter once the key is added " _
-                    else
-                        echo ":: (no tty) add the key, then re-run: kernix container init${kx_host:+ $kx_host}"
-                    fi
-                fi
-                kx_exec "GIT_SSH_COMMAND='ssh -o StrictHostKeyChecking=accept-new' \
-[ -d ~/kernix ] || git clone --recurse-submodules $repo_url ~/kernix"
-                # Free the baked bootstrap profile link for home-manager to own
-                # (otherwise git-minimal from the image collides with the profile).
-                # One level of readlink: -f resolves through to the store
-                # path and would never match the baked bootstrap link.
-                kx_exec '[ "$(readlink ~/.nix-profile)" = /nix/var/nix/profiles/default ] && rm ~/.nix-profile || true'
-                kx_exec 'home-manager switch --flake ~/kernix#dev@container -b backup'
-                echo ":: done -- jump in with: kernix container enter${kx_host:+ $kx_host}"
-                ;;
-            enter)
-                if [[ -n "$kx_host" ]]; then
-                    exec ssh -t "$kx_host" podman exec -it -w /home/dev kernix-dev zsh -l
-                else
-                    podman exec -it -w /home/dev kernix-dev zsh -l || podman exec -it -w /home/dev kernix-dev bash -l
-                fi
-                ;;
-            *)
-                echo "Error: unknown container action '$action'" >&2
-                echo "Usage: kernix container <deploy|init|enter> [user@host]" >&2
-                exit 1
-                ;;
-        esac
-        ;;
     -h|--help|help)
         echo "Usage: kernix [command] [options]"
         echo ""
@@ -265,7 +154,6 @@ ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519 -C kernix-dev >/dev/null'
         echo "  update       Update flake inputs + rebuild"
         echo "  cleanup [N]  Remove old generations (keep N, default 5)"
         echo "  list-gens    List generations"
-        echo "  container    Dev container: deploy, init, enter (optional user@host)"
         echo ""
         echo "Extra options are forwarded to the underlying tool."
         ;;

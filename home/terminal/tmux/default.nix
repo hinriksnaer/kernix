@@ -111,6 +111,14 @@
       }
     ];
 
-    extraConfig = builtins.readFile ./keybinds.conf;
+    extraConfig =
+      ''
+        # Pin panes to the Nix zsh instead of $SHELL: on hosts where the login
+        # shell is /bin/bash (SSSD/SELinux, see hosts/fedora), tmux would spawn
+        # bash, and the exported _ZSH_EXEC_GUARD suppresses the bash->zsh exec
+        # inside the server environment.
+        set -g default-shell "${pkgs.zsh}/bin/zsh"
+      ''
+      + builtins.readFile ./keybinds.conf;
   };
 }

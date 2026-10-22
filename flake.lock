@@ -143,14 +143,18 @@
         ]
       },
       "locked": {
-        "path": "submodules/kernix-theme",
-        "type": "path"
+        "lastModified": 1791389422,
+        "narHash": "sha256-tbwED8+8mC90+Ras/iRG60hoPa93yaS4XDFgoupmkMU=",
+        "owner": "hinriksnaer",
+        "repo": "kernix-theme",
+        "rev": "2c85bab5458b89f8ee314123886b19c77d9f4f7e",
+        "type": "github"
       },
       "original": {
-        "path": "submodules/kernix-theme",
-        "type": "path"
-      },
-      "parent": []
+        "owner": "hinriksnaer",
+        "repo": "kernix-theme",
+        "type": "github"
+      }
     },
     "llm-agents": {
       "inputs": {
@@ -267,14 +271,18 @@
         ]
       },
       "locked": {
-        "path": "submodules/nixtorch",
-        "type": "path"
+        "lastModified": 1791477763,
+        "narHash": "sha256-a8CnQ60FCbf+X6WTFAwzijVjLd+486N0NWqu+SW1BzE=",
+        "owner": "hinriksnaer",
+        "repo": "nixtorch",
+        "rev": "67cb7ee8671abf1611160d73525d43cbd4688171",
+        "type": "github"
       },
       "original": {
-        "path": "submodules/nixtorch",
-        "type": "path"
-      },
-      "parent": []
+        "owner": "hinriksnaer",
+        "repo": "nixtorch",
+        "type": "github"
+      }
     },
     "root": {
       "inputs": {
