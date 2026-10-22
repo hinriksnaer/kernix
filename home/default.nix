@@ -37,4 +37,15 @@ in {
   # Expose username to scripts/dotfiles at runtime
   home.sessionVariables.KERNIX_USER = username;
   home.sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
+
+  # Containers and bare SSH sessions have no logind, so XDG_RUNTIME_DIR is
+  # unset -- and anything wanting a runtime dir (rbw's ssh-agent socket, tmux,
+  # the gaming scripts) then breaks or writes to an empty path. Fall back to a
+  # per-user dir we own and create it. On hosts with logind the variable is
+  # already set, so this expands to itself and nothing changes.
+  home.sessionVariables.XDG_RUNTIME_DIR = "\${XDG_RUNTIME_DIR:-$HOME/.run}";
+  home.activation.createRuntimeDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    run mkdir -p "$HOME/.run"
+    run chmod 700 "$HOME/.run"
+  '';
 }

@@ -42,14 +42,20 @@
 
     initContent = lib.mkMerge [
       # Refresh SSH_AUTH_SOCK on every shell so herdr panes inherit the live
-      # Bitwarden agent socket rather than the stale value the herdr server
-      # captured at startup.
+      # agent socket rather than the stale value the server captured at
+      # startup. Preference order: desktop Bitwarden app (GUI hosts), then
+      # rbw's built-in ssh agent (container/pod hosts, no GUI).
       (lib.mkOrder 400 ''
-        _bw_sock="$HOME/.bitwarden-ssh-agent.sock"
-        if [ -S "$_bw_sock" ]; then
-          export SSH_AUTH_SOCK="$_bw_sock"
-        fi
-        unset _bw_sock
+        for _agent_sock in \
+          "$HOME/.bitwarden-ssh-agent.sock" \
+          "''${XDG_RUNTIME_DIR:-$HOME/.run}"/rbw*/ssh-agent-socket(N)
+        do
+          if [ -S "$_agent_sock" ]; then
+            export SSH_AUTH_SOCK="$_agent_sock"
+            break
+          fi
+        done
+        unset _agent_sock
       '')
 
       # zsh-vi-mode config (must be set before plugin loads)

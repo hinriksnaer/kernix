@@ -37,6 +37,13 @@ in {
 
   home.packages = [cli.kernix];
 
+  # No Bitwarden desktop app in a container, so the ssh agent is rbw's
+  # built-in one (rbw-agent creates this socket on `rbw unlock`). Set it here
+  # as well as in the zsh refresh block so non-interactive git (scripts,
+  # agents) gets the agent too; the zsh block re-points it at a
+  # rbw-<profile>/ socket when RBW_PROFILE is in use.
+  home.sessionVariables.SSH_AUTH_SOCK = "\${XDG_RUNTIME_DIR:-$HOME/.run}/rbw/ssh-agent-socket";
+
   # The stock nixos/nix image ships ~/.nix-profile ->
   # /nix/var/nix/profiles/default, an OLD-style profile with a populated
   # manifest.nix (man-db, git-minimal, ...). Home Manager's installPackages
