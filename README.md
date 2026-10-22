@@ -13,7 +13,7 @@ Maintaining separate configs per machine drifts fast. Kernix keeps everything in
 | `desktop` | NixOS x86_64 | NixOS + Home Manager | NVIDIA, multi-monitor workstation |
 | `laptop` | NixOS x86_64 | NixOS + Home Manager | Intel GPU, power management |
 | `remote` | Linux | Home Manager only | Headless server |
-| `container` | Linux | Home Manager only | Kubernetes/OpenShift, CUDA dev |
+| `container` | Linux | Home Manager only | OCI pods + flake-built image, CUDA dev |
 | `fedora` | Fedora Linux | Home Manager only | Hyprland via Nix on Fedora |
 
 Full hosts get OS-level config (boot, GPU drivers, networking). Headless hosts get user-level tooling only, portable to any Linux with Nix.
@@ -42,13 +42,41 @@ git clone --recurse-submodules git@github.com:hinriksnaer/kernix.git ~/kernix
 kernix rebuild
 ```
 
-For containers:
+For containers (the host needs only podman/docker, no nix):
 
 ```sh
-export USER=root
+# bootstrap image: build where nix exists, load where it runs
+nix build ~/kernix#container-image
+ssh <host> podman load < result       # or: podman load < result locally
+
+# run with persistent stores (volumes seed from the image on first use)
+# (--security-opt label=disable is a no-op without SELinux; on enforcing
+#  hosts like Fedora it lets the container reach host sockets such as the
+#  ssh agent, which live under user_home_t)
+podman run -it --name kernix-dev \
+  --security-opt label=disable \
+  -v kernix-nix:/nix -v kernix-home:/root \
+  -e SSH_AUTH_SOCK=/tmp/ssh-agent -v "$SSH_AUTH_SOCK:/tmp/ssh-agent" \
+  localhost/kernix:container
+
+# first run only: apply the profile (rm the baked bootstrap profile link
+# first -- ~/.nix-profile must be free for home-manager to own, or git
+# from the image's tool set collides with the profile's git)
 git clone --recurse-submodules git@github.com:hinriksnaer/kernix.git ~/kernix
-nix run home-manager/master -- switch --flake ~/kernix#root@container -b backup
+rm ~/.nix-profile
+home-manager switch --flake ~/kernix#root@container -b backup
+
+# update on changes, inside the container
+kernix rebuild
 ```
+
+The image carries only the bootstrap layer (nix, git, the locked home-manager
+CLI, and the bundled `<nixpkgs>`), built with the Nix project's own
+`docker.nix` against kernix's locked nixpkgs. Config changes are applied
+inside the container and live on the `/nix` volume, so the image is only
+rebuilt when flake inputs move. For Kubernetes/OpenShift pods where the image
+is fixed, install nix in the pod and apply the same profile with
+`home-manager switch`.
 
 ## CLI
 

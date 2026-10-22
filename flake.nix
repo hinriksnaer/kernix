@@ -30,6 +30,10 @@
       url = ./submodules/kernix-theme;
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Nix project source -- provides docker.nix, the image builder behind
+    # the official nixos/nix containers. Pinned so its (internal)
+    # interface only changes when this input is bumped.
+    nix.url = "github:NixOS/nix";
   };
 
   outputs = {
@@ -116,6 +120,8 @@
     # ── Custom packages (nix build .#<name>) ──
     packages.${system} = {
       inherit (pkgsUnfree.kernix-cli) kernix;
+      # Dev-container bootstrap image (hosts/container/image.nix)
+      container-image = pkgs.callPackage ./hosts/container/image.nix {inherit inputs;};
     };
 
     # ── Machine configurations ──
