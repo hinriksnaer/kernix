@@ -123,6 +123,22 @@
       inherit (pkgsUnfree.kernix-cli) kernix;
     };
 
+    # ── One-command apply: nix run .#<user>@<host> ──
+    # The host config is just the attribute; no clone, no separate
+    # home-manager flake URL. Equivalent to
+    #   home-manager switch --flake <this flake>#<user>@<host>
+    # Must run as the profile's user: home-manager sanity-checks $USER,
+    # $HOME and uid against the configuration.
+    apps.${system} =
+      builtins.mapAttrs (name: _: {
+        type = "app";
+        program = "${pkgs.writeShellScript "kernix-switch-${name}" ''
+          exec ${home-manager.packages.${system}.home-manager}/bin/home-manager switch \
+            --flake '${toString self}#${name}' "$@"
+        ''}";
+      })
+      self.homeConfigurations;
+
     # ── Machine configurations ──
     nixosConfigurations = {
       desktop = mkHost "desktop";

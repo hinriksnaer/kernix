@@ -44,35 +44,44 @@ kernix rebuild
 
 ### In a container
 
-This repo ships no container tooling -- the flake is the interface. Any
-container with Nix can apply the `dev@container` profile (`hosts/container/`):
+This repo ships no container tooling -- the flake is the interface, and every
+profile is runnable as an app:
+
+```sh
+nix run <flake>#<user>@<host>          # e.g. nix run .#root@container
+```
+
+That is equivalent to `home-manager switch --flake <flake>#<user>@<host>`
+(Home Manager is referenced by the app, so there is no second flake URL). It
+must run as the profile's user: Home Manager sanity-checks `$USER`, `$HOME`
+and uid against the configuration.
+
+Bootstrapping the stock image (runs as root, so the profile is
+`root@container`, home `/root`):
 
 ```sh
 podman run -d --restart=always --name kernix \
   -e NIX_CONFIG='experimental-features = nix-command flakes' \
   docker.io/nixos/nix:2.35.3
 
-# copy the working tree in (no mounts; it is ~1MB now) and apply it
-tar -c --exclude=.git --exclude=result . \
-  | podman exec -i kernix tar -x -C /root/kernix
-podman exec kernix nix run github:nix-community/home-manager -- \
-  switch --flake /root/kernix#dev@container
-
-podman exec -it kernix zsh -l      # thereafter `kernix rebuild` works inside
+# copy the working tree in -- no mounts, ~1MB -- then apply it
+tar -c --exclude=.git --exclude=result -C ~ kernix \
+  | ssh <user>@<remote> 'podman exec -i kernix tar -x -C /root'
+podman exec -it -w /root kernix sh -l
+nix run /root/kernix#root@container
 ```
 
-No volume over `/nix`: state lives in the container's writable layer and
-survives stop/start/reboot. The flake is consumed from the working tree, so
-uncommitted edits apply; point the same command at
-`github:hinriksnaer/kernix#dev@container` instead to consume the published
-version.
+Once the flake is pushed, the copy is unnecessary:
+`nix run github:hinriksnaer/kernix#root@container`.
 
-`dev@container` declares `home.username = "dev"`, so it must run as `dev`,
-while the stock image runs as root. Either set `kernix.username = "root"` in
-`hosts/container/default.nix` (simplest -- under rootless podman
-container-root is your host uid, not host root), or bootstrap the user:
-writable copies of `/etc/{passwd,group,shadow}`, a `dev` uid-1000 entry, and
-`chown -R 1000:1000 /nix /home/dev`.
+No volume over `/nix`: state lives in the container's writable layer and
+survives stop/start/reboot. Consuming the working tree means uncommitted
+edits apply.
+
+The root profile is a deliberate choice: under rootless podman
+container-root is the host uid, not host root. For a rootful or shared host,
+set `kernix.username` in `hosts/container/default.nix` to a uid-1000 user
+instead and run the container as that user.
 
 ## CLI
 

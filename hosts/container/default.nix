@@ -1,14 +1,17 @@
 # Container profile -- consumed by any container with Nix; the repo ships no
-# image or container tooling of its own. Runs as "dev" (uid 1000, home
-# /home/dev), so the container must either run as that user or declare
-# kernix.username = "root" here (rootless podman maps container-root to the
-# host uid).
-# Apply with:
-#   nix run github:nix-community/home-manager -- \
-#     switch --flake ~/kernix#dev@container
+# image or container tooling of its own.
+#
+# Runs as "root": the stock nixos/nix image runs as root, and under rootless
+# podman container-root is the host uid, not host root. Home Manager sanity
+# checks $USER/$HOME against the profile, so this must match whoever the
+# container runs as -- switch back to a uid-1000 user here if this ever runs
+# rootful or on a shared host.
+#
+# Apply from inside the container with one command:
+#   nix run <flake>#root@container
 {...}: {
   kernix = {
-    username = "dev";
+    username = "root";
     kernixRoot = "$HOME/kernix";
 
     git = {
