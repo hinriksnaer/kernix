@@ -122,6 +122,8 @@
       inherit (pkgsUnfree.kernix-cli) kernix;
       # Dev-container bootstrap image (hosts/container/image.nix)
       container-image = pkgs.callPackage ./hosts/container/image.nix {inherit inputs;};
+      # Dev-container systemd unit (hosts/container/quadlet.nix)
+      container-quadlet = pkgs.writeText "kernix-dev.container" (import ./hosts/container/quadlet.nix {});
     };
 
     # ── Machine configurations ──

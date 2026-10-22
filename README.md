@@ -42,41 +42,35 @@ git clone --recurse-submodules git@github.com:hinriksnaer/kernix.git ~/kernix
 kernix rebuild
 ```
 
-For containers (the host needs only podman/docker, no nix):
+For containers (the host needs only podman + systemd, no nix) -- one flow for
+the local machine and bare ssh servers alike, the host is just a parameter:
 
 ```sh
-# bootstrap image: build where nix exists, load where it runs
-nix build ~/kernix#container-image
-ssh <host> podman load < result       # or: podman load < result locally
+kernix container deploy              # local host
+kernix container deploy user@server  # any ssh host, same image and unit
 
-# run with persistent stores (volumes seed from the image on first use)
-# (--security-opt label=disable is a no-op without SELinux; on enforcing
-#  hosts like Fedora it lets the container reach host sockets such as the
-#  ssh agent, which live under user_home_t)
-podman run -it --name kernix-dev \
-  --security-opt label=disable \
-  -v kernix-nix:/nix -v kernix-home:/root \
-  -e SSH_AUTH_SOCK=/tmp/ssh-agent -v "$SSH_AUTH_SOCK:/tmp/ssh-agent" \
-  localhost/kernix:container
+kernix container init                # first run only: deploy key, clone, switch
+kernix container enter               # jump in (zsh once the profile is applied)
 
-# first run only: apply the profile (rm the baked bootstrap profile link
-# first -- ~/.nix-profile must be free for home-manager to own, or git
-# from the image's tool set collides with the profile's git)
-git clone --recurse-submodules git@github.com:hinriksnaer/kernix.git ~/kernix
-rm ~/.nix-profile
-home-manager switch --flake ~/kernix#root@container -b backup
-
-# update on changes, inside the container
+# inside the container, the usual workflow
 kernix rebuild
 ```
 
-The image carries only the bootstrap layer (nix, git, the locked home-manager
-CLI, and the bundled `<nixpkgs>`), built with the Nix project's own
-`docker.nix` against kernix's locked nixpkgs. Config changes are applied
-inside the container and live on the `/nix` volume, so the image is only
-rebuilt when flake inputs move. For Kubernetes/OpenShift pods where the image
-is fixed, install nix in the pod and apply the same profile with
-`home-manager switch`.
+`deploy` builds the image and the quadlet unit from the flake
+(`nix build .#container-image .#container-quadlet`), loads the image into
+podman, installs `~/.config/containers/systemd/kernix-dev.container`, and
+hands the lifecycle to systemd (`systemctl --user status kernix-dev`). The
+named volumes `kernix-nix` (/nix) and `kernix-home` (/root) seed from the
+image on first use and persist across redeploys, so `init` runs once per
+host: it generates a read-only GitHub deploy key inside the container (add
+the printed key at `github.com/<you>/kernix/settings/keys`), clones the repo
+with the locked home-manager, and applies the `root@container` profile.
+Thereafter config changes are `kernix rebuild` inside the container;
+toolchain updates are `kernix container deploy` again. The image carries
+only the bootstrap layer (nix, git, locked home-manager, bundled
+`<nixpkgs>`), built with the Nix project's own `docker.nix` against kernix's
+locked nixpkgs. For Kubernetes/OpenShift pods where the image is fixed,
+install nix in the pod and apply the same profile with `home-manager switch`.
 
 ## CLI
 
@@ -87,6 +81,8 @@ kernix test          activate without adding to boot menu (NixOS only)
 kernix update        update flake inputs + rebuild
 kernix cleanup [N]   remove old generations (keep N, default 5)
 kernix list-gens     list generations
+kernix container     manage the dev container: deploy | init | enter
+                     (optional user@host; no host = local)
 ```
 
 ## Structure

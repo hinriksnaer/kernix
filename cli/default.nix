@@ -13,7 +13,7 @@
     pkgs.writeShellApplication {
       name = "kernix";
       runtimeInputs = with pkgs;
-        [coreutils git nix]
+        [coreutils git nix openssh]
         ++ lib.optionals (hostType == "nixos") [hostname jq libnotify nh];
       text =
         ''
