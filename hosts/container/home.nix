@@ -1,6 +1,7 @@
 # Container profile -- the dev container and Kubernetes/OpenShift pods.
 {
   pkgs,
+  lib,
   config,
   host,
   hostname,
@@ -35,4 +36,20 @@ in {
   '';
 
   home.packages = [cli.kernix];
+
+  # The stock nixos/nix image ships ~/.nix-profile ->
+  # /nix/var/nix/profiles/default, an OLD-style profile with a populated
+  # manifest.nix (man-db, git-minimal, ...). Home Manager's installPackages
+  # picks `nix-env -i` for old-style profiles and then installs into that same
+  # profile, colliding with the image's packages:
+  #   conflict for "/nix/store/...-man-db/bin/accessdb"
+  # Drop the bootstrap link once so Home Manager owns its own profile.
+  # Guarded, so it is a no-op on every subsequent activation; runs before
+  # writeBoundary so linkGeneration/installPackages see the clean state.
+  home.activation.dropBootstrapProfile = lib.hm.dag.entryBefore ["writeBoundary"] ''
+    if [ -L "$HOME/.nix-profile" ] && [ "$(readlink "$HOME/.nix-profile")" = /nix/var/nix/profiles/default ]; then
+      verboseEcho "Removing bootstrap ~/.nix-profile so Home Manager can own it"
+      rm -f "$HOME/.nix-profile"
+    fi
+  '';
 }
