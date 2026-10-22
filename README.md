@@ -32,6 +32,8 @@ Full hosts get OS-level config (boot, GPU drivers, networking). Headless hosts g
 
 **Terminal stack** -- Zsh with vi-mode, tmux with sesh session management, Neovim with tree-sitter/LSP/Copilot, lazygit, yazi, fzf, zoxide, starship, and more.
 
+**Editors** -- Visual Studio Code as the GUI counterpart to the terminal stack, built with the FHS variant so marketplace extensions work out of the box. Settings and extensions are managed by VS Code itself, not by Nix.
+
 ## Quick Start
 
 ```sh

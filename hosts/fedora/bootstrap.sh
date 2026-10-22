@@ -42,12 +42,13 @@ else
     echo ":: GPU drivers already configured"
 fi
 
-# ── 4. Login shell (sudo: chsh modifies /etc/passwd) ──
-ZSH="$HM_BIN/zsh"
-if [ "$(getent passwd "$USER" | cut -d: -f7)" != "$ZSH" ]; then
-    echo ":: switching login shell to zsh"
-    chsh -s "$ZSH"
-fi
+# ── 4. Login shell ──
+# SSSD-managed accounts aren't in /etc/passwd, so chsh can't reassign
+# their shell — and `sudo chsh -s <zsh>` with no username silently
+# rewrites ROOT's shell instead. Keep the login shell at /bin/bash
+# (change it in FreeIPA if needed: ipa user-mod $USER --shell=/bin/bash);
+# home.nix execs zsh from bash and points Ghostty at zsh directly, so
+# interactive shells are still zsh.
 
 echo ""
 echo "==> done -- log out and back in on TTY1 to start Hyprland"

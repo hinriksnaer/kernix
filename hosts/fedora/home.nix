@@ -29,6 +29,7 @@ in {
   programs.bash.initExtra = ''
     if [[ -x "${pkgs.zsh}/bin/zsh" && -z "$_ZSH_EXEC_GUARD" ]]; then
       export _ZSH_EXEC_GUARD=1
+      export SHELL="${pkgs.zsh}/bin/zsh"
       exec "${pkgs.zsh}/bin/zsh" -l
     fi
   '';
