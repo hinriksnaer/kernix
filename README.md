@@ -83,6 +83,57 @@ container-root is the host uid, not host root. For a rootful or shared host,
 set `kernix.username` in `hosts/container/default.nix` to a uid-1000 user
 instead and run the container as that user.
 
+### GPU passthrough (NVIDIA)
+
+Two things have to cross the boundary: the device nodes and the *driver*
+libraries. On a host with `nvidia-container-toolkit` installed, CDI supplies
+both from one flag:
+
+```sh
+podman run -d --name kernix --init --pull=newer \
+  --device nvidia.com/gpu=all \
+  --tmpfs /usr/share --tmpfs /usr/lib64 \
+  --security-opt label=disable \
+  -e NIX_CONFIG='experimental-features = nix-command flakes' \
+  docker.io/nixos/nix:latest sleep infinity
+```
+
+Three parts of that are not obvious:
+
+- `nixos/nix` has no `/usr/lib64`, and its `/usr/share` is a symlink into
+  `/nix`. CDI writes real files into both, so without the `--tmpfs` mounts
+  container creation fails with
+  `openat2 usr/share: No such file or directory`.
+- On SELinux-enforcing hosts the GPU nodes may be labelled
+  `xserver_misc_device_t`, which the `container_t` domain cannot access --
+  `stat /dev/nvidia0` returns EACCES even though the host user can open it.
+  `--security-opt label=disable` is the user-side workaround; the clean fix is
+  an admin relabel to `nvidia_device_t`, or a policy allowing container access.
+- `nvidia-smi` cannot run in this image at all, because it needs
+  `/lib64/ld-linux-x86-64.so.2`, which the image does not provide. CDI still
+  injects the binary, so its presence proves nothing. Check the driver API
+  instead:
+  `python -c 'import ctypes; print(ctypes.CDLL("libcuda.so.1").cuInit(0))'`
+  (`0` means OK), or read `/proc/driver/nvidia/gpus/*/information`.
+
+Without the toolkit, mount the driver libraries where the devShell scans for
+them (`/run/opengl-driver/lib` is checked first) plus the device nodes:
+
+```sh
+podman run -d --name kernix --init --pull=newer \
+  --device /dev/nvidiactl --device /dev/nvidia-uvm --device /dev/nvidia-uvm-tools \
+  --device /dev/nvidia0 \
+  -v /usr/lib64:/run/opengl-driver/lib:ro \
+  -v /proc/driver/nvidia:/proc/driver/nvidia:ro \
+  -e NIX_CONFIG='experimental-features = nix-command flakes' \
+  docker.io/nixos/nix:latest sleep infinity
+```
+
+Use `/usr/lib/x86_64-linux-gnu` instead of `/usr/lib64` on Debian-family
+hosts, and add `--device /dev/nvidiaN` for each additional GPU. The CUDA
+`TORCH_CUDA_ARCH_LIST` is left unset by `nixtorch` so tools detect the device;
+pin it per host only when one configuration must serve several architectures.
+
 ## CLI
 
 ```

@@ -124,13 +124,32 @@ case "$subcmd" in
         ;;
     cleanup)
         keep="${1:-5}"
+        if [[ ! "$keep" =~ ^[0-9]+$ ]]; then
+            echo "Error: cleanup expects a generation count, got '${keep}'" >&2
+            exit 1
+        fi
         if [[ "$HOST_TYPE" == "nixos" ]]; then
             echo "==> Cleaning up old generations (keeping ${keep})..."
             nh clean all --keep "$keep"
         else
             echo "==> Cleaning up old Home Manager generations (keeping ${keep})..."
-            home-manager expire-generations "-${keep} days" 2>/dev/null || \
-                echo "Note: expire-generations removes profiles older than ${keep} days"
+            # `home-manager generations` lists newest first, so keep the head and
+            # remove the rest by id. `expire-generations` is time-based and cannot
+            # express "keep N"; and neither path collects garbage, so without the
+            # GC below nothing is actually freed from the store.
+            drop=$(home-manager generations 2>/dev/null \
+                | sed -n 's/.*: id \([0-9]\+\) ->.*/\1/p' \
+                | tail -n +"$((keep + 1))" \
+                | tr '\n' ' ')
+            if [ -n "${drop// /}" ]; then
+                echo ":: removing generations: ${drop}"
+                # SC2086: word splitting is intended -- each id is an argument.
+                home-manager remove-generations $drop
+            else
+                echo ":: no generations to remove"
+            fi
+            echo ":: collecting garbage"
+            nix-collect-garbage 2>&1 | tail -1
         fi
         ;;
     list-gens)

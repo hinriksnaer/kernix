@@ -35,7 +35,12 @@ in {
     [ -f "${homeDir}/.nix-profile/etc/profile.d/hm-session-vars.sh" ] && . "${homeDir}/.nix-profile/etc/profile.d/hm-session-vars.sh"
   '';
 
-  home.packages = [cli.kernix];
+  # pkgs.nix belongs in the profile: after dropBootstrapProfile hands
+  # ~/.nix-profile to Home Manager, /root/.nix-profile/bin/nix stops existing
+  # (the profile ships kernix, not nix). `nix` still resolves through
+  # /nix/var/nix/profiles/default/bin, but activation hooks that cached the
+  # old path (setupDirenv -> direnv allow) fail without this.
+  home.packages = [cli.kernix pkgs.nix];
 
   # No Bitwarden desktop app in a container, so the ssh agent is rbw's
   # built-in one (rbw-agent creates this socket on `rbw unlock`). Set it here

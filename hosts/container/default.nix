@@ -25,7 +25,6 @@
       workspace = "$HOME/workspace";
       projects = {
         pytorch = {
-          cudaArch = "9.0";
           maxJobs = 16;
         };
         helion = {
