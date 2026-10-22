@@ -50,6 +50,14 @@
 # │  [                     copy mode               (tmux default)      │
 # │  v / C-v / y           begin / rectangle / yank (copy-mode-vi)    │
 # └────────────────────────────────────────────────────────────────────┘
+#
+# Shift chords have THREE spellings and all of them are bound:
+#   legacy encoding           Alt+Shift+x  ->  ESC X       ->  M-X
+#   CSI-u, base codepoint     Alt+Shift+x  ->  CSI 120;4u  ->  M-S-x   (Ghostty)
+#   CSI-u/MOK, shifted cp     Alt+Shift+x  ->  CSI 88;4u   ->  M-S-X   (xterm-style)
+# tmux has no normalisation for this, and which one you get depends on the
+# terminal and how you reach it (plain ssh lands on the third). New Shift
+# bindings need all three rows.
 {
   pkgs,
   config,
