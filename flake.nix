@@ -31,6 +31,17 @@
       url = "github:hinriksnaer/kernix-theme";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Doom Emacs framework (source only; deployed read-only to
+    # ~/.config/emacs by home/apps/emacs). Fetched via git+https (NOT the
+    # github: fetcher) because Doom's module libraries live in a git
+    # submodule (sources/doom+ -> doomemacs/modules) that the tarball
+    # fetcher does not populate -- without it Doom loads bare, with no
+    # modules or packages. Pinned so framework updates are reviewable:
+    #   nix flake update doomemacs
+    doomemacs = {
+      url = "git+https://github.com/doomemacs/doomemacs?submodules=1";
+      flake = false;
+    };
     # Nix project source -- provides docker.nix, the image builder behind
     # the official nixos/nix containers. Pinned so its (internal)
     # interface only changes when this input is bumped.
@@ -44,6 +55,7 @@
     llm-agents,
     nixtorch,
     kernix-theme,
+    doomemacs,
     ...
   } @ inputs: let
     lib = nixpkgs.lib;
@@ -88,6 +100,7 @@
                 host = config.kernix;
                 inherit hostname;
                 inherit kernix-theme;
+                inherit doomemacs;
               };
               users.${config.kernix.username} =
                 import ./home {inherit hostname;};
@@ -157,6 +170,7 @@
           host = hostCfg;
           hostname = hostName;
           inherit kernix-theme;
+          inherit doomemacs;
         };
         modules = [
           (import ./home {hostname = hostName;})

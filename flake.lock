@@ -34,6 +34,24 @@
         "type": "github"
       }
     },
+    "doomemacs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790918042,
+        "narHash": "sha256-Wu2Tztg+QibAewCBeI3UKxN2mheSU2aoXEtb19RuIPM=",
+        "ref": "refs/heads/master",
+        "rev": "59cdaa32ae933469bb6a1fb3cadee8a988c15968",
+        "revCount": 21396,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/doomemacs/doomemacs"
+      },
+      "original": {
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/doomemacs/doomemacs"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -286,6 +304,7 @@
     },
     "root": {
       "inputs": {
+        "doomemacs": "doomemacs",
         "home-manager": "home-manager",
         "kernix-theme": "kernix-theme",
         "llm-agents": "llm-agents",

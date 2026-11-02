@@ -20,5 +20,18 @@
         VS Code inherits the host PATH and uses the system ssh instead.
       '';
     };
+
+    emacs = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Ship Doom Emacs. The Doom framework comes from the pinned
+        `doomemacs` flake input and the doom.d config from
+        home/apps/emacs/doom; both are deployed read-only via the Nix store.
+        Run `doom sync` once after the first rebuild. `doom upgrade` and
+        `doom env` are unavailable (read-only deploy); update the framework
+        with `nix flake update doomemacs`.
+      '';
+    };
   };
 }
