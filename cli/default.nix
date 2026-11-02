@@ -12,14 +12,13 @@
   kernix = assert hostType == "nixos" || hmProfile != null;
     pkgs.writeShellApplication {
       name = "kernix";
-      runtimeInputs =
-        (with pkgs;
-          # No openssh: the nix ssh's glibc cannot resolve sssd/LDAP
-          # uids on foreign distros, breaking git auth for domain users.
-          # Hosts running kernix have system ssh (they cloned the repo
-          # with it).
-          [coreutils git nix]
-          ++ lib.optionals (hostType == "nixos") [hostname jq libnotify nh]);
+      runtimeInputs = with pkgs;
+      # No openssh: the nix ssh's glibc cannot resolve sssd/LDAP
+      # uids on foreign distros, breaking git auth for domain users.
+      # Hosts running kernix have system ssh (they cloned the repo
+      # with it).
+        [coreutils git nix]
+        ++ lib.optionals (hostType == "nixos") [hostname jq libnotify nh];
       text =
         ''
           HOST_TYPE="${hostType}"

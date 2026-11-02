@@ -10,8 +10,10 @@
 }:
 lib.mkIf host.apps.enable {
   home.packages = [
-    (if host.apps.vscodeFhs
-     then pkgs.vscode-fhsWithPackages (ps: [ps.openssh])
-     else pkgs.vscode)
+    (
+      if host.apps.vscodeFhs
+      then pkgs.vscode-fhsWithPackages (ps: [ps.openssh])
+      else pkgs.vscode
+    )
   ];
 }
