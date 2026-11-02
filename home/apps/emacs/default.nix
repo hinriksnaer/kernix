@@ -47,11 +47,14 @@ lib.mkIf (host.apps.enable && host.apps.emacs) {
     clang-tools
 
     # :tools debugger (dape) -- debugpy is not importable by plain python3
-    # on nix, so provide a wrapper that injects the site-packages path.
-    # The dape config override in doom/config.el points `command' at it.
+    # on nix, so provide a wrapper that injects its site-packages path and
+    # then execs `python3' FROM PATH -- i.e. the venv/flake interpreter from
+    # the buffer's envrc (direnv) environment, so debug sessions inherit
+    # the project's environment. The dape override in doom/config.el points
+    # `command' at this wrapper.
     (pkgs.writeShellScriptBin "dape-python" ''
       export PYTHONPATH="${pkgs.python3Packages.debugpy}/${pkgs.python3.sitePackages}''${PYTHONPATH:+:$PYTHONPATH}"
-      exec ${pkgs.python3}/bin/python3 "$@"
+      exec python3 "$@"
     '')
   ];
 
