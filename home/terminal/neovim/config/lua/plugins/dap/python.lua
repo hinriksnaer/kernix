@@ -35,6 +35,27 @@ function M.setup(dap)
   vim.keymap.set('v', '<leader>dps', function() require('dap-python').debug_selection() end,
     { desc = 'Debug selection' })
 
+  -- Launch current file under debugpy
+  vim.keymap.set('n', '<leader>dpy', function()
+    dap.run({
+      type = 'python',
+      request = 'launch',
+      name = 'Python: current file',
+      program = '${file}',
+      console = 'integratedTerminal',
+      subProcess = false,
+      -- Break on uncaught exceptions
+      exceptionOptions = {
+        {
+          path = {
+            { names = { 'Python Exceptions' } },
+          },
+          breakMode = 'unhandled',
+        },
+      },
+    })
+  end, { desc = 'Debug Python (debugpy)' })
+
   -- Attach GDB to Python process
   vim.keymap.set('n', '<leader>dpp', function()
     if not last_pid.python then
