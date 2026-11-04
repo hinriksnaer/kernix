@@ -1,5 +1,26 @@
 {
   "nodes": {
+    "battlenet-umu": {
+      "inputs": {
+        "instawow": "instawow",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793729530,
+        "narHash": "sha256-S8FUQWIfHaHs47Rphw7YHtvTmawwohwmlQSyQhsYzbo=",
+        "owner": "jacobjdowning",
+        "repo": "battlenet-umu",
+        "rev": "560abdae6a07f3a956d5b7b7e4d9f7101d2bd35f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jacobjdowning",
+        "repo": "battlenet-umu",
+        "type": "github"
+      }
+    },
     "bun2nix": {
       "inputs": {
         "flake-parts": [
@@ -110,6 +131,24 @@
         "type": "github"
       }
     },
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1791914995,
+        "narHash": "sha256-Zf/xfQEAasnwnmEfHqW/4hjDE/s44yn2hD4RuVIZRjA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "b7a79d3fea1e214f6d668d521cecec0c01e26544",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "git-hooks-nix": {
       "inputs": {
         "flake-compat": [
@@ -154,6 +193,29 @@
         "type": "github"
       }
     },
+    "instawow": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "battlenet-umu",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792768190,
+        "narHash": "sha256-NJDx1eUj+0Vq61lmR0y8R+H6sV8ajUFIpBrWzw2vATA=",
+        "owner": "layday",
+        "repo": "instawow",
+        "rev": "e4e964d3e188d5dfeb3a4d1cbd261130a28499db",
+        "type": "github"
+      },
+      "original": {
+        "owner": "layday",
+        "ref": "v7.3.0",
+        "repo": "instawow",
+        "type": "github"
+      }
+    },
     "kernix-theme": {
       "inputs": {
         "nixpkgs": [
@@ -181,7 +243,7 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "systems": "systems",
+        "systems": "systems_2",
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
@@ -304,6 +366,7 @@
     },
     "root": {
       "inputs": {
+        "battlenet-umu": "battlenet-umu",
         "doomemacs": "doomemacs",
         "home-manager": "home-manager",
         "kernix-theme": "kernix-theme",
@@ -331,6 +394,21 @@
       }
     },
     "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_2": {
       "locked": {
         "lastModified": 1791244623,
         "narHash": "sha256-uuanbkFk8a313Zfrxdcz8Us/yQtaxNnKJtX8v0ZPpd8=",

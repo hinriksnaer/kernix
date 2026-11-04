@@ -2,6 +2,7 @@
 {...}: {
   imports = [
     ./tools.nix
+    ./battlenet.nix
     ./gpu
     ./couch.nix
   ];

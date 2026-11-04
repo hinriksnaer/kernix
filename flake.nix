@@ -11,6 +11,16 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Home-Manager module for Battle.net games via umu-launcher, plus
+    # declarative WoW add-ons through instawow (home/gaming/battlenet.nix).
+    # Follows our nixpkgs so the module builds against one package set. Its
+    # default module pins instawow 7.3.0, the first release that knows the
+    # `_forever_` product folder; nixpkgs at our locked revision still has
+    # 7.0.0.post1, which cannot handle WoW Forever.
+    battlenet-umu = {
+      url = "github:jacobjdowning/battlenet-umu";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Tmux half of smart-splits.nvim v3 (source only; packaged via overlay,
     # Neovim half is a lazy.nvim dependency)
     smart-splits-backend-tmux = {
@@ -101,6 +111,7 @@
                 inherit hostname;
                 inherit kernix-theme;
                 inherit doomemacs;
+                battlenet-umu = inputs.battlenet-umu;
               };
               users.${config.kernix.username} =
                 import ./home {inherit hostname;};
@@ -171,6 +182,7 @@
           hostname = hostName;
           inherit kernix-theme;
           inherit doomemacs;
+          battlenet-umu = inputs.battlenet-umu;
         };
         modules = [
           (import ./home {hostname = hostName;})
