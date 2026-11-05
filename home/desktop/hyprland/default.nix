@@ -153,7 +153,6 @@ in {
       swaybg
       qt5.qtwayland
       qt6.qtwayland
-      hyprland-qtutils
       wlr-randr
       wlogout
     ];

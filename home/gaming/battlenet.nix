@@ -57,6 +57,7 @@ in {
               # RestedXP Guide -- one zip carries every flavour; its TOC lists
               # interface 16001 (Forever) alongside retail and the classics.
               "curse:restedxp-guide"
+              "curse:guild-os"
             ];
           }
         ];
