@@ -4,7 +4,7 @@ selected=$(echo -e "Lock\nLogout\nSuspend\nReboot\nShutdown" | rofi -dmenu -i -p
 
 case "$selected" in
     Lock) hyprlock ;;
-    Logout) hyprctl dispatch exit ;;
+    Logout) uwsm stop ;;
     Suspend) systemctl suspend ;;
     Reboot) systemctl reboot ;;
     Shutdown) systemctl poweroff ;;

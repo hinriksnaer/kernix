@@ -26,11 +26,15 @@
 # To own the key instead, drop both variables and set tokens.cfcore.
 {
   lib,
+  pkgs,
   host,
   battlenet-umu,
   ...
 }: let
-  cfProxy = "https://api.curse.tools/v1/cf";
+  # Curse.tools moved its CurseForge-compatible API from `/v1/cf` to `/v1`
+  # (the old path now 302-redirects to `http://.../v1`, which instawow's POST
+  # lands on as a bodiless GET -> 404 "Not Found, url='.../v1/mods'").
+  cfProxy = "https://api.curse.tools/v1";
 in {
   imports = [battlenet-umu.homeModules.default];
 
@@ -54,10 +58,17 @@ in {
             addonDir = "Program Files (x86)/World of Warcraft/_forever_/Interface/AddOns";
             flavour = "forever_classic";
             addons = [
-              # RestedXP Guide -- one zip carries every flavour; its TOC lists
-              # interface 16001 (Forever) alongside retail and the classics.
               "curse:restedxp-guide"
               "curse:guild-os"
+              "curse:details"
+              "curse:tradeskill-master"
+              # Price feed for TSM. TSM has no AuctionDB data for Forever (its
+              # full-scan module has no FOREVER branch and the desktop app
+              # receives nothing for the Forever markets), but it registers an
+              # `AtrValue` price source from Auctionator when that addon is
+              # enabled (LibTSMApp/Source/Price/External.lua); the TSM operations
+              # use it in place of `dbmarket`.
+              "curse:auctionator"
             ];
           }
         ];

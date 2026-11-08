@@ -10,6 +10,9 @@
   # Tmux half of smart-splits.nvim v3 (see smart-splits-tmux.nix)
   smart-splits-tmux = import ./smart-splits-tmux.nix {inherit inputs;};
 
+  # TradeSkillMaster Desktop App (official AppImage, see tsm-desktop.nix)
+  tsm-desktop = import ./tsm-desktop.nix;
+
   # Make flake input packages available as pkgs.inputs'.<name>
   # Usage: pkgs.inputs'.home-manager.default, etc.
   flake-inputs = final: _: {

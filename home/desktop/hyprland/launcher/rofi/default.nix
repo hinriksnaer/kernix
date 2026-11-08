@@ -46,7 +46,7 @@ lib.mkIf host.desktop.enable {
     })
     (writeShellApplication {
       name = "power-menu";
-      runtimeInputs = [rofi systemd];
+      runtimeInputs = [rofi systemd uwsm];
       text = builtins.readFile ./scripts/power-menu.sh;
       excludeShellChecks = ["SC2029" "SC2016"];
     })
