@@ -35,6 +35,11 @@
   # (the old path now 302-redirects to `http://.../v1`, which instawow's POST
   # lands on as a bodiless GET -> 404 "Not Found, url='.../v1/mods'").
   cfProxy = "https://api.curse.tools/v1";
+
+  # $HOME-relative location of the Forever AddOns folder. `addonDir` above is
+  # prefix-relative because instawow runs against the Wine prefix, so the two
+  # cannot share one value.
+  wowAddons = ".local/share/battlenet-umu/prefix/drive_c/Program Files (x86)/World of Warcraft/_forever_/Interface/AddOns";
 in {
   imports = [battlenet-umu.homeModules.default];
 
@@ -62,18 +67,98 @@ in {
               "curse:guild-os"
               "curse:details"
               "curse:tradeskill-master"
-              # Price feed for TSM. TSM has no AuctionDB data for Forever (its
-              # full-scan module has no FOREVER branch and the desktop app
-              # receives nothing for the Forever markets), but it registers an
-              # `AtrValue` price source from Auctionator when that addon is
-              # enabled (LibTSMApp/Source/Price/External.lua); the TSM operations
-              # use it in place of `dbmarket`.
+              # Price feeds for TSM. TSM has no AuctionDB data for Forever: its
+              # full-scan module has no FOREVER branch (LibTSMService/Source/
+              # Auction/Internal/FullScan.lua) and the desktop app receives
+              # nothing for the Forever markets, so `dbmarket`/`dbhistorical`
+              # are always 0. Instead:
+              #
+              #   AHledger    - per-market price tables (incl. rppvp/horde/us)
+              #                 refreshed every ~30 min, exposed to TSM by the
+              #                 bridge below as OERealm/OERegion.
+              #   Auctionator - local scans, exposed by TSM as `AtrValue`; the
+              #                 fallback for items AHledger has not priced.
+              "curse:ahledger"
               "curse:auctionator"
             ];
           }
         ];
       };
     };
+
+    # TSM accepts external price databases only through four hardcoded hooks
+    # (LibTSMApp/Source/Price/External.lua), and the Oribos Exchange one is the
+    # only fit for an "usual price + current cheapest" pair:
+    #
+    #   Addon.IsEnabled("OribosExchange") and _G.OEMarketInfo(link, temp)
+    #     -> OERealm  = data.market = AHledger median  (the usual price)
+    #     -> OERegion = data.region = AHledger minBuyout (current cheapest)
+    #
+    # Hence the folder name below is load-bearing, and it must sort before
+    # TradeSkillMaster so the global exists when TSM registers its sources.
+    # instawow's sync only removes addons it installed itself, so this folder
+    # survives `sync-addons`.
+    #
+    # AHledger's terms require crediting the source wherever these prices show;
+    # `/oebridge` prints the credit in game. TSM caches price-database sources
+    # per session, so `/reload` after AHledger syncs to pick up new numbers.
+    home.file."${wowAddons}/OribosExchange/OribosExchange.toc".text = ''
+      ## Interface: 16001
+      ## Title: TSM Oribos Bridge
+      ## Notes: Exposes AHledger prices to TradeSkillMaster as OERealm/OERegion.
+      ## Version: 1
+      ## OptionalDeps: AHledger, TradeSkillMaster
+      OribosExchange.lua
+    '';
+
+    home.file."${wowAddons}/OribosExchange/OribosExchange.lua".text = ''
+      -- Exposes AHledger's per-market prices to TradeSkillMaster.
+      --
+      -- TSM evaluates every price source through CustomString; the external ones
+      -- it will register are fixed in LibTSMApp/Source/Price/External.lua. The
+      -- Oribos Exchange branch checks for this addon's name and this global, so
+      -- both are load-bearing; do not rename.
+      --
+      --   OERealm  = median     (what the item usually sells for)
+      --   OERegion = minBuyout  (cheapest listing AHledger last saw)
+      --
+      -- All values are copper. AHledgerAPI is nil when AHledger is disabled or
+      -- still loading, so every path here degrades to "no price" rather than an
+      -- error inside TSM's price evaluation.
+
+      local API_CREDIT = "Prices from AHledger (ahledger.com)"
+
+      --- Called by TSM for each item while evaluating a price source.
+      -- @param itemLink item link from TSM's ItemInfo.GetLink
+      -- @param temp     reusable table supplied by TSM
+      function OEMarketInfo(itemLink, temp)
+          if not AHledgerAPI or type(itemLink) ~= "string" then
+              return nil
+          end
+          local price = AHledgerAPI.GetPrice(itemLink)
+          if not price then
+              return nil
+          end
+          temp = type(temp) == "table" and temp or {}
+          temp.market = price.median
+          temp.region = price.minBuyout
+          return temp
+      end
+
+      SLASH_ORIBOSBRIDGE1 = "/oebridge"
+      SlashCmdList["ORIBOSBRIDGE"] = function()
+          local ok = AHledgerAPI and AHledgerAPI.GetTableInfo and AHledgerAPI.GetMarket
+          if not ok then
+              print("TSM Oribos bridge: AHledger not loaded (is the addon enabled?)")
+              return
+          end
+          local market = AHledgerAPI.GetMarket()
+          local info = AHledgerAPI.GetTableInfo(market) or {}
+          print(("|cff33ff99TSM Oribos bridge|r: %s"):format(API_CREDIT))
+          print(("market=%s items=%s snapshot=%s"):format(
+              tostring(market), tostring(info.count), tostring(info.snapshot)))
+      end
+    '';
 
     # Read by instawow at import time. The boot-time sync service does not
     # inherit shell variables, so it needs its own copy; sessionVariables
