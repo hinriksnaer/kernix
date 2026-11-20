@@ -98,5 +98,35 @@ with lib; {
         description = "rbw item holding the EnMaaS API key.";
       };
     };
+
+    # pi registers EnMaaS as a custom `enmaas` provider unconditionally; the
+    # flags below only decide whether pi's *built-in* provider IDs are
+    # redirected at the gateway. A redirected built-in provider is useless
+    # with a subscription login, and pi prefers a stored auth.json credential
+    # over a models.json apiKey -- so switching routeAnthropic on while an
+    # Anthropic OAuth login is stored needs `/logout anthropic` first.
+    # See home/agents/pi.nix.
+    agents.pi.gateway = {
+      url = mkOption {
+        type = types.str;
+        default = "https://api.enmaas.devshift.net";
+        description = "Base URL of the EnMaaS gateway (no `/v1` suffix).";
+      };
+      keyItem = mkOption {
+        type = types.str;
+        default = "enmaas-key";
+        description = "rbw item holding the EnMaaS API key.";
+      };
+      routeAnthropic = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Point pi's built-in anthropic provider at the EnMaaS gateway. Off leaves Claude models on pi's own login (`/login` -> Anthropic (Claude Pro/Max)), which bills as Claude extra usage rather than plan limits.";
+      };
+      routeOpenai = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Point pi's built-in openai provider at the EnMaaS gateway. Off leaves it on pi's own OpenAI login or OPENAI_API_KEY.";
+      };
+    };
   };
 }
