@@ -26,7 +26,9 @@ Full hosts get OS-level config (boot, GPU drivers, networking). Headless hosts g
 
 **Runtime theme switching** -- 11+ themes that propagate across Hyprland, Ghostty, Neovim, btop, Waybar, mako, rofi, and hyprlock with no rebuild. `Super+T` to pick, `Super+Shift+T` to cycle.
 
-**CUDA dev shells** -- Powered by [nixtorch](https://github.com/hinriksnaer/nixtorch). Build PyTorch and Helion from source with configurable CUDA architectures. Direnv auto-activates the shell.
+**CUDA dev shells** -- Owned by the checkout that needs one: a project ships its
+`devshell/` flake and its own `.envrc`, and direnv activates it on entry. Kernix
+supplies the driver and the toolkit, not the project environment.
 
 **Gaming** -- Steam with Proton, Gamescope sessions, Sunshine remote play, couch mode with TV output.
 
@@ -122,9 +124,8 @@ lib/               shared options and helpers
 ```
 
 The runtime theme engine and theme pack live in the separate
-[kernix-theme](https://github.com/hinriksnaer/kernix-theme) flake (plus
-`nixtorch`), consumed here as ordinary `github:` flake inputs pinned by
-`flake.lock`. They used to be git submodules; the `github:` fetcher does not
+[kernix-theme](https://github.com/hinriksnaer/kernix-theme) flake, consumed here
+as an ordinary `github:` flake input pinned by `flake.lock`. They used to be git submodules; the `github:` fetcher does not
 populate submodules, which made the flake unevaluatable for any consumer
 (`error: path '.../submodules/kernix-theme/flake.nix' does not exist`), so
 they are plain inputs now. To iterate on one locally, override it:

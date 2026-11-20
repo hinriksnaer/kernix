@@ -76,11 +76,27 @@ with lib; {
       };
     };
 
-    # ── Passthrough ──
-    nixtorch = mkOption {
-      type = types.attrs;
-      default = {};
-      description = "Configuration passed directly to nixtorch.lib.mkDevShell.";
+    # ── Agents ──
+    # Off by default: the agent CLIs then use their own subscription/OAuth
+    # login. Enabling it writes ANTHROPIC_BASE_URL and an apiKeyHelper into
+    # ~/.claude/settings.json, which outranks that login (and, for Claude
+    # Code, disables claude.ai connectors). See home/agents/default.nix.
+    agents.claude.gateway = {
+      enable = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Authenticate Claude Code through the EnMaaS gateway instead of its own login.";
+      };
+      url = mkOption {
+        type = types.str;
+        default = "https://api.enmaas.devshift.net";
+        description = "Base URL of the EnMaaS Anthropic-compatible endpoint.";
+      };
+      keyItem = mkOption {
+        type = types.str;
+        default = "enmaas-key";
+        description = "rbw item holding the EnMaaS API key.";
+      };
     };
   };
 }

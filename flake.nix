@@ -33,10 +33,6 @@
     #   error: path '.../submodules/kernix-theme/flake.nix' does not exist
     # Both repos are public and pinned by flake.lock. To work on one locally:
     #   nix develop --override-input kernix-theme ../kernix-theme
-    nixtorch = {
-      url = "github:hinriksnaer/nixtorch";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     kernix-theme = {
       url = "github:hinriksnaer/kernix-theme";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -63,7 +59,6 @@
     nixpkgs,
     home-manager,
     llm-agents,
-    nixtorch,
     kernix-theme,
     doomemacs,
     ...
@@ -189,22 +184,5 @@
         ];
       }))
     hmOnlyHostNames);
-
-    # ── Development shells ──
-    devShells.${system} = let
-      # NixOS hosts: extract kernix config from the already-built system.
-      nixosHostConfigs =
-        lib.mapAttrs
-        (_: sys: sys.config.kernix)
-        self.nixosConfigurations;
-      # Standalone hosts: evaluate through the option schema.
-      hmHostConfigs = lib.genAttrs hmOnlyHostNames evalHost;
-      # Merge and filter to hosts with nixtorch config.
-      allConfigs = nixosHostConfigs // hmHostConfigs;
-      withNixtorch = lib.filterAttrs (_: cfg: cfg.nixtorch != {}) allConfigs;
-    in
-      lib.mapAttrs
-      (_: cfg: nixtorch.lib.mkDevShell cfg.nixtorch)
-      withNixtorch;
   };
 }

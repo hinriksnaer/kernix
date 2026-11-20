@@ -36,7 +36,7 @@ reproducible.
 | Flag | Why |
 |---|---|
 | `-v /lib64` + `-v /usr/lib64` | Prebuilt FHS binaries -- the VS Code server's bundled node, `nvidia-smi`, pip wheels -- need a loader at `/lib64/ld-linux-x86-64.so.2` and a real glibc/libstdc++ on the standard paths. The image has neither. Nix binaries are unaffected: they resolve everything through RPATHs, so no `LD_LIBRARY_PATH` is needed (and setting one **breaks** them -- it makes them load a different glibc build and die with `GLIBC_PRIVATE` symbol errors). |
-| host `/usr/lib64` also supplies `libcuda`/`libnvidia-*` | That replaces CDI (`--device nvidia.com/gpu=all`), which cannot be used here: it needs a writable `/usr/lib64` to inject into. `nixtorch` scans `/usr/lib64` for driver libs, so the GPU stack still finds them. |
+| host `/usr/lib64` also supplies `libcuda`/`libnvidia-*` | That replaces CDI (`--device nvidia.com/gpu=all`), which cannot be used here: it needs a writable `/usr/lib64` to inject into. A project devshell that scans `/usr/lib64` for driver libs still finds them. |
 | `-v /usr/bin/nvidia-smi` | CDI used to inject it; with the host loader mounted it now actually runs, which makes GPU debugging easy. |
 | `-v /proc/driver/nvidia` | Lets `nvidia-smi` and the driver read `version`/`gpus/` from inside the container. |
 | `-e PATH=...:/usr/bin:/bin` | The image's own PATH is nix-only. Without `/usr/bin` on it, the VS Code server's `check-requirements.sh` cannot even find `sed`. |
@@ -82,8 +82,8 @@ Then, for the devShell and project venv:
 podman exec -it kernix zsh -lc '
   rbw login && rbw unlock                       # git over ssh, agent-memory only
   git clone git@github.com:hinriksnaer/kernix.git /root/kernix
-  cd ~/workspace && direnv allow                # builds the CUDA devShell
-  nixtorch build'                               # torch wheels + helion in ~/workspace/.venv
+  cd ~/workspace/helion && direnv allow         # builds the checkout's CUDA devShell
+'
 ```
 
 The first `direnv allow` pulls several GB from `cache.nixos.org` and takes

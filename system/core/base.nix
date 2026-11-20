@@ -36,6 +36,14 @@ in {
 
   security.sudo.wheelNeedsPassword = false;
 
+  # ── Foreign binaries ──
+  # Prebuilt binaries that are not linked against NixOS's loader (PyPI wheels
+  # with a binary in them, pre-commit hook environments, VSCode servers, some
+  # language servers) fail with the stub-ld error until a real loader is
+  # provided. The default library set covers the common case; do not append
+  # GUI/CUDA libraries here, that is how a host turns into a second distro.
+  programs.nix-ld.enable = true;
+
   # ── Core system packages ──
   environment.systemPackages = with pkgs; [
     curl

@@ -21,7 +21,6 @@ in {
       ./apps
       ./agents
       ./gaming
-      ./nixtorch.nix
       ./theme
     ]
     ++ lib.optional (builtins.pathExists ../hosts/${hostname}/home.nix)

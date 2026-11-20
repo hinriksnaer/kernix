@@ -344,26 +344,6 @@
         "type": "github"
       }
     },
-    "nixtorch": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1792695116,
-        "narHash": "sha256-5ZaAnzapMtLjf18dcVXR3cMWHkhcoH19nQSgOmhckws=",
-        "owner": "hinriksnaer",
-        "repo": "nixtorch",
-        "rev": "5f03f0f237d75ed11d43bc0ed2b592656cb9a020",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hinriksnaer",
-        "repo": "nixtorch",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "battlenet-umu": "battlenet-umu",
@@ -373,7 +353,6 @@
         "llm-agents": "llm-agents",
         "nix": "nix",
         "nixpkgs": "nixpkgs_2",
-        "nixtorch": "nixtorch",
         "smart-splits-backend-tmux": "smart-splits-backend-tmux"
       }
     },

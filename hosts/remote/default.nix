@@ -8,20 +8,5 @@
       name = "hinriksnaer";
       email = "hgudmund@redhat.com";
     };
-
-    nixtorch = {
-      cudaVisibleDevices = "";
-      workspace = "$HOME/workspace";
-      projects = {
-        pytorch = {
-          cudaArch = "9.0";
-          maxJobs = 16;
-        };
-        helion = {
-          torchIndex = "nightly/cu130";
-          backends = ["cute"];
-        };
-      };
-    };
   };
 }

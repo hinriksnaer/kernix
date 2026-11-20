@@ -6,10 +6,14 @@
 # keytar/libsecret needs a Secret Service for "remember me" to survive
 # restarts.
 #
-# Start it via a managed autostart entry instead of the app's own setting:
-# the app writes an entry pointing at the extracted Electron binary, which
-# NixOS cannot execute (no interpreter). `--hidden` matches the app's own
-# startup behaviour and keeps it in the tray.
+# Deliberately *not* autostarted. The window content is a remote OIDC page
+# (id.tradeskillmaster.com), and main.js installs no did-fail-load retry: when
+# the entry fired at login it raced Wi-Fi association (which finished ~2s
+# later), the page load failed, and the renderer stayed blank forever. Worse,
+# the dead instance holds Electron's singleton lock, so every later launch
+# (rofi, desktop entry, tray) only re-focuses the blank window instead of
+# starting a working one. Launch it on demand instead -- the app only matters
+# while playing anyway -- after which `--hidden` keeps it in the tray.
 {
   lib,
   pkgs,
@@ -23,17 +27,5 @@
       enable = true;
       components = ["secrets"];
     };
-
-    xdg.configFile."autostart/tsm-desktop.desktop".text = ''
-      [Desktop Entry]
-      Type=Application
-      Name=TradeSkillMaster Desktop
-      Comment=Download auction data for TradeSkillMaster
-      Icon=tradeskillmaster
-      Exec=${pkgs.tsm-desktop}/bin/tsm-desktop --no-sandbox --hidden
-      Terminal=false
-      StartupNotify=false
-      X-GNOME-Autostart-enabled=true
-    '';
   };
 }
