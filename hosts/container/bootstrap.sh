@@ -15,20 +15,14 @@
 #
 #   <ssh-host>     anything ssh accepts: a ~/.ssh/config alias, user@host
 #   --name NAME    container name on the remote (default: kernix)
-#   --helion PATH  local helion working tree to copy in; its devshell/ and
-#                  .envrc are untracked by design, which is why this copies
-#                  the tree instead of cloning (default: ~/workspace/helion)
-#   --no-helion    skip the helion copy
 #   --gpu N[,N..]  expose only /dev/nvidiaN (comma list) instead of every
 #                  GPU on the host. N is the device-node minor number; on
 #                  MIG hosts it need not match nvidia-smi's GPU index.
 #   --recreate     replace an existing container of the same name
-#   --no-verify    skip the final in-container checks; the helion one is the
-#                  slow part (builds the devshell, downloads torch nightly)
+#   --no-verify    skip the final in-container nvidia-smi check
 set -euo pipefail
 
 name=kernix
-helion="$HOME/workspace/helion"
 recreate=0
 verify=1
 host=""
@@ -42,8 +36,6 @@ usage() {
 while [ $# -gt 0 ]; do
   case "$1" in
     --name) name="$2"; shift 2 ;;
-    --helion) helion="$2"; shift 2 ;;
-    --no-helion) helion=""; shift ;;
     --gpu) gpus="$2"; shift 2 ;;
     --recreate) recreate=1; shift ;;
     --no-verify) verify=0; shift ;;
@@ -73,7 +65,6 @@ remote() { ssh "$host" "$*"; }
 # Quote a command once so it survives ssh's re-splitting and reaches the
 # shell inside the container intact.
 pod_sh() { ssh "$host" "podman exec -i $name sh -c $(printf '%q' "$1")"; }
-pod_zsh() { ssh "$host" "podman exec -i -w /root $name zsh -lc $(printf '%q' "$1")"; }
 
 # ── 1. Image: build here, stream to the remote ──
 echo "==> building container image from $kernix_root"
@@ -153,9 +144,8 @@ pod_sh '
   done
   printf "NAME=NixOS\nID=nixos\n" >/etc/os-release'
 
-# ── 4. Working trees + profile ──
-# The working trees are copied rather than cloned: uncommitted kernix edits
-# apply, and helion's devshell/ and .envrc only exist in the working tree.
+# ── 4. Working tree + profile ──
+# The kernix tree is copied rather than cloned so uncommitted edits apply.
 echo "==> copying kernix working tree"
 pod_sh 'mkdir -p /root/kernix /root/workspace'
 tar -c --exclude=.git --exclude=result -C "$kernix_root" . |
@@ -164,26 +154,10 @@ tar -c --exclude=.git --exclude=result -C "$kernix_root" . |
 echo "==> applying root@container profile (first run pulls several GB)"
 remote "podman exec -w /root $name nix run /root/kernix#root@container"
 
-if [ -n "$helion" ]; then
-  if [ ! -d "$helion" ]; then
-    echo "helion tree not found: $helion (use --helion PATH or --no-helion)" >&2
-    exit 1
-  fi
-  echo "==> copying helion working tree ($helion)"
-  tar -c --exclude=.venv --exclude=result -C "$(dirname "$helion")" "$(basename "$helion")" |
-    remote "podman exec -i $name tar -x -C /root/workspace"
-  pod_zsh "cd ~/workspace/$(basename "$helion") && direnv allow"
-fi
-
 # ── 5. Verify ──
 if [ "$verify" = 1 ]; then
   echo "==> verify: nvidia-smi -L"
   remote "podman exec $name nvidia-smi -L" || true
-  if [ -n "$helion" ]; then
-    echo "==> verify: devshell + torch CUDA (first run builds the venv; ~10 min)"
-    pod_zsh "cd ~/workspace/$(basename "$helion") && direnv exec . python -c \
-      'import torch; print(torch.__version__, torch.cuda.is_available(), torch.cuda.get_device_name(0))'"
-  fi
 fi
 
 echo "==> done. enter with: ssh -t $host podman exec -it -w /root $name zsh -l"

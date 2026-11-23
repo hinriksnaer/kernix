@@ -20,8 +20,9 @@ to sit, nothing else.
 
 `bootstrap.sh` runs everything on this page over ssh: build the image from
 this flake and stream it over, probe GPU/MIG device nodes and library paths
-on the remote, start the container, apply the shims, copy the kernix and
-helion working trees in, apply the profile, and verify torch sees the GPU:
+on the remote, start the container, apply the shims, copy the kernix working
+tree in, apply the profile, and verify `nvidia-smi` sees the GPUs. It does not
+copy helion; tar it over yourself (see the MIG section below):
 
 ```sh
 hosts/container/bootstrap.sh ibm-yugi      # --help for options
