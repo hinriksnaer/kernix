@@ -139,9 +139,15 @@ remote "podman run -d --name $name --init --pull=never \
   localhost/kernix:container sleep infinity"
 
 echo "==> first-run shims (/usr/bin entry points, /etc/os-release)"
+# readlink -f: resolve to the immutable store path, not ~/.nix-profile/bin.
+# The profile apply below replaces ~/.nix-profile (dropBootstrapProfile),
+# and the HM profile does not ship plain coreutils -- profile-relative
+# links would dangle afterwards, breaking every #!/usr/bin/env script
+# (tmux plugins, VS Code server probes).
 pod_sh '
   for b in id cat ls mkdir rm chmod ln sed grep tar gzip which uname getent env bash sh; do
     p=$(command -v "$b" 2>/dev/null)
+    [ -n "$p" ] && p=$(readlink -f "$p")
     [ -z "$p" ] && p=$(ls /nix/store/*/bin/"$b" 2>/dev/null | head -1)
     [ -n "$p" ] && ln -sf "$p" /usr/bin/"$b"
   done

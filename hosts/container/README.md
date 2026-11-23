@@ -123,10 +123,13 @@ The stock image is deliberately not FHS-compliant (`/usr/bin` holds only `env`,
 anything expects a normal distro:
 
 ```sh
-# 1. /usr/bin entry points for coreutils/tar/etc. (PATH points there)
+# 1. /usr/bin entry points for coreutils/tar/etc. (PATH points there).
+#    readlink -f pins the links to store paths: the profile apply replaces
+#    ~/.nix-profile, and profile-relative links dangle after that.
 podman exec kernix sh -c '
 for b in id cat ls mkdir rm chmod ln sed grep tar gzip which uname getent env bash sh; do
-  p=$(command -v "$b" 2>/dev/null); [ -z "$p" ] && p=$(ls /nix/store/*/bin/"$b" 2>/dev/null | head -1)
+  p=$(command -v "$b" 2>/dev/null); [ -n "$p" ] && p=$(readlink -f "$p")
+  [ -z "$p" ] && p=$(ls /nix/store/*/bin/"$b" 2>/dev/null | head -1)
   [ -n "$p" ] && ln -sf "$p" /usr/bin/"$b"
 done'
 
