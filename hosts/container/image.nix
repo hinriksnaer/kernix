@@ -50,7 +50,10 @@ in
     nixConf = {
       experimental-features = "nix-command flakes";
       # Numtide cache: prebuilt llm-agents.nix packages (codex, claude-code).
+      # Plain trusted-public-keys, not extra-: the generated nix.conf is
+      # alphabetical, so upstream's own trusted-public-keys line would land
+      # after an extra- line and reset it, dropping the numtide key.
       extra-substituters = "https://cache.numtide.com";
-      extra-trusted-public-keys = "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=";
+      trusted-public-keys = "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=";
     };
   }
