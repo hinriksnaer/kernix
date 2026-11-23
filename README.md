@@ -46,8 +46,13 @@ kernix rebuild
 
 ### In a container
 
-This repo ships no container tooling -- the flake is the interface, and every
-profile is runnable as an app:
+From a machine with nix, `hosts/container/bootstrap.sh <ssh-host>` sets up
+the whole dev container on a remote podman host over ssh (see
+[`hosts/container/README.md`](hosts/container/README.md)). Underneath, the
+flake is the interface: every profile is runnable as an app, and
+`nix build .#container-image` builds the bootstrap image
+(`hosts/container/image.nix`) for hosts that have nix -- otherwise the stock
+nixos/nix image works the same:
 
 ```sh
 nix run <flake>#<user>@<host>          # e.g. nix run .#root@container

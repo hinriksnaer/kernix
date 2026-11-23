@@ -1,16 +1,24 @@
 {
   description = "kernix - NixOS configuration. Chuck the system anywhere.";
 
+  # Numtide cache for llm-agents.nix packages (codex, claude-code, ...).
+  # Only hits when llm-agents keeps its own nixpkgs pin -- do not add a
+  # nixpkgs follows to that input.
+  nixConfig = {
+    extra-substituters = ["https://cache.numtide.com"];
+    extra-trusted-public-keys = ["niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # No nixpkgs follows: keeping upstream's own pin means store paths
+    # match their binary cache, so codex/claude-code come prebuilt
+    # instead of compiling from source.
+    llm-agents.url = "github:numtide/llm-agents.nix";
     # Home-Manager module for Battle.net games via umu-launcher, plus
     # declarative WoW add-ons through instawow (home/gaming/battlenet.nix).
     # Follows our nixpkgs so the module builds against one package set. Its
@@ -140,6 +148,9 @@
     # ── Custom packages (nix build .#<name>) ──
     packages.${system} = {
       inherit (pkgsUnfree.kernix-cli) kernix;
+      # Dev-container bootstrap image (hosts/container/image.nix):
+      #   nix build .#container-image && podman load < result
+      container-image = pkgs.callPackage ./hosts/container/image.nix {inherit inputs;};
     };
 
     # ── One-command apply: nix run .#<user>@<host> ──

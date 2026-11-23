@@ -12,6 +12,9 @@ in {
     experimental-features = ["nix-command" "flakes"];
     auto-optimise-store = true;
     max-jobs = "auto";
+    # Numtide cache: prebuilt llm-agents.nix packages (codex, claude-code).
+    extra-substituters = ["https://cache.numtide.com"];
+    extra-trusted-public-keys = ["niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="];
   };
 
   # Pin flake registry + nixPath to match this system's inputs.

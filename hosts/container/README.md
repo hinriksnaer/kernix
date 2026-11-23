@@ -2,11 +2,32 @@
 
 The host needs **podman** and (for auto-start) **systemd**. It does *not* need
 nix: the container image carries its own, and the `root@container` profile is
-applied from inside.
+applied from inside. If the host *does* have nix, the bootstrap image can be
+built from this flake instead of pulled -- same builder as the official
+nixos/nix images, but pinned to this repo's flake.lock (see `image.nix`):
+
+```sh
+nix build github:hinriksnaer/kernix#container-image   # or a local checkout
+podman load < result
+# then the run command below with localhost/kernix:container and --pull=never
+```
 
 Everything stateful lives in the container's writable layer -- no volumes, no
 bind mounts of `/nix`. A host contributes podman and a place for the container
 to sit, nothing else.
+
+## One command, from a workstation
+
+`bootstrap.sh` runs everything on this page over ssh: build the image from
+this flake and stream it over, probe GPU/MIG device nodes and library paths
+on the remote, start the container, apply the shims, copy the kernix and
+helion working trees in, apply the profile, and verify torch sees the GPU:
+
+```sh
+hosts/container/bootstrap.sh ibm-yugi      # --help for options
+```
+
+The sections below remain the reference for what it does and why.
 
 ## Run
 
@@ -42,6 +63,58 @@ reproducible.
 | `-e PATH=...:/usr/bin:/bin` | The image's own PATH is nix-only. Without `/usr/bin` on it, the VS Code server's `check-requirements.sh` cannot even find `sed`. |
 | `--security-opt label=disable` | On SELinux-enforcing hosts the GPU nodes are labelled `xserver_misc_device_t`, which the `container_t` domain cannot stat or open. The clean fix is an admin relabel to `nvidia_device_t` or a policy allowing container access; until then this is the user-side workaround. |
 | `--init` | catatonit as PID 1: reaps zombies from builds and forwards SIGTERM so `podman stop` does not hang. |
+
+## MIG hosts (ibm-yugi: H200, CentOS Stream 9)
+
+On a MIG-partitioned GPU the `/dev/nvidiaN` nodes are not enough: compute goes
+through the MIG capability nodes, and without them the container sees the GPU
+but no CUDA device. Two changes to the run command:
+
+```sh
+podman run -d --name kernix --init --pull=newer \
+  --security-opt label=disable \
+  --device /dev/nvidiactl \
+  --device /dev/nvidia-uvm \
+  --device /dev/nvidia0 --device /dev/nvidia1 --device /dev/nvidia2 --device /dev/nvidia3 \
+  --device /dev/nvidia4 --device /dev/nvidia5 --device /dev/nvidia6 --device /dev/nvidia7 \
+  -v /dev/nvidia-caps:/dev/nvidia-caps \
+  -v /lib64:/lib64:ro \
+  -v /usr/lib64:/usr/lib64:ro \
+  -v /usr/bin/nvidia-smi:/usr/bin/nvidia-smi:ro \
+  -v /proc/driver/nvidia:/proc/driver/nvidia:ro \
+  -e PATH=/root/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/usr/local/bin:/usr/bin:/bin \
+  -e NIX_CONFIG='experimental-features = nix-command flakes' \
+  docker.io/nixos/nix:latest sleep infinity
+```
+
+* `-v /dev/nvidia-caps:/dev/nvidia-caps` -- the capability minors change
+  whenever MIG is reconfigured, so the directory is mounted rather than
+  `--device`-ing individual cap nodes.
+* Keep the full `--device /dev/nvidiaN` list: a MIG slice's parent GPU is not
+  necessarily `nvidia0` (on ibm-yugi the one visible slice sits on
+  `/dev/nvidia5` even though `nvidia-smi` calls it GPU 0), and the nodes are
+  world-rw there anyway.
+
+With a single MIG instance CUDA enumerates it as device 0, so the helion
+devshell's `CUDA_VISIBLE_DEVICES=0` default selects it. To pin a slice across
+MIG reconfigurations, use the `MIG-<uuid>` form from `nvidia-smi -L` instead.
+
+ibm-yugi specifics: CentOS Stream 9, so the `/usr/lib64` mounts apply
+unchanged. SELinux is Permissive, so `label=disable` is only belt-and-braces.
+The host has nix, so the image can be built in place (`nix build
+~/kernix#container-image`) -- but that nix is locked down (`trusted-users =
+root`, `max-jobs = 1`), which is itself a reason to do the actual dev work
+inside the container, where you own the daemon and its settings.
+
+The helion checkout's `devshell/` and `.envrc` are untracked by design
+(machine-local, listed in `.git/info/exclude`), so a fresh `git clone` inside
+the container does not carry them. Tar the working tree over, as with kernix
+itself:
+
+```sh
+tar -c --exclude=.git --exclude=.venv --exclude=result -C ~/workspace helion \
+  | ssh ibm-yugi 'podman exec -i kernix tar -x -C /root/workspace'
+```
 
 ## First run: two shims
 
