@@ -61,11 +61,22 @@
 {
   pkgs,
   config,
+  lib,
   ...
 }: {
   imports = [
     ./plugins/sesh
   ];
+
+  # HM's tmux module (secureSocket, default on) exports
+  # TMUX_TMPDIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}" in
+  # hm-session-vars.sh. Session vars are emitted alphabetically, so it
+  # expands before the XDG_RUNTIME_DIR fallback (home/default.nix) is set;
+  # on hosts without logind (containers, bare ssh) that leaves
+  # TMUX_TMPDIR=/run/user/<uid>, which does not exist, and tmux dies
+  # creating its socket dir. Override with a self-contained fallback to
+  # the same ~/.run dir the activation script creates.
+  home.sessionVariables.TMUX_TMPDIR = lib.mkForce "\${XDG_RUNTIME_DIR:-$HOME/.run}";
 
   # Reload tmux config after Home Manager switch (if server is running)
   home.activation.reloadTmux = config.lib.dag.entryAfter ["linkGeneration"] ''
