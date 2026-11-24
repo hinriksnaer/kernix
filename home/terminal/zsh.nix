@@ -45,8 +45,16 @@
       # agent socket rather than the stale value the server captured at
       # startup. Preference order: desktop Bitwarden app (GUI hosts), then
       # rbw's built-in ssh agent (container/pod hosts, no GUI).
+      # A forwarded agent (ssh -A) wins over both: it is pinned to a stable
+      # symlink so long-lived panes follow the latest connection.
       (lib.mkOrder 400 ''
+        _fwd_sock="$HOME/.ssh/forwarded-agent.sock"
+        if [ -n "$SSH_CONNECTION" ] && [ -S "$SSH_AUTH_SOCK" ] \
+           && [ "$SSH_AUTH_SOCK" != "$_fwd_sock" ]; then
+          ln -sfn "$SSH_AUTH_SOCK" "$_fwd_sock"
+        fi
         for _agent_sock in \
+          "$_fwd_sock" \
           "$HOME/.bitwarden-ssh-agent.sock" \
           "''${XDG_RUNTIME_DIR:-$HOME/.run}"/rbw*/ssh-agent-socket(N)
         do
@@ -55,7 +63,7 @@
             break
           fi
         done
-        unset _agent_sock
+        unset _agent_sock _fwd_sock
       '')
 
       # zsh-vi-mode config (must be set before plugin loads)
