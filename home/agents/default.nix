@@ -30,7 +30,7 @@ in {
     ./pi.nix
     ./claude-code.nix
     ./opencode.nix
-    ./codex.nix
+    #./codex.nix
   ];
 
   config = lib.mkMerge [
